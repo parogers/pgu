@@ -1,0 +1,30 @@
+To install (as root):
+
+$ python setup.py install
+
+If you are using ubutunu you may need to install python*-dev.
+
+To distribute with your application:
+
+copy the pgu/* and data/* trees into the main dir of your application.
+You only need to copy the data/* trees if you are using pgu.gui and using
+one of the included themes.
+
+For example:
+
+    if pgu is located at:
+    /home/phil/pgu-1.0/
+    
+    and my app is located at:
+    /home/phil/mygame/
+    
+    For distribution, I should:
+    cp -rf /home/phil/pgu-1.0/pgu /home/phil/mygame/pgu
+    cp -rf /home/phil/pgu-1.0/data /home/phil/mygame/data
+    
+  
+I suggest doing this since not everyone has pgu installed, and also while
+pgu is still being released as beta (version < 1.0), there are some API breaks from release
+to release.  By distributing pgu with your application you ensure that
+your application will work reguardless of that.
+

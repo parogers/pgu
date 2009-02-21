@@ -1,0 +1,107 @@
+- add resume method to pgu.engine.State
+
+Index: pgu/gui/dialog.py
+===================================================================
+--- pgu/gui/dialog.py	(revision 15)
++++ pgu/gui/dialog.py	(working copy)
+@@ -5,6 +5,7 @@
+ from const import *
+ import table, area
+ import basic, input, button
++import pygame.constants
+ 
+ class Dialog(table.Table):
+     """A dialog window with a title bar and an "close" button on the 
+bar.
+@@ -35,12 +36,20 @@
+         self.td(title,align=-1,cls=self.cls+'.bar')
+         clos = button.Icon(self.cls+".bar.close")
+         clos.connect(CLICK,self.close,None) 
++        self.connect(KEYDOWN, self._keystroke, None)
+         self.td(clos,align=1,cls=self.cls+'.bar')
+         
+         self.tr()
+         self.td(main,colspan=2,cls=self.cls+".main")
+         
+-        
++    def _keystroke(self, value, _event=None):
++        '''Handle a KEYDOWN event.'''
++        if _event.key == pygame.constants.K_ESCAPE:
++            self.close()
++        else:
++            table.Table.event(self, _event)
++            
++
+ #         self.tr()
+ #         
+ #         
+
+
+
+- merge fonts into text
+- move html into gui
+- merge ani into vid, or something...
+- move layout into gui, or something
+
+- pgu.algo ray-casting, etc.
+
+docs:
+- how to embed code
+- add tutorial on themes / css
+- tutorial on auto-generating levels
+- more docs for gui10 and integration
+- how to run setup.py install for windows, linux
+- animation tutorial
+
+general:
+- add some general purpose tile_hit handlers
+
+tilevid:
+- pre-diction collision detection..
+- add simple side scroller demo, show how gravity, etc works (to be submitted by cherez)
+- add very simple demo of how groups and hits work
+
+all:
+- new style classes (subclass object)
+- clean up junk comments
+- explain how to include pgu and pgu data as part of your dist
+
+tilevid:
+- make tilevid.Sprite a subclass of pygame.Sprite
+- maybe get tilevid groups working with pygame.Groups.. ?
+- maybe make hit testing a bit faster..^
+
+scripts:
+- make leveledit even more dummy proof when creating new levels (right now it can crash if you
+give the wrong tile size, etc.)
+- leveledit: be able to show/hide various layers while editing for ease of editing.
+
+html:
+- make better documentation on using this module
+- add some very simple demo on using globals,locals, onclicks,etc
+
+tileedit:
+- have a mini level editor in the corner for seeing how tiles tile with each other
+- animation preview box
+
+gui:
+- TextArea
+- make toolboxes, menus, etc use add remove instead of a list, or something..  make everything be able to take in lists "data", maybe
+- get Lists up-to-spec API-wise (whatever that means)
+- use .ini for themes
+- have all theme data be generated via generate.py -- off of
+    some source files that are loaded seperately, or something.
+    or maybe upgrade the theme engine to auto-gen themes, etc...
+    
+- container.add(widget,rect) #where rect x,y,w,h is taken in    
+
+- create guiXX -- demo of tables and style abilities
+- create guiXX -- show auto sizing via a scalable pygame window (oooo)
+
+- let Document take in strings and words and render them without using a gui.Label
+
+- theme engine should be ini based and a bit better
+- add better keyboard, gamepad navigation -- so that the gui is more useful in "game menus" as opposed to apps.
+- better documentation (not so glamorous, but it would do a lot for helping people get into things :))
+- better HTML support
+

@@ -1,0 +1,35 @@
+Metadata-Version: 0.10.3
+Name: pgu
+Version: 0.10.3
+Summary: Phil's pyGame Utilities - a collection of handy modules and scripts for PyGame.
+Home-page: http://www.imitationpickles.org/pgu/
+Author: Phil Hassey
+Author-email: philhassey@yahoo.com
+License: UNKNOWN
+Description: Phil's pyGame Utilities - a collection of handy modules and scripts for PyGame.
+    
+    tileedit  -- edit tga based images
+    leveledit -- edit tga based levels in tile, isometric, and hexagonal formats
+    
+    gui     -- gui with standard widget, dialog, connections, and themes
+    html    -- html rendering utilities
+    layout  -- layout utilities
+    text    -- text rendering utilities
+    
+    tilevid -- sprite and tile engine
+    isovid  -- isometric sprite and tile engine
+    hexvid  -- hexagonal sprite and tile engine
+    engine  -- state engine
+    timer   -- a timer for games with set-rate FPS
+    high    -- high score tracking
+    ani     -- animation helpers
+    algo    -- helpful pathfinding algoritms
+    fonts   -- font wrappers, bitmapped fonts
+
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python

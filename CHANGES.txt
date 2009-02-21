@@ -1,0 +1,373 @@
+0.11.0 -
+- added: gui.TextArea - thanks to Clint Herron for this really nice widget!
+
+0.10.6 - 
+- fixed: python 2.5 compat issue
+- fixed: mouse wheel doesn't send CLICK events anymore.
+- fixed: reduced number of copy() operations (which was causing a bit of a memory leak)
+- fixed: made ScrollArea creation work for more pixel perfect kinds of cases...
+- fixed: added needed style info into style for dialog
+
+0.10.5 - 
+- added: support for style loading .ini files 
+[link]
+color: red
+..
+[link:hover]
+color: blue
+.. etc ..
+- changed: filedialog now uses the dialog class for most all of its
+parts.  main style change is that
+filedialog.title.label => dialog.title.label
+and all other filedialog items are gone, except for 
+filedialog.folder
+- changed: filedialog style requirements to be much simpler.  in general
+it just uses dialog and default labels, etc now.
+- fixed: some excessive repaints going on due to use of chsize() before a paint().
+now chsize() doesn't do anything until after the widget is painted at least once.
+- fixed: some code in VScroll, HScroll that was causing extra resizes within tables
+for no particularily good reason.
+- fixed: menu not working bugs 
+- changed: menu so that the cls of a menu doesn't change, it just keeps
+the down pcls while down.
+- fixed: bug where get_abs_rect() was wrong due to theme stuff... kind of a HACK
+- added: shift-TAB for previous support
+- fixed: bug where TAB could cause a crash if no non-container widget
+    was in focus at the time.
+- changed: added support for width,height scaling for Image widgets
+- changed: improved caching of style data so that complex screens repaint much quicker (removed .cache() method from style object)
+- changed: misc changes to add better keyboard / nav support to many widgets (selects, sliders, etc)
+- added: ability to move between widgets via arrow keys .. to stop this behaviour, make sure the
+widget that has focus returns True to say that it "already used the event"
+- changed: after an event() handler, user should return try if they used
+    the event.  otherwise a container may use the TABS, arrow keys, etc for
+    navigation or other purposes.  somewhat optional, will only impact
+    widgets that use tabs/arrow keys ATM.
+- added: a Link widget
+- fixed: bug where pygame would crash if full screen was toggled 
+- fixed: some style issue in the select widget
+- fixed: some rendering issues with sliders being off by a few pixels
+- fixed: some icon styling bugs due to incorrect init order.. but i'll still probably
+    deprecate it anyways! ha!
+- fixed: backgrounds of widgets that are getting repainted, etc.
+- fixed: disabled backgrounds that didn't appear correctly
+
+0.10.4 -
+- fixed: bug in dialog.py -- directories with '!' at beginning were being sorted after '..'
+        thanks Jason Liu for this patch
+- fixed: bug in high.py
+- fixed: scrollbars scroller not the right size
+
+0.10.3 -
+- added: gui16.py and gui17.py some new fun gui examples.
+- fixed: isovid doesn't work when using run_codes 'cause it gets
+width and height from the wrong thing!
+- change: PIL support removed from tileedit, the code is still in there if someone
+wants to troubleshoot it
+- fixed: in tileedit, line 109 should be assert mode in ("RGB", "RGBA"), not assert mode in "RGB", "RGBA" 
+- fixed: when the scroll area is really short, etc, having 3
+scroll arrows can take up too much room.  so now it only shows as many magic scroll
+buttons as it can fit neatly.
+- fixed: using app.paint() with custom event loop skips chsize related stuff
+- fixed: install script error, where Vera.ttf was not installed
+- fixed: timer.py bug where the first frame is really long sometimes
+	i think this is due to some kind of a pygame bug
+	also, when FPS are set to 0, the timer is now set to
+	go at "full rate" instead of give a div by zero error
+- fixed: ScrollArea / SlideBox.widget = x doesn't work.
+
+0.10.2 -
+- fixed: gui11, when everything is removed scroll bar is removed
+    too soon!
+- fixed: gui11, graphical crud shows up after removing stuff, sometimes
+- fixed: Select can drop below window sometimes, and it looks bad.
+    now Selects that are at the bottom of the screen may go upwards.
+- added: ProgressBar widget & documentation.
+- fixed: if the widget in the scroll doesn't fill it up,
+    doing any scrolling causes a crash
+- fixed: gui.Menus not working due to focus related fixes
+- added: widget.connect gets *values, not just value to pass on
+    so that you can have multi-param methods.  See widget.connect
+    documentation for details.
+- added: widget.send can send the event and the widget to
+    the reciever if the receiving fnc has the params named
+    _widget or _event or _code.  See widget.connect documentation.
+- fixed: disabled items in scrollarea don't get alpha-ized due to 
+   alpha image that is being drawn to.
+- fixed: scrollers don't scroll quite like normal scrollers do...
+- fixed: slider size can get too small
+- added: scrollbars added in arrows, so that they are scrollbars
+    instead of just sliders.
+- fixed: sliders & scrollbars inconsistent, and don't look good
+- fixed: weird border in scrollarea, sometimes...
+- fixed: internal cleanup of ScrollBox, etc.  the scollers will
+    automatically appear when the sub-widget gets bigger, smaller, etc.
+- fixed: when you click on a disabled widget, 
+    the click can slip to a non-disabled widget
+- added: .disabled, .focusable attributes to widgets, 
+    see widget.widget documentation
+- fixed: .add, .remove for Container, Table, Document so they
+    all work properly.  gui14.py adjusted to demo accordingly
+- fixed: select to work, by adding an improper use of resize ;)
+- fixed: a number of improper uses of resize()
+- fixed: gui.Table to only resize() something a second time
+    if it _really_ needs to
+- fixed: gui.Table to clear() out old rows properly
+- fixed: gui.Widget so that chsize() would work a lot faster (thus
+    the gui13.py example is very nice and smooth now, doesn't feel like
+    it is lagging anymore.)
+- fixed: ScrollBox a lot faster by using double buffering
+    this will, however, require a lot of memory for large buffers
+    but hopefully that won't be a problem, it makes examples/gui12.py blaze
+    during scrolling, whereas before it was quite slow even on my 2x3 GHz machine.
+- fixed: "calling Button.event() before Button.paint() causes crash"
+- fixed: "container.remove makes a widget stop working but not disappear"
+- fixed: some docs about a bug whereby container.add(w) won't work     
+    after the app is running
+
+0.10.1 -
+- fixed setup.py to work on my system when installing pgu
+
+0.10 -
+
+- added in a Password widget -- submitted by Dr. L. Humbert <humbert@seminar.ham.nw.schule.de>
+
+- added in new documentation -- HTML only now.
+
+- added jhofmann's tiled preview widget to tileedit
+        also included PIL support
+
+- removed gui/background.py -- merged contents into Theme.  Made theme interface more cleanly seperated Widget.py
+jhofmann: added tiled preview widget to tileedit
+
+- zx64: in tilevid4,5 examples -- removed bold so that they work on more systems
+
+2005-12-10 - 0.10-alpha-ludumdare-7-full-combat-version
+
+I've released this one just hours before LD #7 so that you (and I) can both benefit from
+some nice time saving features!
+
+All this stuff is alpha and subject to change before a real release!
+
+- fonts.py -- functions for loading bitmap based fonts (useful when TTF just doesn't cut it!)
+- algo.py -- functions for path finding (useful for guards, etc in games)
+- ani.py -- functions to help load animations into your vid objects (just plain useful)
+
+A new script:
+- levelfancy -- a script for taking a basic level and fancying it up -- try this in
+examples:  ../scripts/levelfancy map.tga level.tga fancy.tga
+then view each of those tgas with leveledit to see what is going on...
+
+An old script:
+I removed tganew ages ago, but I'm putting it back.  I like it.
+
+During this contest I will be available in #ludumdare and #pygame for questions 
+related to using pgu.  Have fun in the contest!  If you find any bugs or anything I'll be
+glad to fix 'em and release a mid-contest version of pgu!
+
+2005-12-01 - 0.9
+
+I added INSTALL.txt with some install instructions, as well as instructions
+for distributing pgu with your game/application.
+
+**** Minor API Update ****************************************************
+Sorry about this, but I realized after releasing 0.8 that the new theme loading
+API wasn't very good...  (And had some bugs to boot!)
+
+This update will be in comparison to 0.7, since I don't think many people 
+downloaded 0.8 yet.
+
+For using the default theme, the API remains the same (do nothing special).
+
+For using an custom theme:
+
+It was:
+gui.theme.load("gray")
+
+It is:
+theme = gui.Theme("gray")
+app = gui.App(theme=theme)
+
+Also you can use your own fully custom theme (oooh!)
+theme = CustomTheme()
+app = gui.App(theme=theme)
+**************************************************************************
+
+
+2005-11-30 - 0.8
+
+phil: fixed tileedit and leveledit to use new theme loading API
+phil: fixed tabbing bug where last item would not get tabbed to
+phil: fixed setup.py to install pgu.gui
+phil: fixed pgu.gui to import pygame.locals
+
+**** Minor API Update ***************************************************
+The API for loading a custom theme has been changed...
+
+It was:
+gui.theme.load("gray")
+
+It is:
+app = gui.App()
+app.theme.load("gray")
+
+Also you can use your own fully custom theme (oooh!)
+theme = MyTheme()
+app = gui.App(theme=theme)
+*************************************************************************
+
+Cthulhu32: found bug in leveledit where file name isn't picked correctly
+
+2005-11-18 - 0.7 
+
+**** Crazy API Update ****************************************************
+Theme decorations are now seperate from the Widgets.  Thus:
+  
+  * Widget._resize() was removed
+  * Widget.getspacing() was removed
+  * Widget.resize() returns None was changed to Widget.resize() returns w,h.  
+    The container is responsible to do this:
+        widget.rect.w,widget.rect.h = widget.resize()
+  * Widget.chsize() was added, it requests that a widget be re-resize()ed --
+    similar to Widget.repaint()
+  * To disable the theme decorations on a widget:
+        widget = Widget(decorate=False)
+
+**************************************************************************
+        
+- phil - added chsize() method which requests that a widget be re-size()ed.  (similar to repaint() or reupdate() except for the resize() method
+- added default font (Vera)
+- removed non-working hide,show calls
+- fdarling - added a new table class that works a bit cleaner.  should
+not have any noticiable API breaks.
+- fdarling - reorganized pgu.gui to be a package
+
+- added input type='file' to pgu.html
+- fixed Toolbox bug (Toolbox.value = x wasn't working right)
+- create circles in tileedit
+- flip bkgr/tiles in leveledit
+
+- tileedit / leveledit - illume added a feature where by you can check
+a box to "auto-save" your tiles when you blur the window.  leveledit
+will auto-reload those changes.
+   
+- since the getwidths() feature was broken anyways, it has been removed   
+- when you create your main container for your app you _may_ need to
+add align=-1, valign=-1 to get it in the top right corner the way
+it used to be      
+      
+- phil -- added Vera.ttf to theme, did some cleanup
+- gal koren -- added a FileDialog, List,  misc patches, etc, added gui11, gui12 as demos of new features
+- fdarling -- fixed some UI issues in Menu
+- gal koren -- fixed a focus bug
+- exampes, gui9 - -save/saveas are broken -- fname is set to a widget
+
+2005-10-21 - 0.6
+- gal koren -- submitted an excellent ScrollArea widget to pgu.gui -- see it demoed
+in examples/gui6.py
+- added default size to HSlider, VSlider in the theme
+
+2005-10-07 - 0.5
+- fixed you can select a tile outside of the tile area by using the up arrow once .. 
+
+- fdarling -- fixed some UI issues with menus and sliders and did some general code cleanup
+- fdarling -- use None instead of 0 for nulls throughout the code
+
+- added to leveledit/tileedit: "are you sure you want to quit" / "you still have files unsaved..." for before "quit" or "open" or "new"...
+- added open/new/saveas/save, etc to tileedit/leveledit
+- removed tganew.  update docs to reflect removal of this artifact
+
+- fixed gui CLICK events so that they only occur when hovering over the widget
+- fixed gui hovering so that when a mouse button is down, the mouse won't hover over widgets that aren't in focus
+- fixed gui so that tabbing works a bit better
+- fixed gui so that QUIT event is only sent when no (modal) windows are being displayed.
+
+- added isovid, hexvid support to scripts/leveledit
+- added pgu.high
+- added pgu.isovid
+- added pgu.hexvid
+- added pgu.timer.Speedometer
+
+- fixed gui.Button so that width,height works
+- fixed html so that valign=middle (not center) works
+- added better css for labels throughout gui, see new config.txt
+
+- added shift+arrows to leveledit to move view by 1/8 screen
+- added ctrl+arrows to leveledit to move view by 1 screen
+- add scrollbars to leveledit
+- fixed tutorial docs in gui10
+- fixed bug where sprite wouldn't work without an ishape
+
+2005-08-27 - 0.4
+- fixed leveleditor so it displays backgroud / grid
+
+2005-08-23 - 0.3
+Bug Fixes:
+- fixed do_br in html
+- fixed rendertrim in html (no longer modifies the passed in rect)
+- removed some debugging prints from html
+- engine no longer requires screen for Game.run()
+- ColorPicker in examples now works faster (doesn't repaint whole screen)
+- fixed most of the crashes related to widgets going outside of their parent surface (when a widget is placed partly (or totaly) out of the screen: crash!) - input should move to the left when you max it out (gui.Input.paint)
+- explain in tutorial/docs how to use tileedit and leveledit under windows
+- fix .txt files so that they work under windows notepad
+- fix tileedit, leveledit to work with new gui module
+- make pcls work correctly for tool, input, keysym
+- some not-so-standard-ascii characters make gui crash when inputted (gui.Input.event)
+- when you tab after the final widget (at least in ReciPy): crash! (gui.Container.next)
+- when you add something to a select (after it is already displayed): crash! (probably needs a resize)
+- tab to next widget doesn't always work
+- cleaned up the tiles.tga for the tilevid examples
+
+Misc Changes:
+- change container.resize to give out proper width/height depending on 
+the widgets contained, or style.width/height if appropriate
+- refine the table auto-sizing algorithm a bit more
+- make document work with resizing sub widgets
+- h1,h2,h3 css in themes 
+- ul,li,ol work
+
+API changes:
+- in Tables, use .td() instead of .add() except when you want to add an object
+as a "table cell" (it will be expanded to fill the cell)
+	t.td(w,colspan=2)
+- widgets are not given a size in __init__, they are given a size by resize(), and their rect_margin, etc are created using _resize()
+- now you can set up margins, borders, padding, just like in CSS2 (more or less).  You may also
+assign whole groups by omitting the _top/_right/_bottom/_left
+	e = Widget(style={'border_left':2,'border_color':(255,0,0),'margin':4})
+- backgrounds respond to .pcls
+- Box (background) widget removed and replaced with a CSS2 Box widget.  The Box widget is used
+by Tables for tds.
+- Background widget created to replace old Box widget.  
+- some style parameters like padding_* must now be passed via the style dict:	
+	e = Widget(style={'padding_left':4})
+- change getsizes api to getwidths()
+- clean up table API -- colspan, rowspan, row, cols, etc.
+- make table sizing work such that:
+	- table.style.width, height force that min/max size
+	- suggested width/height only _offers_ it to be that big
+	- td.cell_width/height force min/max size, unless the min is greater
+		than that size, then it will have to be bigger
+
+2005-08-02 - 1.0
+ - add default palette to tileedit code
+ - add #s for default codes in leveledit
+ - rewrite README.txt
+ - add a leveledit / tileedit / tganew documentation page
+ - rename tilecollide class -- merged into tilevid class
+ - finish doc generation
+ - make sure theme loading works in all cases ./$theme ../data/themes/$theme /usr/share/pgu/$theme
+ - gui - make event, not _event work with tut10
+ - get rid of /docs/tiles-samples and use the space shooter stuff
+ - write documentation 
+ - update tutorials to use my ## format
+ - get text wrapping to work with paragraph breaks
+ - antialias fonts
+ - move /docs/examples to /examples
+ 
+2005-07-?? - 1.0
+ - combined PGU, PGL and KJV into one package
+ 
+2004-07-23 - "pgu" 1.1
+ - command line interface improved considerably
+ - use .ini files for init

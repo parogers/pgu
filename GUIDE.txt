@@ -1,0 +1,30 @@
+Here's a quick developers guide:
+
+pgu.gui API
+===========
+
+1.  Keep it pythonic (in terms of everything!  the more pythonic the better, I suppose)
+2.  Keep it pygameic (in terms of events, surfaces)
+3.  Keep it Qt-ic (in terms of class names)
+http://doc.trolltech.com/4.0/
+http://doc.trolltech.com/4.0/mainclasses.html
+4.  Keep it HTML-ic (in terms of class names / API / usability)
+
+Links
+=====
+http://www.imitationpickles.org/pgu/
+http://www.sf.net/projects/pgu/
+
+General
+=======
+* Subscribe to the pgu-devel mailing list and talk about ideas and patches.
+* Don't break the API without talking on the mailing list.
+* Version is still less than 1.0 so some API breaks may still happen
+* Freely submit bug and documentation patches.
+
+Coding
+======
+- Standard python style
+- Put #NOTE: by things that need a note
+- Put #HACK: by things that are a nasty hack (might mention them in the BUGS.txt)
+- Put #FIXME: by things that need to be fixed (also mention them in the BUGS.txt)

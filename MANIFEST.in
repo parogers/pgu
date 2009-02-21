@@ -1,0 +1,10 @@
+recursive-include pgu *.*
+recursive-include data *.*
+recursive-include scripts *
+recursive-include docs *.*
+recursive-include examples *.*
+global-exclude CVS .cvsignore *.pyc *.pyo *~ ^.* *-1 *-2 *-3 *-before* *-after* *-old* *-bk*
+recursive-exclude docs/html *.html
+recursive-exclude docs/text *.txt
+recursive-exclude test *.*
+include *.txt MANIFEST.in MANIFEST
