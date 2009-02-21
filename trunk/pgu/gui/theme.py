@@ -402,7 +402,7 @@ class Theme:
         
         if box == 0: return
         
-        if isinstance(box, pygame.Color):
+        if isinstance(box, pygame.Color) or type(box) == tuple:
             s.fill(box,r)
             return
         
@@ -473,7 +473,7 @@ class Background(widget.Widget):
     def paint(self,s):
         r = pygame.Rect(0,0,s.get_width(),s.get_height())
         v = self.value.style.background
-        if isinstance(v, pygame.Color):
+        if isinstance(v, pygame.Color) or type(v) == tuple:
             s.fill(v)
         else: 
             self.theme.render(s,v,r)
