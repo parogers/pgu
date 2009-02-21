@@ -1,0 +1,106 @@
+- fix tileedit so it doesn't try to do that move tmp save thing
+    it can cause crashses if you edit files that aren't in the CWD
+- fix leveleditor so it doesn't try to reload files all the time
+    maybe add a key to make that happen.  be a lot safer.
+
+------------------------
+* pgu.gui.Select -- when the select doesn't fit going down or up, it goes up
+and if it goes out of the top of the screen it'll cause a subsurface crash.
+
+here is a bug case:
+import os,sys	
+from optparse import OptionParser
+from ConfigParser import ConfigParser
+#import base
+import pygame
+from pygame.locals import *
+import glob
+
+#import levelfile
+
+# the following line is not needed if pgu is installed
+import sys; sys.path.insert(0, "..")
+
+from pgu import gui, html, tilevid
+
+
+
+class LoadDialog(gui.Dialog):
+	def __init__(self,**params):
+		title = gui.Label("Load...")
+		
+		options = ""
+		
+		files = ['test.file','test2.txt','hmm.txt']
+		for file in files:
+		 fn = os.path.basename(file)
+		 n = os.path.splitext(fn)[0]
+		 options += "<option value='" + n + "'>" + fn
+		
+		doc = html.HTML(globals={'gui':gui,'dialog':self},data="""
+<form id='form'>
+
+<table width="200" height="70">
+
+
+<tr>
+
+<td>Level file: <td> <select name="fname">
+""" + options + """
+</select>
+
+
+<tr>
+
+<tr><td colspan=2><input type='button' value='Okay' onclick='dialog.send(gui.CHANGE)'> <input type='button' value='Cancel' onclick='dialog.close()'>
+
+</table>""")
+
+		gui.Dialog.__init__(self,title,doc)
+
+		self.value = doc['form']	
+		
+app = gui.App()
+app.connect(gui.QUIT,app.quit,None)
+
+e = LoadDialog()
+
+app.run(e)
+
+	
+
+
+
+
+- html - when you do something like "blah <b>zanthor</b> blah" extra spaces show up
+
+- if you floodfull an area in leveledit that is big, it crashes
+
+(03:55:35) richard|coding: dOb: I've found a couple of things: 1. save tiles/levels/codes from pgu's tools as PNGs, and only ever work on stuff in the current working directory.
+
+(03:56:10) richard|coding: dOb: haven't managed to get the level editor to place tiles for me yet though (it will place codes, but not regular tiles :(
+
+
+docs:
+- explain codes in more detail
+codes are useful if you wish to define where your enemies appe
+ar separate from the look of your level (see the examples/level.tga, and see how the codes position where the enemies and player starting position are). they are not required -- you may do what you said in the video, just define tiles that indicate enemy and player locations. codes may also be used as parameters, say you let the first 5 codes be numbers, you could have one code for "green badguy" and next to it require two codes, one for it's initial vertical velocity and another for how many hits it can take. again, that kind of stuff is not required to make a game, but if you want to use codes for extra information they are available. the programmers are the ones who have to make the codes do something, as tilevid does not define what codes are for. 
+
+- how to use the preview feature
+
+tileedit/leveledit:
+ - The select tool does not work from bottom right to top left.
+ - if the image is the "Wrong size" tileedit might crash
+ - if the tiles are the "wrong size" leveledit crashes
+ 
+
+tilevid: 
+should not call 
+a.hit(a,b) if a or b are not in sprites
+should not call a.loop if a is not in sprites, etc
+
+on tv.sprites.remove(a) -- do not crash if the sprite is already gone,
+just print a nice looking warning to the console, so the game doesn't crash from a minor programming bug
+
+isovid, hexvid: remove 'em
+
