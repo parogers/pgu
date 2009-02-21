@@ -6,6 +6,8 @@ import pygame
 from const import *
 import surface
 
+__file__ = os.path.abspath(__file__)
+
 def _list_themes(dir):
     d = {}
     for entry in os.listdir(dir):
@@ -112,7 +114,11 @@ class Theme:
         #theme_dir = themes[name]
         v0 = vals[0]
         if v0[0] == '#':
-            v = pygame.color.Color(v0+"FF")
+            if (len(v0) == 7):
+                # Due to a bug in pygame 1.8 (?) we need to explicitly 
+                # specify the alpha value (otherwise it defaults to zero)
+                v0 += "FF"
+            v = pygame.color.Color(v0)
         elif v0.endswith(".ttf") or v0.endswith(".TTF"):
             v = pygame.font.Font(os.path.join(dname, v0),int(vals[1]))
         elif self.is_image.search(v0) is not None:
@@ -361,7 +367,7 @@ class Theme:
         <dt>level<dd>the amount of decoration to do, False for none, True for normal amount, 'app' for special treatment of App objects.
         </dl>
         """        
-        
+
         w = widget
         if level == False: return
         
