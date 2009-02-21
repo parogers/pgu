@@ -1,5 +1,7 @@
 """a html renderer
 """
+
+import sys
 import htmllib
 import re
 import pygame
@@ -478,46 +480,42 @@ class HTML(gui.Document):
     def __getitem__(self,k):
         return self._locals[k]
 
-def render(font,rect,text,aa,color,bgcolor=(0,0,0,0)):
-    """render some html
+def render_ext(font, rect, text, aa, color, bgcolor=(0,0,0,0)):
+    """Renders some html and returns the rendered surface, plus the
+    HTML instance that produced it.
+    """
+    htm = HTML(text, font=font, color=color)
+    htm.resize(width=rect.w)
+    s = pygame.Surface(rect.size).convert_alpha()
+    s.fill(bgcolor)
+    htm.paint(s)
+    return (s, htm)
+
+def render(font, rect, text, aa, color, bgcolor=(0,0,0,0)):
+    """Renders some html
     
     <pre>render(font,rect,text,aa,color,bgcolor=(0,0,0,0))</pre>
     """
-    fnt,r,txt,a,fg,bg = font,rect,text,aa,color,bgcolor
-    
-    e = HTML(txt,font=fnt,color=fg)
-    e.resize(width=rect.w)
-    s = pygame.Surface((e.rect.w,e.rect.h),SWSURFACE|SRCALPHA,32)
-    s.fill(bg)
-    e.paint(s)
-    
-    return s
+    return render_ext(font, rect, text, aa, color, bgcolor)[0]
 
 def rendertrim(font,rect,text,aa,color,bgcolor=(0,0,0,0)):
     """render html, and make sure to trim the size
     
     <pre>rendertrim(font,rect,text,aa,color,bgcolor=(0,0,0,0))</pre>
     """
-    fnt,r,txt,a,fg,bg = font,rect,text,aa,color,bgcolor
-    #print r
-    w = HTML(txt,font=fnt,color=fg)
-    w.resize(width=rect.w)
-    s = pygame.Surface((w.rect.w,w.rect.h),SWSURFACE|SRCALPHA,32)
-    s.fill(bg)
-    w.paint(s)
-    
-    minx,miny,maxx,maxy = 1024,1024,-1024,-1024
-    for e in w.layout.widgets:
-        x,y,w,h = e.rect.x,e.rect.y,e.rect.w,e.rect.h
-        minx = min(minx,x)
-        miny = min(miny,y)
-        x,y = x+w,y+h
-        maxx = max(maxx,x)
-        maxy = max(maxy,y)
-        
+    # Render the HTML
+    (surf, htm) = render_ext(font, rect, text, aa, color, bgcolor)
+
+    # Figure out what region of the surface to trim
+    minx,miny,maxx,maxy = sys.maxint,sys.maxint,-sys.maxint,-sys.maxint
+    for e in htm.layout.widgets:
+        minx = min(minx, e.rect.left)
+        miny = min(miny, e.rect.top)
+        maxx = max(maxx, e.rect.right)
+        maxy = max(maxy, e.rect.bottom)
+
     r = pygame.Rect(minx,miny,maxx-minx,maxy-miny)
-        
-    return s.subsurface((r))
+    return surf.subsurface(r)
 
     
 def write(s,font,rect,text,aa=0,color=(0,0,0)):
@@ -525,12 +523,9 @@ def write(s,font,rect,text,aa=0,color=(0,0,0)):
     
     <pre>write(s,font,rect,text,aa=0,color=(0,0,0))</pre>
     """
-    fnt,r,txt,a,fg = font,rect,text,aa,color
-
-    e = HTML(txt)
-    
-    e.resize(width=rect.w)
+    htm = HTML(text, font=font, color=color)
+    htm.resize(width=rect.w)
     s = s.subsurface(rect)
-    e.paint(s)
+    htm.paint(s)
     
 # vim: set filetype=python sts=4 sw=4 noet si :
