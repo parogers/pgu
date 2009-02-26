@@ -13,9 +13,9 @@ from pygame.locals import *
 
 from const import *
 import widget
-import app
 import table
 import basic
+import pguglobals
 
 _SLIDER_HORIZONTAL = 0
 _SLIDER_VERTICAL = 1
@@ -40,7 +40,7 @@ class _slider(widget.Widget):
             
         self.bar = r
         
-        app.App.app.theme.render(s,self.style.bar,r)
+        pguglobals.app.theme.render(s,self.style.bar,r)
     
     def event(self,e):
         used = None
@@ -189,8 +189,7 @@ class HScrollBar(table.Table):
             
             
         #HACK: handle theme sizing properly
-        from app import App
-        xt,xr,xb,xl = App.app.theme.getspacing(self.slider)
+        xt,xr,xb,xl = pguglobals.app.theme.getspacing(self.slider)
         ww += xr+xl
 
         self.slider.style.width = self.style.width - ww
@@ -262,8 +261,7 @@ class VScrollBar(table.Table):
             
             
         #HACK: handle theme sizing properly
-        from app import App
-        xt,xr,xb,xl = App.app.theme.getspacing(self.slider)
+        xt,xr,xb,xl = pguglobals.app.theme.getspacing(self.slider)
         hh += xt+xb
 
         self.slider.style.height = self.style.height - hh

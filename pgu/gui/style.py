@@ -1,6 +1,8 @@
 """
 """
 
+import pguglobals
+
 class Style:
     """The class used by widget for the widget.style
     
@@ -16,8 +18,6 @@ class Style:
     def __getattr__(self,k):
         key = self.obj.cls,self.obj.pcls,k
         if key not in self._cache:
-            #import app
-            #self._cache[key] = app.App.app.theme.get(self.obj.cls, self.obj.pcls, k)
             self._cache[key] = Style_get(self.obj.cls,self.obj.pcls,k)
         v = self._cache[key]
         if k in (
@@ -36,7 +36,6 @@ Style_cache = {}
 def Style_get(cls,pcls,k):
     key = cls,pcls,k
     if key not in Style_cache:
-        import app
-        Style_cache[key] = app.App.app.theme.get(cls,pcls,k)
+        Style_cache[key] = pguglobals.app.theme.get(cls,pcls,k)
     return Style_cache[key]
         

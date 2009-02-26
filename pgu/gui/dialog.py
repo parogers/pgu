@@ -5,6 +5,7 @@ import os
 from const import *
 import table, area
 import basic, input, button
+import pguglobals
 
 class Dialog(table.Table):
     """A dialog window with a title bar and an "close" button on the bar.
@@ -78,8 +79,8 @@ class FileDialog(Dialog):
         cls1 = 'filedialog'
         if not path: self.curdir = os.getcwd()
         else: self.curdir = path
-        import app
-        self.dir_img = basic.Image(app.App.app.theme.get(cls1+'.folder', '', 'image'))
+        self.dir_img = basic.Image(
+            pguglobals.app.theme.get(cls1+'.folder', '', 'image'))
         td_style = {'padding_left': 4,
                     'padding_right': 4,
                     'padding_top': 2,

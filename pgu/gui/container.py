@@ -5,6 +5,7 @@ from pygame.locals import *
 
 from const import *
 import widget, surface
+import pguglobals
 
 class Container(widget.Widget):
     """The base container widget, can be used as a template as well as stand alone.
@@ -81,24 +82,23 @@ class Container(widget.Widget):
     def paint(self,s):
         self.toupdate = {}
         self.topaint = {}
-        
         for w in self.widgets:
-            ok = False
             try:
-                sub = surface.subsurface(s,w.rect)
-                ok = True
+                sub = surface.subsurface(s, w.rect)
             except: 
-                print 'container.paint(): %s not in %s'%(w.__class__.__name__,self.__class__.__name__)
+                print 'container.paint(): %s not in %s' % (
+                    w.__class__.__name__,self.__class__.__name__)
                 print s.get_width(),s.get_height(),w.rect
-                ok = False
-            if ok: 
-                if not (hasattr(w,'_container_bkgr') and w._container_bkgr.get_width() == sub.get_width() and w._container_bkgr.get_height() == sub.get_height()):
+            else:
+                if (not (hasattr(w,'_container_bkgr') and 
+                         w._container_bkgr.get_width() == sub.get_width() and 
+                         w._container_bkgr.get_height() == sub.get_height())):
                     w._container_bkgr = sub.copy()
                 w._container_bkgr.fill((0,0,0,0))
                 w._container_bkgr.blit(sub,(0,0))
                 
                 w.paint(sub)
-        
+
         for w in self.windows:
             w.paint(self.top_surface(s,w))
     
@@ -211,7 +211,7 @@ class Container(widget.Widget):
         if not self.myfocus: return
         
         from pgu.gui import App
-        widgets = self._get_widgets(App.app)
+        widgets = self._get_widgets(pguglobals.app)
         #if myfocus not in widgets: return
         #widgets.remove(myfocus)
         if myfocus in widgets:
@@ -285,8 +285,9 @@ class Container(widget.Widget):
     def open(self,w=None,x=None,y=None):
         from app import App #HACK: I import it here to prevent circular importing
         if not w:
-            if (not hasattr(self,'container') or not self.container) and self is not App.app:
-                self.container = App.app
+            if (not hasattr(self,'container') or 
+                not self.container) and self is not pguglobals.app:
+                self.container = pguglobals.app
             #print 'top level open'
             return widget.Widget.open(self)
         

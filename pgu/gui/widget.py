@@ -2,6 +2,7 @@
 """
 import pygame
 
+import pguglobals
 import style
 
 class Widget:
@@ -78,12 +79,13 @@ class Widget:
         self.pcls = ""
         
         if params['decorate'] != False:
-            import app
-            if not hasattr(app.App,'app'):
+            if (not pguglobals.app):
+                # TODO - fix this somehow
+                import app
                 print 'gui.widget: creating an App'
-                app.App.app = app.App()
-            app.App.app.theme.decorate(self,params['decorate'])
-            
+                app.App()
+            pguglobals.app.theme.decorate(self,params['decorate'])
+
     def focus(self):
         """Focus this Widget.
         
@@ -137,11 +139,11 @@ class Widget:
         if not hasattr(self,'_painted'): return
         
         if not hasattr(self,'container'): return
-        import app
         
-        if hasattr(app.App,'app'):
-            if app.App.app._chsize: return
-            app.App.app.chsize()
+        if pguglobals.app:
+            if pguglobals.app._chsize: 
+                return
+            pguglobals.app.chsize()
             return
             
         #if hasattr(app.App,'app'):
