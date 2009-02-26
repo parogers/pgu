@@ -17,7 +17,7 @@ from area import SlideBox, ScrollArea, List
 from form import Form
 from group import Group
 
-from basic import Spacer, Color, Label, Image
+from basic import Spacer, Color, Label, Image, parse_color
 from button import Icon, Button, Switch, Checkbox, Radio, Tool, Link
 from input import Input, Password
 from keysym import Keysym

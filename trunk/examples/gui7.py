@@ -9,7 +9,7 @@ from pgu import gui
 
 class ColorDialog(gui.Dialog):
     def __init__(self,value,**params):
-        self.value = list(pygame.Color(value))
+        self.value = list(gui.parse_color(value))
         
         title = gui.Label("Color Picker")
         

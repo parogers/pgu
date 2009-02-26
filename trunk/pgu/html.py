@@ -461,6 +461,9 @@ class HTML(gui.Document):
     """
     def __init__(self,data,globals=None,locals=None,**params):
         gui.Document.__init__(self,**params)
+        # This ensures that the whole HTML document is left-aligned within
+        # the rendered surface.
+        self.style.align = -1
         
         _globals,_locals = globals,locals
         
@@ -484,12 +487,12 @@ def render_ext(font, rect, text, aa, color, bgcolor=(0,0,0,0)):
     """Renders some html and returns the rendered surface, plus the
     HTML instance that produced it.
     """
+    surf = pygame.Surface(rect.size).convert_alpha()
+    surf.fill(bgcolor)
     htm = HTML(text, font=font, color=color)
     htm.resize(width=rect.w)
-    s = pygame.Surface(rect.size).convert_alpha()
-    s.fill(bgcolor)
-    htm.paint(s)
-    return (s, htm)
+    htm.paint(surf)
+    return (surf, htm)
 
 def render(font, rect, text, aa, color, bgcolor=(0,0,0,0)):
     """Renders some html

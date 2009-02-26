@@ -4,6 +4,7 @@ from const import *
 import table
 import group
 import button, basic
+import pguglobals
 
 def action_open(value):
     print 'gui.action_open',"Scheduled to be deprecated."
@@ -59,8 +60,7 @@ class Toolbox(table.Table):
         x,y,p,s = 0,0,None,1
         for ico,value in data:
             #from __init__ import theme
-            import app
-            img = app.App.app.theme.get(tool_cls+"."+ico,"","image")
+            img = pguglobals.app.theme.get(tool_cls+"."+ico,"","image")
             if img:
                 i = basic.Image(img)
             else: i = basic.Label(ico,cls=tool_cls+".label")

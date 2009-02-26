@@ -5,6 +5,7 @@ import pygame
 
 from const import *
 import surface
+from basic import parse_color
 
 __file__ = os.path.abspath(__file__)
 
@@ -114,11 +115,12 @@ class Theme:
         #theme_dir = themes[name]
         v0 = vals[0]
         if v0[0] == '#':
-            if (len(v0) == 7):
-                # Due to a bug in pygame 1.8 (?) we need to explicitly 
-                # specify the alpha value (otherwise it defaults to zero)
-                v0 += "FF"
-            v = pygame.color.Color(v0)
+            v = parse_color(v0)
+            #if (len(v0) == 7):
+            #    # Due to a bug in pygame 1.8 (?) we need to explicitly 
+            #    # specify the alpha value (otherwise it defaults to zero)
+            #    v0 += "FF"
+            #v = pygame.color.Color(v0)
         elif v0.endswith(".ttf") or v0.endswith(".TTF"):
             v = pygame.font.Font(os.path.join(dname, v0),int(vals[1]))
         elif self.is_image.search(v0) is not None:
@@ -204,65 +206,68 @@ class Theme:
 
         
     def resize(self,w,m):
+        # Returns the rectangle expanded in each direction
+        def expand_rect(rect, left, top, right, bottom):
+            return pygame.Rect(rect.x - left, 
+                               rect.y - top, 
+                               rect.w + left + right, 
+                               rect.h + top + bottom)
+
         def func(width=None,height=None):
-            #ww,hh = m(width,height)
-            ow,oh = width,height
-            
-            
             s = w.style
             
             pt,pr,pb,pl = s.padding_top,s.padding_right,s.padding_bottom,s.padding_left
             bt,br,bb,bl = s.border_top,s.border_right,s.border_bottom,s.border_left
             mt,mr,mb,ml = s.margin_top,s.margin_right,s.margin_bottom,s.margin_left
-            
-            xt = pt+bt+mt
-            xr = pr+br+mr
-            xb = pb+bb+mb
-            xl = pl+bl+ml
-            ttw = xl+xr
-            tth = xt+xb
+            # Calculate the total space on each side
+            top = pt+bt+mt
+            right = pr+br+mr
+            bottom = pb+bb+mb
+            left = pl+bl+ml
+            ttw = left+right
+            tth = top+bottom
             
             ww,hh = None,None
             if width != None: ww = width-ttw
             if height != None: hh = height-tth
             ww,hh = m(ww,hh)
-            
-            rect = pygame.Rect(0 + xl, 0 + xt, ww, hh)
-            w._rect_content = rect #pygame.Rect(0 + xl, 0 + xt, width, height)
-            #r = rect
-        
+
             if width == None: width = ww
             if height == None: height = hh
+            
             #if the widget hasn't respected the style.width,
             #style height, we'll add in the space for it...
-            width = max(width-ttw,ww,w.style.width)
-            height = max(height-tth,hh,w.style.height)
+            width = max(width-ttw, ww, w.style.width)
+            height = max(height-tth, hh, w.style.height)
             
             #width = max(ww,w.style.width-tw)
             #height = max(hh,w.style.height-th)
 
-            r = pygame.Rect(rect.x,rect.y,width,height)
+            r = pygame.Rect(left,top,width,height)
             
-            w._rect_padding = pygame.Rect(r.x-pl,r.y-pt,r.w+pl+pr,r.h+pt+pb)
-            r = w._rect_padding
-            w._rect_border = pygame.Rect(r.x-bl,r.y-bt,r.w+bl+br,r.h+bt+bb)
-            r = w._rect_border
-            w._rect_margin = pygame.Rect(r.x-ml,r.y-mt,r.w+ml+mr,r.h+mt+mb)
-            
-            #align it within it's zone of power.    
+            w._rect_padding = expand_rect(r, pl, pt, pr, pb)
+            w._rect_border = expand_rect(w._rect_padding, bl, bt, br, bb)
+            w._rect_margin = expand_rect(w._rect_border, ml, mt, mr, mb)
+
+            #w._rect_padding = pygame.Rect(r.x-pl,r.y-pt,r.w+pl+pr,r.h+pt+pb)
+            #r = w._rect_padding
+            #w._rect_border = pygame.Rect(r.x-bl,r.y-bt,r.w+bl+br,r.h+bt+bb)
+            #r = w._rect_border
+            #w._rect_margin = pygame.Rect(r.x-ml,r.y-mt,r.w+ml+mr,r.h+mt+mb)
+
+            # align it within it's zone of power.   
+            rect = pygame.Rect(left, top, ww, hh)
             dx = width-rect.w
             dy = height-rect.h
-            #rect.x += (1)*dx/2
-            #rect.y += (1)*dy/2
             rect.x += (w.style.align+1)*dx/2
             rect.y += (w.style.valign+1)*dy/2
-            
-            
-            #print w,ow, w._rect_margin.w,  ttw
-            return w._rect_margin.w,w._rect_margin.h
+
+            w._rect_content = rect
+
+            return (w._rect_margin.w, w._rect_margin.h)
         return func
-            
-        
+
+
     def paint(self,w,m):
         def func(s):
 #             if w.disabled:
@@ -281,7 +286,9 @@ class Theme:
 #                 s = w._theme_paint_bkgr.convert()
 
             if w.disabled:
-                if not (hasattr(w,'_theme_bkgr') and w._theme_bkgr.get_width() == s.get_width() and w._theme_bkgr.get_height() == s.get_height()):
+                if (not (hasattr(w,'_theme_bkgr') and 
+                         w._theme_bkgr.get_width() == s.get_width() and 
+                         w._theme_bkgr.get_height() == s.get_height())):
                     w._theme_bkgr = s.copy()
                 orig = s
                 s = w._theme_bkgr
