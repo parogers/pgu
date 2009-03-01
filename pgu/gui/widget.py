@@ -269,7 +269,7 @@ class Widget:
         # Wrap the callback function and add it to the list
         cb = SignalCallback()
         cb.func = func
-        cb.params = list(params)
+        cb.params = params
         if (not code in self.connects):
             self.connects[code] = []
         self.connects[code].append(cb)
@@ -309,7 +309,7 @@ class Widget:
         # Trigger all connected signal handlers
         for cb in self.connects[code]:
             func = cb.func
-            values = cb.params
+            values = list(cb.params)
 
             nargs = func.func_code.co_argcount
             names = list(func.func_code.co_varnames)[:nargs]
