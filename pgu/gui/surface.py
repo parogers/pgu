@@ -15,6 +15,7 @@ def subsurface(s,r):
         r.w -= r.right-w
     if r.bottom > h:
         r.h -= r.bottom-h
+    assert(r.w >= 0 and r.h >= 0)
     return s.subsurface(r)
 
 class ProxySurface:
@@ -43,14 +44,16 @@ class ProxySurface:
     def __init__(self, parent, rect, real_surface, offset=(0, 0)):
         self.offset = offset
         self.x = self.y = 0
-        if rect[0] < 0: self.x = rect[0]
-        if rect[1] < 0: self.y = rect[1]
+        if rect.x < 0: self.x = rect.x
+        if rect.y < 0: self.y = rect.y
         self.real_surface = real_surface
         if real_surface == None:
-            self.mysubsurface = parent.mysubsurface.subsurface(parent.mysubsurface.get_rect().clip(rect))
+            self.mysubsurface = parent.mysubsurface.subsurface(
+                parent.mysubsurface.get_rect().clip(rect))
         else:
-            self.mysubsurface = real_surface.subsurface(real_surface.get_rect().clip(rect))
-        rect[0], rect[1] = 0, 0
+            self.mysubsurface = real_surface.subsurface(
+                real_surface.get_rect().clip(rect))
+        rect.topleft = (0, 0)
         self.rect = rect
         
     def blit(self, s, pos, rect=None):
@@ -58,7 +61,11 @@ class ProxySurface:
         pos = (pos[0] + self.offset[0] + self.x, pos[1] + self.offset[1] + self.y)
         self.mysubsurface.blit(s, pos, rect)
         
-    def subsurface(self, rect): return ProxySurface(self, pygame.Rect(rect).move(self.offset[0] + self.x, self.offset[1] + self.y),self.real_surface)
+    def subsurface(self, rect): 
+        r = pygame.Rect(rect).move(self.offset[0] + self.x, 
+                                   self.offset[1] + self.y)
+        return ProxySurface(self, r, self.real_surface)
+
     def fill(self, color, rect=None): 
         if rect != None: self.mysubsurface.fill(color, rect)
         else: self.mysubsurface.fill(color)

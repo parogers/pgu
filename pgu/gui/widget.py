@@ -5,6 +5,12 @@ import pygame
 import pguglobals
 import style
 
+class SignalCallback:
+    # The function to call
+    func = None
+    # The parameters to pass to the function (as a list)
+    params = None
+
 class Widget:
     """Template object - base for all widgets.
     
@@ -233,10 +239,10 @@ class Widget:
             c = getattr(c,'container',None)
         return pygame.Rect(x, y, self.rect.w, self.rect.h)
 
-    def connect(self,code,fnc,*values):
+    def connect(self,code,func,*params):
         """Connect a event code to a callback function.
         
-        <p>There may only be one callback per event code.</p>
+        <p>There may be multiple callbacks per event code.</p>
         
         <pre>Object.connect(code,fnc,value)</pre>
         
@@ -260,9 +266,34 @@ class Widget:
         w.connect(gui.CLICK,onclick,'PGU Button Clicked')
         </code>
         """
-        
-        self.connects[code] = {'fnc':fnc,'values':values}
-    
+        # Wrap the callback function and add it to the list
+        cb = SignalCallback()
+        cb.func = func
+        cb.params = list(params)
+        if (not code in self.connects):
+            self.connects[code] = []
+        self.connects[code].append(cb)
+
+    # Remove signal handlers from the given event code. If func is specified,
+    # only those handlers will be removed. If func is None, all handlers
+    # will be removed.
+    def disconnect(self, code, func=None):
+        if (not code in self.connects):
+            return
+        if (not func):
+            # Remove all signal handlers
+            del self.connects[code]
+        else:
+            # Remove handlers that call 'func'
+            n = 0
+            callbacks = self.connects[code]
+            while (n < len(callbacks)):
+                if (callbacks[n].func == func):
+                    # Remove this callback
+                    del callbacks[n]
+                else:
+                    n += 1
+
     def send(self,code,event=None):
         """Send a code, event callback trigger.
         
@@ -273,16 +304,16 @@ class Widget:
         <dt>event<dd>event
         </dl>
         """
-        if code in self.connects:
-            con = self.connects[code]
-            #con['fnc'](*con['values'])
-        
-            fnc = con['fnc']
-            values = list(con['values'])
-            
-            nargs = fnc.func_code.co_argcount
-            names = list(fnc.func_code.co_varnames)[:nargs]
-            if hasattr(fnc,'im_class'): names.pop(0)
+        if (not code in self.connects):
+            return
+        # Trigger all connected signal handlers
+        for cb in self.connects[code]:
+            func = cb.func
+            values = cb.params
+
+            nargs = func.func_code.co_argcount
+            names = list(func.func_code.co_varnames)[:nargs]
+            if hasattr(func,'im_class'): names.pop(0)
             
             args = []
             magic = {'_event':event,'_code':code,'_widget':self}
@@ -294,7 +325,7 @@ class Widget:
                 else:
                     break
             args.extend(values)
-            fnc(*args)
+            func(*args)
     
     def _event(self,e):
         if self.disabled: return
