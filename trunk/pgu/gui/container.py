@@ -86,9 +86,10 @@ class Container(widget.Widget):
             try:
                 sub = surface.subsurface(s, w.rect)
             except: 
-                print 'container.paint(): %s not in %s' % (
+                print 'container.paint(): %s not inside %s' % (
                     w.__class__.__name__,self.__class__.__name__)
-                print s.get_width(),s.get_height(),w.rect
+                print s.get_width(), s.get_height(), w.rect
+                print ""
             else:
                 if (not (hasattr(w,'_container_bkgr') and 
                          w._container_bkgr.get_width() == sub.get_width() and 
