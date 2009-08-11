@@ -3,13 +3,13 @@
 <p>please note that this file is alpha, and is subject to modification in
 future versions of pgu!</p>
 """
-print 'pgu.algo','This module is alpha, and is subject to change.'
 
-#def dist(a,b):
-#    return abs(a[0]-b[0]) + abs(a[1]-b[1])
+# The manhattan distance metric
+def manhattan_dist(a,b):
+    return abs(a[0]-b[0]) + abs(a[1]-b[1])
     
 class node:
-    def __init__(self,prev,pos,dest):
+    def __init__(self, prev, pos, dest, dist):
         self.prev,self.pos,self.dest = prev,pos,dest
         if self.prev == None: self.g = 0
         else: self.g = self.prev.g + 1
@@ -17,7 +17,7 @@ class node:
         self.f = self.g+self.h
 
 
-def astar(start,end,layer,_dist):
+def astar(start,end,layer,dist=manhattan_dist):
     """uses the a* algorithm to find a path
     
     <pre>astar(start,end,layer,dist): return [list of positions]</pre>
@@ -26,23 +26,27 @@ def astar(start,end,layer,_dist):
     <dt>start<dd>start position
     <dt>end<dd>end position
     <dt>layer<dd>a grid where zero cells are open and non-zero cells are walls
-    <dt>dist<dd>a distance function dist(a,b)
+    <dt>dist<dd>a distance function dist(a,b) - manhattan distance is used by default
     </dl>
     
     <p>returns a list of positions from start to end</p>
     """
-    global dist
-    dist = _dist
-    if layer[start[1]][start[0]]: return [] #start is blocked
-    if layer[end[1]][end[0]]: return [] #end is blocked
+
     w,h = len(layer[0]),len(layer)
-    if start[0] < 0 or start[1] < 0 or start[0] >= w or start[1] >= h: return [] #start outside of layer
-    if end[0] < 0 or end[1] < 0 or end[0] >= w or end[1] >= h: return [] #end outside of layer
+    if start[0] < 0 or start[1] < 0 or start[0] >= w or start[1] >= h: 
+        return [] #start outside of layer
+    if end[0] < 0 or end[1] < 0 or end[0] >= w or end[1] >= h:
+        return [] #end outside of layer
+
+    if layer[start[1]][start[0]]:
+        return [] #start is blocked
+    if layer[end[1]][end[0]]:
+        return [] #end is blocked
 
     opens = []
     open = {}
     closed = {}
-    cur = node(None,start,end)
+    cur = node(None, start, end, dist)
     open[cur.pos] = cur
     opens.append(cur)
     while len(open):
@@ -52,12 +56,16 @@ def astar(start,end,layer,_dist):
         closed[cur.pos] = cur
         if cur.pos == end: break
         for dx,dy in [(0,-1),(1,0),(0,1),(-1,0)]:#(-1,-1),(1,-1),(-1,1),(1,1)]:
-            x,y = pos = cur.pos[0]+dx,cur.pos[1]+dy
-            if layer[y][x]: continue
+            pos = cur.pos[0]+dx,cur.pos[1]+dy
+            # Check if the point lies in the grid
+            if (pos[0] < 0 or pos[1] < 0 or 
+                pos[0] >= w or pos[1] >= h or
+                layer[pos[0]][pos[1]]):
+                continue
             #check for blocks of diagonals
             if layer[cur.pos[1]+dy][cur.pos[0]]: continue
             if layer[cur.pos[1]][cur.pos[0]+dx]: continue
-            new = node(cur,pos,end)
+            new = node(cur, pos, end, dist)
             if pos in open and new.f >= open[pos].f: continue
             if pos in closed and new.f >= closed[pos].f: continue
             if pos in open: del open[pos]

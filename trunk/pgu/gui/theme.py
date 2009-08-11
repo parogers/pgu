@@ -1,11 +1,14 @@
+# theme.py
+
 """
 """
 import os, re
 import pygame
 
 from const import *
+import widget
 import surface
-from basic import parse_color
+from basic import parse_color, is_color
 
 __file__ = os.path.abspath(__file__)
 
@@ -409,7 +412,7 @@ class Theme:
         
         if box == 0: return
         
-        if isinstance(box, pygame.Color) or type(box) == tuple:
+        if is_color(box):
             s.fill(box,r)
             return
         
@@ -466,10 +469,6 @@ class Theme:
         s.blit(box,dest,src)
 
         
-        
-import pygame
-import widget
-
 class Background(widget.Widget):
     def __init__(self,value,theme,**params):
         params['decorate'] = False
@@ -480,7 +479,7 @@ class Background(widget.Widget):
     def paint(self,s):
         r = pygame.Rect(0,0,s.get_width(),s.get_height())
         v = self.value.style.background
-        if isinstance(v, pygame.Color) or type(v) == tuple:
+        if is_color(v):
             s.fill(v)
         else: 
             self.theme.render(s,v,r)
