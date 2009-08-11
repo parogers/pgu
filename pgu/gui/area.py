@@ -301,7 +301,26 @@ class ScrollArea(table.Table):
         if not hasattr(self.hscrollbar,'value'): return
         self.hscrollbar.value = percents #min(max(percents*10, 0), 1000)
         self._hscrollbar_changed(None)
-        
+
+    def event(self, e):
+         #checking for event recipient
+         if (table.Table.event(self, e)):
+             return True
+
+         #mouse wheel scrolling
+         if self.vscrollbar:
+             if not hasattr(self.vscrollbar,'value'): 
+                 return False
+ 
+             if e.type == pygame.locals.MOUSEBUTTONDOWN:
+                 if e.button == 4: #wheel up
+                     self.vscrollbar._click(-1)
+                     return True
+                 elif e.button == 5: #wheel down
+                     self.vscrollbar._click(1)
+                     return True
+         return False
+
         
 
 

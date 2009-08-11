@@ -17,5 +17,7 @@ app = gui.App()
 
 e = gui.Button("Hello World")
 
+app.connect(gui.QUIT, app.quit)
+
 app.run(e)
 ##

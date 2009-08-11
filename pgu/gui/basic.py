@@ -8,7 +8,7 @@ import widget
 
 # Turns a descriptive string or a tuple into a pygame color
 def parse_color(desc):
-    if (isinstance(desc, pygame.Color)):
+    if (is_color(desc)):
         # Already a color
         return desc
     elif (desc and desc[0] == "#"):
@@ -18,6 +18,18 @@ def parse_color(desc):
             desc += "FF"
     return pygame.Color(desc)
 
+# Determines if the given object is a pygame-compatible color or not
+def is_color(col):
+    # In every version of pygame (up to 1.8.1 so far) will interpret
+    # a tuple as a color.
+    if (type(col) == tuple):
+        return col
+    if (hasattr(pygame, "Color") and type(pygame.Color) == type):
+        # This is a recent version of pygame that uses a proper type
+        # instance for colors.
+        return (isinstance(col, pygame.Color))
+    # Otherwise, this version of pygame only supports tuple colors
+    return False
 
 class Spacer(widget.Widget):
     """A invisible space.
