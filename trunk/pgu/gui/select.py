@@ -1,10 +1,14 @@
 """
 """
-from const import *
-import table
-import basic, button
 
-class Select(table.Table):
+import traceback
+
+from const import *
+from button import Button
+from basic import Label, Image
+from table import Table
+
+class Select(Table):
     """A select input.
     
     <pre>Select(value=None)</pre>
@@ -25,43 +29,36 @@ class Select(table.Table):
     
     """
 
+    # The drop-down arrow button for the selection widget
+    top_arrow = None
+    # A button displaying the currently selected item
+    top_selection = None
+    # The first option added to the selector
+    firstOption = None
+    # The PGU table of options
+    options = None
+
     def __init__(self,value=None,**params):
         params.setdefault('cls','select')
-        table.Table.__init__(self,**params)
+        Table.__init__(self,**params)
         
-        self.top_selected = button.Button(cls=self.cls+".selected")
-        table.Table.add(self,self.top_selected) #,hexpand=1,vexpand=1)#,0,0)
-        self.top_selected.value = basic.Label(" ",cls=self.cls+".option.label")
+        label = Label(" ",cls=self.cls+".option.label")
+        self.top_selected = Button(label, cls=self.cls+".selected")
+        Table.add(self,self.top_selected) #,hexpand=1,vexpand=1)#,0,0)
         
-        self.top_arrow = button.Button(basic.Image(self.style.arrow),cls=self.cls+".arrow")
-        table.Table.add(self,self.top_arrow) #,hexpand=1,vexpand=1) #,1,0)
+        self.top_arrow = Button(Image(self.style.arrow), cls=self.cls+".arrow")
+        Table.add(self,self.top_arrow) #,hexpand=1,vexpand=1) #,1,0)
         
-        self.options = table.Table() #style={'border':3})
-        self.options_first = None
-        
-        self.options.tr()
-        self.spacer_top = basic.Spacer(0,0)
-        self.options.add(self.spacer_top)
-        
-        self.options.tr()
-        self._options = table.Table(cls=self.cls+".options")
-        self.options.add(self._options)
-        
-        self.options.tr()
-        self.spacer_bottom = basic.Spacer(0,0)
-        self.options.add(self.spacer_bottom)
-
-        
+        self.options = Table(cls=self.cls+".options")
         self.options.connect(BLUR,self._close,None)
-        self.spacer_top.connect(CLICK,self._close,None)
-        self.spacer_bottom.connect(CLICK,self._close,None)
+        self.options.name = "pulldown-table"
         
         self.values = []
         self.value = value
-    
+
     def resize(self,width=None,height=None):
         max_w,max_h = 0,0
-        for w in self._options.widgets:
+        for w in self.options.widgets:
             w.rect.w,w.rect.h = w.resize()
             max_w,max_h = max(max_w,w.rect.w),max(max_h,w.rect.h)
         
@@ -72,51 +69,48 @@ class Select(table.Table):
         self.top_arrow.connect(CLICK,self._open,None)
         self.top_selected.connect(CLICK,self._open,None)
         
-        w,h = table.Table.resize(self,width,height)
+        w,h = Table.resize(self,width,height)
         
-        self.spacer_top.style.width, self.spacer_top.style.height = w,h
-        self.spacer_bottom.style.width, self.spacer_bottom.style.height = w,h
-        self._options.style.width = w
+        self.options.style.width = w
         #HACK: sort of, but not a big one..
-        self._options.resize()
+        self.options.resize()
         
         return w,h
         
     def _open(self,value):
-        sh = self.rect.h #spacer height
         opts = self.options
         
-        self.spacer_top.style.height = 0
-        self.spacer_bottom.style.height = 0
         opts.rect.w, opts.rect.h = opts.resize()
-        h = opts.rect.h
         
-        y = self.rect.y
-        c = self.container
-        while hasattr(c,'container'):
-            y += c.rect.y
-            if c.container == None: break
-            c = c.container
+#        y = self.rect.y
+#        c = self.container
+#        while hasattr(c, 'container'):
+#            y += c.rect.y
+#            if (not c.container): 
+#                break
+#            c = c.container
             
-        if y + sh + h <= c.rect.h: #down
-            self.spacer_top.style.height = sh
-            dy = self.rect.y
-        else: #up
-            self.spacer_bottom.style.height = sh
-            dy = self.rect.y - h
-            
+#        if y + self.rect.h + opts.rect.h <= c.rect.h: #down
+#            dy = self.rect.y + self.rect.h
+#        else: #up
+#            dy = self.rect.y - self.rect.h
+
         opts.rect.w, opts.rect.h = opts.resize()
-            
-        self.container.open(opts,self.rect.x,dy)
-        self.options_first.focus()
-        
+
+        # TODO - make sure there is enough space to open down
+        # ...
+        yp = self.rect.bottom-1
+
+        self.container.open(opts, self.rect.x, yp)
+        self.firstOption.focus()
+
+        # TODO - this is a hack
+        for opt in self.options.widgets:
+            opt.repaint()
+
     def _close(self,value):
-#         print 'my close!'
         self.options.close()
         self.top_selected.focus()
-#         self.blur()
-#         self.focus()
-#         print self.container.myfocus == self
     
     def _setvalue(self,value):
         self.value = value._value
@@ -145,7 +139,7 @@ class Select(table.Table):
             self.repaint()
         if k == 'value':
             if not mywidget:
-                mywidget = basic.Label(" ",cls=self.cls+".option.label")
+                mywidget = Label(" ",cls=self.cls+".option.label")
             self.top_selected.value = mywidget
     
     def add(self,w,value=None):
@@ -167,22 +161,17 @@ class Select(table.Table):
         </code>
         """
         
-        if type(w) == str: w = basic.Label(w,cls=self.cls+".option.label")
+        if type(w) == str: w = Label(w,cls=self.cls+".option.label")
         
         w.style.align = -1
-        b = button.Button(w,cls=self.cls+".option")
-        b.connect(CLICK,self._setvalue,w)
-        #b = w
-        #w.cls = self.cls+".option"
-        #w.cls = self.cls+".option"
+        btn = Button(w,cls=self.cls+".option")
+        btn.connect(CLICK,self._setvalue,w)
         
-        self._options.tr()
-        self._options.add(b) #,align=-1)
+        self.options.tr()
+        self.options.add(btn)
         
-        if self.options_first == None:
-            self.options_first = b
-        #self._options.td(b, align=-1, cls=self.cls+".option")
-        #self._options.td(_List_Item(w,value=value),align=-1)
+        if (not self.firstOption):
+            self.firstOption = btn
         
         if value != None: w._value = value
         else: w._value = w

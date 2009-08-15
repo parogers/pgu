@@ -52,6 +52,9 @@ class Widget:
             return 256,256
     </code>
     """
+
+    # The name of the widget (or None if not defined)
+    name = None
     
     def __init__(self,**params): 
         #object.Object.__init__(self) 
@@ -100,24 +103,32 @@ class Widget:
         if getattr(self,'container',None) != None: 
             if self.container.myfocus != self:  ## by Gal Koren
                 self.container.focus(self)
+
     def blur(self): 
         """Blur this Widget.
         
         <pre>Widget.blur()</pre>
         """
         if getattr(self,'container',None) != None: self.container.blur(self)
+
     def open(self):
         """Open this Widget as a modal dialog.
         
         <pre>Widget.open()</pre>
         """
-        if getattr(self,'container',None) != None: self.container.open(self)
-    def close(self): 
+        #if getattr(self,'container',None) != None: self.container.open(self)
+        pguglobals.app.open(self)
+
+    def close(self, w=None):
         """Close this Widget (if it is a modal dialog.)
         
         <pre>Widget.close()</pre>
         """
-        if getattr(self,'container',None) != None: self.container.close(self)
+        #if getattr(self,'container',None) != None: self.container.close(self)
+        if (not w):
+            w = self
+        pguglobals.app.close(w)
+
     def resize(self,width=None,height=None):
         """Template method - return the size and width of this widget.
 
@@ -133,6 +144,7 @@ class Widget:
         <p>If not overridden, will return self.style.width, self.style.height</p>
         """
         return self.style.width, self.style.height
+
     def chsize(self):
         """Change the size of this widget.
         
@@ -147,7 +159,7 @@ class Widget:
         if not hasattr(self,'container'): return
         
         if pguglobals.app:
-            if pguglobals.app._chsize: 
+            if pguglobals.app._chsize:
                 return
             pguglobals.app.chsize()
             return
@@ -226,7 +238,7 @@ class Widget:
         
         <pre>Widget.get_abs_rect(): return pygame.Rect</pre>
         """
-        x, y = self.rect.x , self.rect.y
+        x, y = self.rect.x, self.rect.y
         x += self._rect_content.x
         y += self._rect_content.y
         c = getattr(self,'container',None)
@@ -266,12 +278,16 @@ class Widget:
         w.connect(gui.CLICK,onclick,'PGU Button Clicked')
         </code>
         """
+        if (not code in self.connects):
+            self.connects[code] = []
+        for cb in self.connects[code]:
+            if (cb.func == func):
+                # Already connected to this callback function
+                return
         # Wrap the callback function and add it to the list
         cb = SignalCallback()
         cb.func = func
         cb.params = params
-        if (not code in self.connects):
-            self.connects[code] = []
         self.connects[code].append(cb)
 
     # Remove signal handlers from the given event code. If func is specified,
@@ -350,3 +366,12 @@ class Widget:
         """
         
         return
+
+    # Returns the top-level widget (usually the Desktop) by following the
+    # chain of 'container' references.
+    def get_toplevel(self):
+        top = self
+        while (getattr(top, "container", None)):
+            top = top.container
+        return top
+
