@@ -46,8 +46,6 @@ class _Menu(button.Button):
         
         self.repaint()
         self.container.open(self.options,self.rect.x,self.rect.bottom)
-        self.options.connect(BLUR,self._pass,None)
-        self.options.blur(self.options.myfocus)
         self.options.connect(BLUR,self._close,None)
         self.options.focus()
         self.repaint()
