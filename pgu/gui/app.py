@@ -227,6 +227,48 @@ class App(container.Container):
     
     def quit(self,value=None): self._quit = True
 
+    def open(self, w, pos=None):
+        w.container = self
+        
+        if (w.rect.w == 0 or w.rect.h == 0):
+            w.rect.size = w.resize()
+        
+        if (not pos): 
+            # Auto-center the window
+            w.rect.center = self.rect.center
+            #w.rect.topleft = ((self.rect.w - w.rect.w)/2,
+            #                  (self.rect.h - w.rect.h)/2)
+        else: 
+            # Show the window in a particular location
+            w.rect.topleft = pos
+        
+        self.windows.append(w)
+        self.mywindow = w
+        self.focus(w)
+        self.repaint(w)
+        w.send(OPEN)
+
+    def close(self, w):
+        if self.myfocus is w: self.blur(w)
+
+        if w not in self.windows: return #no need to remove it twice! happens.
+        
+        self.windows.remove(w)
+        
+        self.mywindow = None
+        if self.windows:
+            self.mywindow = self.windows[-1]
+            self.focus(self.mywindow)
+        
+        if not self.mywindow:
+            self.myfocus = self.widget #HACK: should be done fancier, i think..
+            if not self.myhover:
+                self.enter(self.widget)
+         
+        self.repaintall()
+        w.send(CLOSE)
+
+
 class Desktop(App):
     """Create an App using the <tt>desktop</tt> theme class.
     

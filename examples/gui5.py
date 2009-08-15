@@ -75,4 +75,14 @@ c.tr()
 c.td(gui.Label("Keysym"))
 c.td(gui.Keysym(),colspan=3)
 
+def output(w, lead=""):
+    print "%s%s" % (lead, w.__class__.__name__)
+    if (isinstance(w, gui.Container)):
+        for child in w.widgets:
+            output(child, lead+"\t")
+    if (isinstance(w, gui.Select)):
+        output(w.options, lead+"\t")
+
+output(c)
+
 app.run(c)

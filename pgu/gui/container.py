@@ -33,7 +33,8 @@ class Container(widget.Widget):
                 continue
             else:
                 sub = surface.subsurface(s,w.rect)
-                sub.blit(w._container_bkgr,(0,0))
+                #if (hasattr(w, "_container_bkgr")):
+                #    sub.blit(w._container_bkgr,(0,0))
                 w.paint(sub)
                 updates.append(pygame.rect.Rect(w.rect))
         
@@ -91,13 +92,13 @@ class Container(widget.Widget):
                 print s.get_width(), s.get_height(), w.rect
                 print ""
             else:
-                if (not (hasattr(w,'_container_bkgr') and 
-                         w._container_bkgr.get_width() == sub.get_width() and 
-                         w._container_bkgr.get_height() == sub.get_height())):
-                    w._container_bkgr = sub.copy()
-                w._container_bkgr.fill((0,0,0,0))
-                w._container_bkgr.blit(sub,(0,0))
-                
+#                if (not hasattr(w,'_container_bkgr') or 
+#                    w._container_bkgr.get_size() != sub.get_size()):
+#                         #w._container_bkgr.get_width() == sub.get_width() and 
+#                         #w._container_bkgr.get_height() == sub.get_height())):
+#                    w._container_bkgr = sub.copy()
+#                w._container_bkgr.fill((0,0,0,0))
+#                w._container_bkgr.blit(sub,(0,0))
                 w.paint(sub)
 
         for w in self.windows:
@@ -211,7 +212,6 @@ class Container(widget.Widget):
         myfocus = self.myfocus
         if not self.myfocus: return
         
-        from pgu.gui import App
         widgets = self._get_widgets(pguglobals.app)
         #if myfocus not in widgets: return
         #widgets.remove(myfocus)
@@ -251,7 +251,7 @@ class Container(widget.Widget):
                 elif not w.disabled and w.focusable:
                     widgets.append(w)
         return widgets
-    
+
     def remove(self,w):
         """Remove a widget from the container.
         
@@ -284,69 +284,18 @@ class Container(widget.Widget):
         self.chsize()
     
     def open(self,w=None,x=None,y=None):
-        from app import App #HACK: I import it here to prevent circular importing
-        if not w:
-            if (not hasattr(self,'container') or 
-                not self.container) and self is not pguglobals.app:
-                self.container = pguglobals.app
-            #print 'top level open'
-            return widget.Widget.open(self)
+        if (not w):
+            w = self
+
+        if (x != None):
+            # The position is relative to this container
+            rect = self.get_abs_rect()
+            pos = (rect.x + x, rect.y + y)
+        else:
+            pos = None
+        # Have the application open the window
+        pguglobals.app.open(w, pos)
         
-        if self.container:
-            if x != None: return self.container.open(w,self.rect.x+x,self.rect.y+y)
-            return self.container.open(w)
-        
-        w.container = self
-        
-        if w.rect.w == 0 or w.rect.h == 0: #this might be okay, not sure if needed.
-            #_chsize = App.app._chsize #HACK: we don't want this resize to trigger a chsize.
-            w.rect.w,w.rect.h = w.resize()
-            #App.app._chsize = _chsize
-        
-        if x == None or y == None: #auto center the window
-            #w.style.x,w.style.y = 0,0
-            w.rect.x = (self.rect.w-w.rect.w)/2
-            w.rect.y = (self.rect.h-w.rect.h)/2
-            #w.resize()
-            #w._resize(self.rect.w,self.rect.h)
-        else: #show it where we want it
-            w.rect.x = x
-            w.rect.y = y
-            #w._resize()
-        
-        
-        self.windows.append(w)
-        self.mywindow = w
-        self.focus(w)
-        self.repaint(w)
-        w.send(OPEN)
-    
-    def close(self,w=None):
-        if not w:
-            return widget.Widget.close(self)
-            
-        if self.container: #make sure we're in the App
-            return self.container.close(w)
-        
-        if self.myfocus is w: self.blur(w)
-        
-        if w not in self.windows: return #no need to remove it twice! happens.
-        
-        self.windows.remove(w)
-        
-        self.mywindow = None
-        if self.windows:
-            self.mywindow = self.windows[-1]
-            self.focus(self.mywindow)
-        
-        if not self.mywindow:
-            self.myfocus = self.widget #HACK: should be done fancier, i think..
-            if not self.myhover:
-                self.enter(self.widget)
-            
-        self.repaintall()
-        w.send(CLOSE)
-    
     def focus(self,w=None):
         widget.Widget.focus(self) ### by Gal koren
 #        if not w:
@@ -452,3 +401,14 @@ class Container(widget.Widget):
             ww = max(ww,w.rect.right)
             hh = max(hh,w.rect.bottom)
         return ww,hh
+
+    # Returns the widget with the given name
+    def find(self, name):
+        for w in self.widgets:
+            if (w.name == name):
+                return w
+            elif (isinstance(w, Container)):
+                tmp = w.find(name)
+                if (tmp): return tmp
+        return None
+
