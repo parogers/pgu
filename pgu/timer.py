@@ -10,6 +10,8 @@ class Clock(object):
     lastGameTime = None
     # The real time corresponding to the last game time
     lastRealTime = None
+    # The game time when 'tick' was last called
+    lastTickTime = None
 
     # Whether the timer is paused or not
     paused = False
@@ -23,6 +25,7 @@ class Clock(object):
     def __init__(self):
         #self.startTime = time.time()
         self.lastGameTime = 0
+        self.lastTickTime = 0
         self.lastRealTime = time.time()
         self.startTime = time.time()
 
@@ -46,14 +49,16 @@ class Clock(object):
             self.paused = False
             self.lastRealTime = time.time()
 
-#    def tick(self, fps=0):
-#        if (self.paused): 
-#            # Time never passes when the clock is paused
-#            return 0
-#        tm = time.time()
-#        dt = tm-self.lastTime
-#        self.lastTime = tm
-#        return dt
+    def tick(self, fps=0):
+        tm = self.get_time()
+        dt = tm - self.lastTickTime
+        if (fps > 0):
+            minTime = 1.0/fps
+            if (dt < minTime):
+                pygame.time.wait(int((minTime-dt)*1000))
+                dt = minTime
+        self.lastTickTime = tm
+        return dt
 
     # Returns the amount of 'game time' that has passed since creating
     # the clock (paused time does not count).

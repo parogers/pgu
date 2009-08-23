@@ -65,21 +65,25 @@ class MainGui(gui.Desktop):
 
         dlg = TestDialog()
 
-        def click_cb():
-            this.engine.pause()
+        def dialog_cb():
             dlg.open()
-            while (dlg.is_open()):
-                for ev in pygame.event.get():
-                    this.event(ev)
-                rects = this.update()
-                if (rects):
-                    pygame.display.update(rects)
-            this.engine.resume()
 
-        btn = gui.Button("Pause clock", height=50)
-        btn.connect(gui.CLICK, click_cb)
+        btn = gui.Button("Modal dialog", height=50)
+        btn.connect(gui.CLICK, dialog_cb)
         tbl.td(btn)
 
+        # Add a button for pausing / resuming the game clock
+        def pause_cb():
+            if (this.engine.clock.paused):
+                this.engine.resume()
+            else:
+                this.engine.pause()
+
+        btn = gui.Button("Pause/resume clock", height=50)
+        btn.connect(gui.CLICK, pause_cb)
+        tbl.td(btn)
+
+        # Add a slider for adjusting the game clock speed
         tbl2 = gui.Table()
 
         timeLabel = gui.Label("Clock speed")
@@ -101,11 +105,28 @@ class MainGui(gui.Desktop):
 
         this.menuArea.add(tbl, 0, 0)
 
-    def open(this, w, pos=None):
+    def open(this, dlg, pos=None):
+        # Gray out the game area before showing the popup
+        rect = this.gameArea.get_abs_rect()
+        dark = pygame.Surface(rect.size).convert_alpha()
+        dark.fill((0,0,0,150))
+        pygame.display.get_surface().blit(dark, rect)
         # Save whatever has been rendered to the 'game area' so we can
         # render it as a static image while the dialog is open.
         this.gameArea.save_background()
-        gui.Desktop.open(this, w, pos)
+        # Pause the gameplay while the dialog is visible
+        running = not(this.engine.clock.paused)
+        this.engine.pause()
+        gui.Desktop.open(this, dlg, pos)
+        while (dlg.is_open()):
+            for ev in pygame.event.get():
+                this.event(ev)
+            rects = this.update()
+            if (rects):
+                pygame.display.update(rects)
+        if (running):
+            # Resume gameplay
+            this.engine.resume()
 
     def get_render_area(this):
         return this.gameArea.get_abs_rect()
@@ -180,7 +201,8 @@ class GameEngine(object):
                 updates += lst
             this.disp.set_clip()
 
-            #this.clock.tick()
+            # Cap it at 30fps
+            this.clock.tick(30)
 
             # Give pgu a chance to update the display
             lst = this.app.update()
