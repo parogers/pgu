@@ -14,8 +14,9 @@ import sys; sys.path.insert(0, "..")
 from pgu import gui
 from gui7 import ColorDialog
 
-W,H = 640,480
-W2,H2 = 320,240
+# The maximum frame-rate
+FPS = 30
+WIDTH,HEIGHT = 640,480
 
 ##You can initialize the screen yourself.
 ##::
@@ -37,8 +38,8 @@ class StarControl(gui.Table):
                     stars.pop()
             else:
                 for i in range(0,n):
-                    stars.append([random.randrange(-W*span,W*span),
-                                  random.randrange(-H*span,H*span),
+                    stars.append([random.randrange(-WIDTH*span,WIDTH*span),
+                                  random.randrange(-HEIGHT*span,HEIGHT*span),
                                   random.randrange(1,dist)])
 
         fg = (255,255,255)
@@ -71,8 +72,10 @@ class StarControl(gui.Table):
         color_d = ColorDialog(default)
 
         color.connect(gui.CLICK,color_d.open,None)
-        color_d.connect(gui.CHANGE,gui.action_setvalue,(color_d,color))
         self.td(color)
+        def update_col():
+            color.value = color_d.value
+        color_d.connect(gui.CHANGE,update_col)
         
         btn = gui.Switch(value=False,name='fullscreen')
         btn.connect(gui.CHANGE, fullscreen_changed, btn)
@@ -107,8 +110,8 @@ def reset():
     global stars
     stars = []
     for i in range(0,form['quantity'].value):
-        stars.append([random.randrange(-W*span,W*span),
-                      random.randrange(-H*span,H*span),
+        stars.append([random.randrange(-WIDTH*span,WIDTH*span),
+                      random.randrange(-HEIGHT*span,HEIGHT*span),
                       random.randrange(1,dist)])
         
 
@@ -128,11 +131,11 @@ def render(dt):
             z1 = max(1,z + speed*2)
             x1 = x*256/z1
             y1 = y*256/z1
-            xx1,yy1 = x1+W2,y1+H2
+            xx1,yy1 = x1+WIDTH/2,y1+HEIGHT/2
     
         x = x*256/z
         y = y*256/z
-        xx,yy = x+W2,y+H2
+        xx,yy = x+WIDTH/2,y+HEIGHT/2
         c = min(255,z * 255 / dist)
         col = colors[int(c)]
 
@@ -152,8 +155,8 @@ def render(dt):
             ch = 1
             z -= dist
         if ch:
-            stars[n][0] = random.randrange(-W*span,W*span)
-            stars[n][1] = random.randrange(-H*span,H*span)
+            stars[n][0] = random.randrange(-WIDTH*span,WIDTH*span)
+            stars[n][1] = random.randrange(-HEIGHT*span,HEIGHT*span)
         stars[n][2] = z
         
         n += 1
@@ -174,10 +177,10 @@ while not done:
             app.event(e)
 
     # Clear the screen and render the stars
-    dt = clock.tick()/1000.0
+    dt = clock.tick(FPS)/1000.0
     screen.fill((0,0,0))
     render(dt)
-    app.paint(screen)
+    app.paint()
     pygame.display.flip()
-    pygame.time.wait(10)
+
 
