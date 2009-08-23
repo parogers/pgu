@@ -2,6 +2,69 @@
 """
 
 import pygame
+import time
+
+
+class Clock(object):
+    # The game time when one of the clock parameters was last changed
+    lastGameTime = None
+    # The real time corresponding to the last game time
+    lastRealTime = None
+
+    # Whether the timer is paused or not
+    paused = False
+    # When this clock was created
+    startTime = None
+#    # Total time spent paused
+#    pauseTime = 0
+    # The speed which this clock moves at relative to the real clock
+    speed = 1
+
+    def __init__(self):
+        #self.startTime = time.time()
+        self.lastGameTime = 0
+        self.lastRealTime = time.time()
+        self.startTime = time.time()
+
+    # Set the rate at which this clock ticks relative to the real clock
+    def set_speed(self, n):
+        assert(n >= 0)
+        self.lastGameTime = self.get_time()
+        self.lastRealTime = time.time()
+        self.speed = n
+
+    # Pause the clock
+    def pause(self):
+        if (not self.paused):
+            self.lastGameTime = self.get_time()
+            self.lastRealTime = time.time()
+            self.paused = True
+
+    # Resume the clock
+    def resume(self):
+        if (self.paused):
+            self.paused = False
+            self.lastRealTime = time.time()
+
+#    def tick(self, fps=0):
+#        if (self.paused): 
+#            # Time never passes when the clock is paused
+#            return 0
+#        tm = time.time()
+#        dt = tm-self.lastTime
+#        self.lastTime = tm
+#        return dt
+
+    # Returns the amount of 'game time' that has passed since creating
+    # the clock (paused time does not count).
+    def get_time(self):
+        if (self.paused):
+            return self.lastGameTime
+        return self.speed*(time.time()-self.lastRealTime) + self.lastGameTime
+
+    def get_real_time(self):
+        return (time.time()-self.startTime)
+
 
 class Timer:
     """A timer for games with set-rate FPS.

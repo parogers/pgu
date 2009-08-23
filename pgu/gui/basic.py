@@ -91,7 +91,7 @@ class Label(widget.Widget):
     w = Label("3 rubber chickens")
     </code>
     """
-    def __init__(self,value,**params):
+    def __init__(self,value="",**params):
         params.setdefault('focusable',False)
         params.setdefault('cls','label')
         widget.Widget.__init__(self,**params)
@@ -101,6 +101,10 @@ class Label(widget.Widget):
     
     def paint(self,s):
         s.blit(self.font.render(self.value, 1, self.style.color),(0,0))
+
+    def set_text(self, txt):
+        self.value = txt
+        self.container.repaint(self)
 
 class Image(widget.Widget):
     """An image.

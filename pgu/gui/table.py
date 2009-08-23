@@ -33,6 +33,8 @@ class Table(container.Container):
         self._rows = []
         self._curRow = 0
         self._trok = False
+        self._hpadding = params.get("hpadding", 0)
+        self._vpadding = params.get("vpadding", 0)
     
     def getRows(self):
         return len(self._rows)
@@ -236,7 +238,10 @@ class Table(container.Container):
                         if totalheight < self._rows[row][cell]["widget"].rect.h:
                             for arow in rows:
                                 rowsizes[arow] += _table_div(self._rows[row][cell]["widget"].rect.h - totalheight, self._rows[row][cell]["rowspan"],arow)
-         
+
+        rowsizes = [sz+2*self._vpadding for sz in rowsizes]
+        columnsizes = [sz+2*self._hpadding for sz in columnsizes]
+
         #make everything fill out to self.style.width, self.style.heigh, not exact, but pretty close...
         w, h = sum(columnsizes), sum(rowsizes)
         if w > 0 and w < self.style.width and len(columnsizes):

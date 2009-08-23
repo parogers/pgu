@@ -67,7 +67,10 @@ class Widget:
         self.focusable = params['focusable']
         self.disabled = params['disabled']
         
-        self.rect = pygame.Rect(params.get('x',0),params.get('y',0),params.get('width',0),params.get('height',0))
+        self.rect = pygame.Rect(params.get('x',0),
+                                params.get('y',0),
+                                params.get('width',0),
+                                params.get('height',0))
         
         s = params['style']
         #some of this is a bit "theme-ish" but it is very handy, so these
@@ -91,7 +94,6 @@ class Widget:
             if (not pguglobals.app):
                 # TODO - fix this somehow
                 import app
-                print 'gui.widget: creating an App'
                 app.App()
             pguglobals.app.theme.decorate(self,params['decorate'])
 
@@ -128,6 +130,9 @@ class Widget:
         if (not w):
             w = self
         pguglobals.app.close(w)
+
+    def is_open(self):
+        return (self in pguglobals.app.windows)
 
     def resize(self,width=None,height=None):
         """Template method - return the size and width of this widget.
