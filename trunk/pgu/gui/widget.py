@@ -134,6 +134,12 @@ class Widget:
     def is_open(self):
         return (self in pguglobals.app.windows)
 
+    # Returns true if the mouse is hovering over this widget
+    def is_hovering(self):
+        if (hasattr(self, "container")):
+            return (self.container.myhover is self)
+        return False
+
     def resize(self,width=None,height=None):
         """Template method - return the size and width of this widget.
 
@@ -379,4 +385,9 @@ class Widget:
         while (getattr(top, "container", None)):
             top = top.container
         return top
+
+    # Test if the given point hits this widget. Over-ride this function
+    # for more advanced collision testing.
+    def collidepoint(self, pos):
+        return self.rect.collidepoint(pos)
 

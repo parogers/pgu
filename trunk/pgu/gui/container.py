@@ -115,9 +115,9 @@ class Container(widget.Widget):
         if self.mywindow and e.type == MOUSEBUTTONDOWN:
             w = self.mywindow
             if self.myfocus is w:
-                if not w.rect.collidepoint(e.pos): self.blur(w)
+                if not w.collidepoint(e.pos): self.blur(w)
             if not self.myfocus:
-                if w.rect.collidepoint(e.pos): self.focus(w)
+                if w.collidepoint(e.pos): self.focus(w)
         
         if not self.mywindow:
             #### by Gal Koren
@@ -133,8 +133,9 @@ class Container(widget.Widget):
             elif e.type == MOUSEBUTTONDOWN:
                 h = None
                 for w in self.widgets:
-                    if not w.disabled: #focusable not considered, since that is only for tabs
-                        if w.rect.collidepoint(e.pos):
+                    if not w.disabled: 
+                        # Focusable not considered, since that is only for tabs
+                        if w.collidepoint(e.pos):
                             h = w
                             if self.myfocus is not w: self.focus(w)
                 if not h and self.myfocus:
@@ -147,9 +148,11 @@ class Container(widget.Widget):
                 
                 h = None
                 for w in ws:
-                    if w.rect.collidepoint(e.pos):
+                    if w.collidepoint(e.pos):
                         h = w
-                        if self.myhover is not w: self.enter(w)
+                        if self.myhover is not w: 
+                            self.enter(w)
+                        break
                 if not h and self.myhover:
                     self.exit(self.myhover)
                 w = self.myhover
@@ -163,49 +166,48 @@ class Container(widget.Widget):
         
         w = self.myfocus
         if w:
-            sub = e
+            #sub = e
             
             if e.type == MOUSEBUTTONUP or e.type == MOUSEBUTTONDOWN:
                 sub = pygame.event.Event(e.type,{
                     'button':e.button,
                     'pos':(e.pos[0]-w.rect.x,e.pos[1]-w.rect.y)})
-                used = w._event(sub)
             elif e.type == CLICK and self.myhover is w:
                 sub = pygame.event.Event(e.type,{
                     'button':e.button,
                     'pos':(e.pos[0]-w.rect.x,e.pos[1]-w.rect.y)})
-                used = w._event(sub)
-            elif e.type == CLICK: #a dead click
-                pass
             elif e.type == MOUSEMOTION:
                 sub = pygame.event.Event(e.type,{
                     'buttons':e.buttons,
                     'pos':(e.pos[0]-w.rect.x,e.pos[1]-w.rect.y),
                     'rel':e.rel})
-                used = w._event(sub)
             else:
+                sub = None
+            #elif e.type == CLICK: #a dead click
+            #    sub = None
+
+            if (sub):
                 used = w._event(sub)
-                
-        if not used:
-            if e.type is KEYDOWN:
-                if e.key is K_TAB and self.myfocus:
-                    if (e.mod&KMOD_SHIFT) == 0:
-                        self.myfocus.next()
-                    else:
-                        self.myfocus.previous()
+
+        if not used and e.type is KEYDOWN:
+            if e.key is K_TAB and self.myfocus:
+                if (e.mod&KMOD_SHIFT) == 0:
+                    self.myfocus.next()
+                else:
+                    self.myfocus.previous()
                     return True
-                elif e.key == K_UP: 
-                    self._move_focus(0,-1)
-                    return True
-                elif e.key == K_RIGHT:
-                    self._move_focus(1,0)
-                    return True
-                elif e.key == K_DOWN:
-                    self._move_focus(0,1)
-                    return True
-                elif e.key == K_LEFT:
-                    self._move_focus(-1,0)
-                    return True
+            elif e.key == K_UP: 
+                self._move_focus(0,-1)
+                return True
+            elif e.key == K_RIGHT:
+                self._move_focus(1,0)
+                return True
+            elif e.key == K_DOWN:
+                self._move_focus(0,1)
+                return True
+            elif e.key == K_LEFT:
+                self._move_focus(-1,0)
+                return True
         return used
         
     def _move_focus(self,dx_,dy_):
