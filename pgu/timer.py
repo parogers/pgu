@@ -17,8 +17,6 @@ class Clock(object):
     paused = False
     # When this clock was created
     startTime = None
-#    # Total time spent paused
-#    pauseTime = 0
     # The speed which this clock moves at relative to the real clock
     speed = 1
 

@@ -39,9 +39,9 @@ class _button(widget.Widget):
             self.click()
         
         self.pcls = ""
-        if self.state == 0 and self.container.myhover is self:
+        if self.state == 0 and self.is_hovering():
             self.pcls = "hover"
-        if self.state == 1 and self.container.myhover is self:
+        if self.state == 1 and self.is_hovering():
             self.pcls = "down"
     
     def click(self): 
