@@ -166,8 +166,6 @@ class Container(widget.Widget):
         
         w = self.myfocus
         if w:
-            #sub = e
-            
             if e.type == MOUSEBUTTONUP or e.type == MOUSEBUTTONDOWN:
                 sub = pygame.event.Event(e.type,{
                     'button':e.button,
@@ -181,8 +179,11 @@ class Container(widget.Widget):
                     'buttons':e.buttons,
                     'pos':(e.pos[0]-w.rect.x,e.pos[1]-w.rect.y),
                     'rel':e.rel})
+            elif (e.type == KEYDOWN or e.type == KEYUP):
+                sub = e
             else:
                 sub = None
+
             #elif e.type == CLICK: #a dead click
             #    sub = None
 
@@ -209,7 +210,7 @@ class Container(widget.Widget):
                 self._move_focus(-1,0)
                 return True
         return used
-        
+
     def _move_focus(self,dx_,dy_):
         myfocus = self.myfocus
         if not self.myfocus: return

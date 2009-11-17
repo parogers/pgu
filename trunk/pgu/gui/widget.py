@@ -55,6 +55,14 @@ class Widget:
 
     # The name of the widget (or None if not defined)
     name = None
+    # The container this widget belongs to
+    container = None
+    # Whether this widget has been painted yet
+    _painted = False
+    # The widget used to paint the background
+    background = None
+    # ...
+    _rect_content = None
     
     def __init__(self,**params): 
         #object.Object.__init__(self) 
@@ -84,7 +92,7 @@ class Widget:
         if 'name' in params:    
             import form
             self.name = params['name']
-            if hasattr(form.Form,'form') and form.Form.form != None: 
+            if form.Form.form:
                 form.Form.form.add(self)
                 self.form = form.Form.form
         if 'value' in params: self.value = params['value']
@@ -102,7 +110,7 @@ class Widget:
         
         <pre>Widget.focus()</pre>
         """
-        if getattr(self,'container',None) != None: 
+        if self.container: 
             if self.container.myfocus != self:  ## by Gal Koren
                 self.container.focus(self)
 
@@ -111,7 +119,7 @@ class Widget:
         
         <pre>Widget.blur()</pre>
         """
-        if getattr(self,'container',None) != None: self.container.blur(self)
+        if self.container: self.container.blur(self)
 
     def open(self):
         """Open this Widget as a modal dialog.
@@ -136,7 +144,7 @@ class Widget:
 
     # Returns true if the mouse is hovering over this widget
     def is_hovering(self):
-        if (hasattr(self, "container")):
+        if self.container:
             return (self.container.myhover is self)
         return False
 
@@ -165,9 +173,9 @@ class Widget:
         <pre>Widget.chsize()</pre>
         """
         
-        if not hasattr(self,'_painted'): return
+        if (not self._painted): return
         
-        if not hasattr(self,'container'): return
+        if (not self.container): return
         
         if pguglobals.app:
             if pguglobals.app._chsize:
@@ -213,19 +221,22 @@ class Widget:
         
         <pre>Widget.repaint()</pre>
         """
-        if getattr(self,'container',None) != None: self.container.repaint(self)
+        if self.container: self.container.repaint(self)
+
     def repaintall(self):
         """Request a repaint of all Widgets.
         
         <pre>Widget.repaintall()</pre>
         """
-        if getattr(self,'container',None) != None: self.container.repaintall()
+        if self.container: self.container.repaintall()
+
     def reupdate(self): 
         """Request a reupdate of this Widget
         
         <pre>Widget.reupdate()</pre>
         """
-        if getattr(self,'container',None) != None: self.container.reupdate(self)
+        if self.container: self.container.reupdate(self)
+
     def next(self): 
         """Pass focus to next Widget.
         
@@ -233,7 +244,8 @@ class Widget:
         
         <pre>Widget.next()</pre>
         """
-        if getattr(self,'container',None) != None: self.container.next(self)
+        if self.container: self.container.next(self)
+
     def previous(self): 
         """Pass focus to previous Widget.
         
@@ -242,7 +254,7 @@ class Widget:
         <pre>Widget.previous()</pre>
         """
         
-        if getattr(self,'container',None) != None: self.container.previous(self)
+        if self.container: self.container.previous(self)
     
     def get_abs_rect(self):
         """Get the absolute rect of this widget on the App screen
@@ -252,14 +264,14 @@ class Widget:
         x, y = self.rect.x, self.rect.y
         x += self._rect_content.x
         y += self._rect_content.y
-        c = getattr(self,'container',None)
-        while c:
-            x += c.rect.x
-            y += c.rect.y
-            if hasattr(c,'_rect_content'):
-                x += c._rect_content.x
-                y += c._rect_content.y
-            c = getattr(c,'container',None)
+        cnt = self.container
+        while cnt:
+            x += cnt.rect.x
+            y += cnt.rect.y
+            if cnt._rect_content:
+                x += cnt._rect_content.x
+                y += cnt._rect_content.y
+            cnt = cnt.container
         return pygame.Rect(x, y, self.rect.w, self.rect.h)
 
     def connect(self,code,func,*params):
@@ -358,10 +370,6 @@ class Widget:
         if self.disabled: return
         self.send(e.type,e)
         return self.event(e)
-#         return
-#         import app
-#         if hasattr(app.App,'app'):
-#             app.App.app.events.append((self,e))
         
     def event(self,e):
         """Template method - called when an event is passed to this object.
@@ -382,7 +390,7 @@ class Widget:
     # chain of 'container' references.
     def get_toplevel(self):
         top = self
-        while (getattr(top, "container", None)):
+        while (top.container):
             top = top.container
         return top
 
