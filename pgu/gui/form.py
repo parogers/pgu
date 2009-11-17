@@ -25,6 +25,9 @@ class Form(widget.Widget):
     print f['lastname'].value
     </code>
     """
+
+    # The current form instance
+    form = None
     
     def __init__(self):
         widget.Widget.__init__(self,decorate=False)

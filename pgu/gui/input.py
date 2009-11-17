@@ -65,7 +65,7 @@ class Input(widget.Widget):
     
     def event(self,e):
         used = None
-        if e.type == KEYDOWN:    
+        if e.type == KEYDOWN:
             if e.key == K_BACKSPACE:
                 if self.pos:
                     self._setvalue(self.value[:self.pos-1] + self.value[self.pos:])

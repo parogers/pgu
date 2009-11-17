@@ -114,7 +114,7 @@ class Select(Table):
     
     def _setvalue(self,value):
         self.value = value._value
-        if hasattr(self,'container'):
+        if self.container:
             #self.chsize()
             #HACK: improper use of resize()
             #self.resize() #to recenter the new value, etc.

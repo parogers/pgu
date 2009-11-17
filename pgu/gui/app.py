@@ -197,7 +197,7 @@ class App(container.Container):
             self._chsize = False
             self.resize()
 
-        if hasattr(self,'background'):
+        if self.background:
             self.background.paint(self.screen)
 
         container.Container.paint(self, self.screen)
