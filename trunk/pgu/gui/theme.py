@@ -74,7 +74,7 @@ class Theme:
         for dname in dnames:
             if os.path.isdir(dname): break
         if not os.path.isdir(dname): 
-            raise 'could not find theme '+name
+            raise Exception('could not find theme '+name)
             
         fname = os.path.join(dname,"config.txt")
         if os.path.isfile(fname):

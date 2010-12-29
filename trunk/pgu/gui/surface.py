@@ -9,7 +9,7 @@ def subsurface(s,r):
     """
     r = pygame.Rect(r)
     if r.x < 0 or r.y < 0:
-        raise "gui.subsurface: %d %d %s"%(s.get_width(),s.get_height(),r)
+        raise Exception("gui.subsurface: %d %d %s"%(s.get_width(),s.get_height(),r))
     w,h = s.get_width(),s.get_height()
     if r.right > w:
         r.w -= r.right-w
