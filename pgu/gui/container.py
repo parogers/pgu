@@ -8,10 +8,8 @@ import widget, surface
 import pguglobals
 
 class Container(widget.Widget):
-    """The base container widget, can be used as a template as well as stand alone.
-    
-    <pre>Container()</pre>
-    """
+    """The base container widget, can be used as a template as well as stand alone."""
+
     def __init__(self,**params):
         widget.Widget.__init__(self,**params)
         self.myfocus = None

@@ -178,3 +178,4 @@ class Select(Table):
         if self.value == w._value:
             self.top_selected.value = w
         self.values.append(w)
+
