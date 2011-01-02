@@ -16,22 +16,22 @@ class Widget:
         
     Example - Creating your own Widget:
 
-    class Draw(gui.Widget):
-        def paint(self,s):
-            # Paint the pygame.Surface
-            return
-        
-        def update(self,s):
-            # Update the pygame.Surface and return the update rects
-            return [pygame.Rect(0,0,self.rect.w,self.rect.h)]
+        class Draw(gui.Widget):
+            def paint(self,s):
+                # Paint the pygame.Surface
+                return
             
-        def event(self,e):
-            # Handle the pygame.Event
-            return
-            
-        def resize(self,width=None,height=None):
-            # Return the width and height of this widget
-            return 256,256
+            def update(self,s):
+                # Update the pygame.Surface and return the update rects
+                return [pygame.Rect(0,0,self.rect.w,self.rect.h)]
+                
+            def event(self,e):
+                # Handle the pygame.Event
+                return
+                
+            def resize(self,width=None,height=None):
+                # Return the width and height of this widget
+                return 256,256
     """
 
     # The name of the widget (or None if not defined)
@@ -45,27 +45,28 @@ class Widget:
     # ...
     _rect_content = None
     
-    def __init__(self,**params): 
+    def __init__(self, **params): 
         """Widget constructor.
 
         Keyword arguments:
+            decorate -- whether to call theme.decorate(self) to allow the 
+                theme a chance to decorate the widget. (default is true)
+            style -- a dict of style parameters.
+            x, y -- position parameters
+            width, height -- size parameters
+            align, valign -- alignment parameters, passed along to style
+            font -- the font to use with this widget
+            color -- the color property, if applicable
+            background -- the widget used to paint the background
+            cls -- class name as used by Theme
+            name -- name of widget as used by Form.  If set, will call 
+                form.add(self,name) to add the widget to the most recently 
+                created Form.
+            focusable -- True if this widget can receive focus via Tab, etc.
+                (default is True)
+            disabled -- True of this widget is disabled (defaults is False)
+            value -- initial value
 
-        decorate -- defaults to True.  If true, will call theme.decorate(self) 
-            to allow the theme a chance to decorate the widget.
-        style -- a dict of style parameters.
-        x, y, width, height -- position and size parameters, passed along 
-            to style
-        align, valign -- alignment parameters, passed along to style
-        font, color, background -- other common parameters that are passed 
-            along to style
-        cls -- class name as used by Theme
-        name -- name of widget as used by Form.  If set, will call 
-            form.add(self,name) to add the widget to the most recently 
-            created Form.
-        focusable -- True if this widget can receive focus via Tab, etc.  
-            Defaults to True.
-        disabled -- True of this widget is disabled.  Defaults to False.
-        value -- initial value
         """
         #object.Object.__init__(self) 
         self.connects = {}
@@ -141,41 +142,37 @@ class Widget:
     def resize(self,width=None,height=None):
         """Resize this widget and all sub-widgets, returning the new size.
 
-        This should be implemented by a subclass."""
+        This should be implemented by a subclass.
+
+        """
         return (self.style.width, self.style.height)
 
     def chsize(self):
-        """Change the size of this widget."""
+        """Signal that this widget has changed its size."""
         
-        if (not self._painted): return
-        
-        if (not self.container): return
-        
-        if pguglobals.app:
-            if pguglobals.app._chsize:
-                return
-            pguglobals.app.chsize()
+        if (not self._painted): 
             return
-            
-        #if hasattr(app.App,'app'):
-        #    w,h = self.rect.w,self.rect.h
-        #    w2,h2 = self.resize()
-        #    if w2 != w or h2 != h:
-        #        app.App.app.chsize()
-        #    else: 
-        #        self.repaint()
         
+        if (not self.container): 
+            return
+        
+        if (pguglobals.app):
+            pguglobals.app.chsize()
 
     def update(self,s):
         """Updates the surface and returns a rect list of updated areas
 
-        This should be implemented by a subclass."""
+        This should be implemented by a subclass.
+
+        """
         return
         
     def paint(self,s):
         """Render this widget onto the given surface
 
-        This should be implemented by a subclass."""
+        This should be implemented by a subclass.
+
+        """
         return
 
     def repaint(self): 
@@ -194,6 +191,7 @@ class Widget:
         """Pass focus to next Widget.
         
         Widget order determined by the order they were added to their container.
+
         """
         if self.container: self.container.next(self)
 
@@ -201,6 +199,7 @@ class Widget:
         """Pass focus to previous Widget.
         
         Widget order determined by the order they were added to their container.
+
         """
         
         if self.container: self.container.previous(self)
@@ -208,8 +207,6 @@ class Widget:
     def get_abs_rect(self):
         """Returns the absolute rect of this widget on the App screen."""
         x, y = self.rect.x, self.rect.y
-        x += self._rect_content.x
-        y += self._rect_content.y
         cnt = self.container
         while cnt:
             x += cnt.rect.x
@@ -221,14 +218,14 @@ class Widget:
         return pygame.Rect(x, y, self.rect.w, self.rect.h)
 
     def connect(self,code,func,*params):
-        """Connect a event code to a callback function.
+        """Connect an event code to a callback function.
         
-        <p>There may be multiple callbacks per event code.</p>
+        Note that there may be multiple callbacks per event code.
 
-        Arguments:        
-        code -- event type
-        fnc -- callback function
-        *values -- values to pass to callback.  
+        Arguments:
+            code -- event type
+            fnc -- callback function
+            *values -- values to pass to callback.  
 
         Please note that callbacks may also have "magicaly" parameters.  
         Such as:
@@ -238,12 +235,12 @@ class Widget:
             _widget -- receive the sending widget
         
         Example:
+            def onclick(value):
+                print 'click', value
+            
+            w = Button("PGU!")
+            w.connect(gui.CLICK,onclick,'PGU Button Clicked')
 
-        def onclick(value):
-            print 'click', value
-        
-        w = Button("PGU!")
-        w.connect(gui.CLICK,onclick,'PGU Button Clicked')
         """
         if (not code in self.connects):
             self.connects[code] = []
@@ -315,15 +312,14 @@ class Widget:
         your widget handles TABs or arrow keys, and you don't want those to 
         also alter the focus.)
 
-
         This should be implemented by a subclass.
+
         """
         return
 
     def get_toplevel(self):
         """Returns the top-level widget (usually the Desktop) by following the
-        chain of 'container' references.
-        """
+        chain of 'container' references."""
         top = self
         while (top.container):
             top = top.container
@@ -331,7 +327,6 @@ class Widget:
 
     def collidepoint(self, pos):
         """Test if the given point hits this widget. Over-ride this function
-        for more advanced collision testing.
-        """
+        for more advanced collision testing."""
         return self.rect.collidepoint(pos)
 

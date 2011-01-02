@@ -11,7 +11,6 @@ class App(container.Container):
     """The top-level widget for an application.
     
     Example:
-
         import pygame
         from pgu import gui
 
@@ -20,6 +19,7 @@ class App(container.Container):
         app = gui.App()
         app.init(widget=widget)
         app.run()
+
     """
 
     # The top-level widget in the application
@@ -36,7 +36,8 @@ class App(container.Container):
         """App constructor
 
         Keyword arguments:
-        theme -- optional Theme instance
+            theme -- optional Theme instance
+
         """
         self.set_global_app()
 
@@ -104,9 +105,9 @@ class App(container.Container):
         """Initialize the application.
 
         Keyword arguments:
-        widget -- the top-level widget in the application
-        screen -- the pygame surface to render to
-        area -- the rectangle (within 'screen') to use for rendering
+            widget -- the top-level widget in the application
+            screen -- the pygame surface to render to
+            area -- the rectangle (within 'screen') to use for rendering
         """
 
         self.set_global_app()
@@ -231,9 +232,9 @@ class App(container.Container):
         calling App.event and App.update
 
         Keyword arguments:
-        widget -- the top-level widget to use
-        screen -- the pygame surface to render to
-        delay -- the delay between updates (in milliseconds)
+            widget -- the top-level widget to use
+            screen -- the pygame surface to render to
+            delay -- the delay between updates (in milliseconds)
         """
         self.init(widget,screen)
         while not self._quit:
@@ -250,8 +251,9 @@ class App(container.Container):
         self._repaint = True
 
     def chsize(self):
-        self._chsize = True
-        self._repaint = True
+        if (not self._chsize):
+            self._chsize = True
+            self._repaint = True
     
     def quit(self,value=None): 
         self._quit = True

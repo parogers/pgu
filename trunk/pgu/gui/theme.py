@@ -22,24 +22,24 @@ def _list_themes(dir):
 class Theme:
     """Theme interface.
     
-    <p>If you wish to create your own theme, create a class with this interface, and 
-    pass it to gui.App via <tt>gui.App(theme=MyTheme())</tt>.</p>
+    If you wish to create your own theme, create a class with this interface, and 
+    pass it to gui.App via gui.App(theme=MyTheme()).
     
-    <strong>Default Theme</strong>
-    
-    <pre>Theme(dirs='default')</pre>
-    <dl>
-    <dt>dirs<dd>Name of the theme dir to load a theme from.  May be an absolute path to a theme, if pgu is not installed, or if you created your own theme.  May include several dirs in a list if data is spread across several themes.
-    </dl>
-    
-    <strong>Example</strong>
-    
-    <code>    
-    theme = gui.Theme("default")
-    theme = gui.Theme(["mytheme","mytheme2"])
-    </code>
     """
     def __init__(self,dirs='default'):
+        """Theme constructor.
+
+        Keyword arguments:
+            dirs -- Name of the theme dir to load a theme from.  May be an 
+                absolute path to a theme, if pgu is not installed, or if you 
+                created your own theme.  May include several dirs in a list if 
+                data is spread across several themes.
+        
+        Example:
+            theme = gui.Theme("default")
+            theme = gui.Theme(["mytheme","mytheme2"])
+
+        """
         self.config = {}
         self._loaded = []
         self.cache = {}
@@ -151,17 +151,13 @@ class Theme:
     def get(self,cls,pcls,attr):
         """Interface method -- get the value of a style attribute.
         
-        <pre>Theme.get(cls,pcls,attr): return value</pre>
+        Arguments:
+            cls -- class, for example "checkbox", "button", etc.
+            pcls -- pseudo class, for example "hover", "down", etc.
+            attr -- attribute, for example "image", "background", "font", "color", etc.
         
-        <dl>
-        <dt>cls<dd>class, for example "checkbox", "button", etc.
-        <dt>pcls<dd>pseudo class, for example "hover", "down", etc.
-        <dt>attr<dd>attribute, for example "image", "background", "font", "color", etc.
-        </dl>
-        
-        <p>returns the value of the attribute.</p>
-        
-        <p>This method is called from [[gui-style]].</p>
+        This method is called from [[gui-style]]
+
         """
 
         if not self._loaded: 
@@ -375,15 +371,14 @@ class Theme:
     def decorate(self,widget,level):
         """Interface method -- decorate a widget.
         
-        <p>The theme system is given the opportunity to decorate a widget methods at the
-        end of the Widget initializer.</p>
+        The theme system is given the opportunity to decorate a widget 
+        methods at the end of the Widget initializer.
 
-        <pre>Theme.decorate(widget,level)</pre>
-                
-        <dl>
-        <dt>widget<dd>the widget to be decorated
-        <dt>level<dd>the amount of decoration to do, False for none, True for normal amount, 'app' for special treatment of App objects.
-        </dl>
+        Arguments:
+            widget -- the widget to be decorated
+            level -- the amount of decoration to do, False for none, True for 
+                normal amount, 'app' for special treatment of App objects.
+        
         """        
 
         w = widget
@@ -407,14 +402,11 @@ class Theme:
 
     def render(self,s,box,r):
         """Interface method - render a special widget feature.
-        
-        <pre>Theme.render(s,box,r)</pre>
-        
-        <dl>
-        <dt>s<dt>pygame.Surface
-        <dt>box<dt>box data, a value returned from Theme.get, typically a pygame.Surface
-        <dt>r<dt>pygame.Rect with the size that the box data should be rendered
-        </dl>
+
+        Arguments:
+            s -- a pygame surface
+            box -- box data, a value returned from Theme.get, typically a surface
+            r -- pygame.Rect with the size that the box data should be rendered
         
         """
         
@@ -491,3 +483,4 @@ class Background(widget.Widget):
             s.fill(v)
         else: 
             self.theme.render(s,v,r)
+
