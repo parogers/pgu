@@ -9,23 +9,14 @@ from basic import Label, Image
 from table import Table
 
 class Select(Table):
-    """A select input.
+    """A combo dropdown box widget.
     
-    <pre>Select(value=None)</pre>
-    
-    <dl>
-    <dt>value<dd>initial value
-    </dl>
-    
-    <strong>Example</strong>
-    <code>
-    w = Select(value="goats")
-    w.add("Cats","cats")
-    w.add("Goats","goats")
-    w.add("Dogs","Dogs")
-    
-    w.value = 'dogs' #changes the value from goats to dogs
-    </code>
+    Example:
+        w = Select(value="goats")
+        w.add("Cats","cats")
+        w.add("Goats","goats")
+        w.add("Dogs","Dogs")
+        w.value = 'dogs' #changes the value from goats to dogs
     
     """
 
@@ -143,23 +134,7 @@ class Select(Table):
             self.top_selected.value = mywidget
     
     def add(self,w,value=None):
-        """Add a widget, value item to the Select.
-        
-        <pre>Select.add(widget,value=None)</pre>
-        
-        <dl>
-        <dt>widget<dd>Widget or string to represent the item
-        <dt>value<dd>value for this item
-        </dl>
-        
-        <strong>Example</strong>
-        <code>
-        w = Select()
-        w.add("Goat") #adds a Label
-        w.add("Goat","goat") #adds a Label with the value goat
-        w.add(gui.Label("Cuzco"),"goat") #adds a Label with value goat
-        </code>
-        """
+        """Add a widget and associated value to the dropdown box."""
         
         if type(w) == str: w = Label(w,cls=self.cls+".option.label")
         

@@ -1,7 +1,7 @@
 """Some handy font-like objects.
 
-<p>please note that this file is alpha, and is subject to modification in
-future versions of pgu!</p>
+Please note that this file is alpha, and is subject to modification in
+future versions of pgu!
 """
 
 print 'pgu.fonts','This module is alpha, and is subject to change.'
@@ -10,19 +10,19 @@ import pygame
 from pygame.locals import *
 
 class TileFont:
-    """Creates an instance of the TileFont class.  Interface compatible with pygame.Font
+    """Creates an instance of the TileFont class.  Interface compatible 
+    with pygame.Font
     
-    <p>TileFonts are fonts that are stored in a tiled image.  Where the image opaque, it assumed that the font is visible.  Font color is changed automatically, so it does not work with
-    fonts with stylized coloring.</p>
+    TileFonts are fonts that are stored in a tiled image.  Where the image 
+    opaque, it assumed that the font is visible.  Font color is changed 
+    automatically, so it does not work with fonts with stylized coloring.
     
-    <pre>TileFont(fname,size,hints,scale=None,sensitive=False)</pre>
-    
-    <dl>
-    <dt>size <dd>the dimensions of the characters
-    <dt>hints <dd>a string of hints "abcdefg..."
-    <dt>scale <dd>size to scale font to
-    <dt>sensitive <dd>case sensitivity
-    </dl>
+    Arguments:
+        size -- the dimensions of the characters
+        hints -- a string of hints "abcdefg..."
+        scale -- size to scale font to
+        sensitive -- case sensitivity
+
     """
 
     def __init__(self,fname,size,hints,scale=None,sensitive=False):
@@ -87,14 +87,12 @@ class TileFont:
         
         
 class BorderFont: 
-    """a decorator for normal fonts, adds a border. Interface compatible with pygame.Font.
+    """A decorator for normal fonts, adds a border. Interface compatible with pygame.Font.
     
-    <pre>BorderFont(font,size=1,color=(0,0,0))</pre>
-    
-    <dl>
-    <dt>size <dd>width of border; defaults 0
-    <dt>color <dd>color of border; default (0,0,0)
-    </dl>
+    Arguments:
+        size -- width of border; defaults 0
+        color -- color of border; default (0,0,0)
+
     """
     def __init__(self,font,size=1,color=(0,0,0)):
         
@@ -127,4 +125,4 @@ class BorderFont:
 
         return s
 
-        
+

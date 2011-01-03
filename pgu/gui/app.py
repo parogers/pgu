@@ -33,12 +33,7 @@ class App(container.Container):
     appArea = None
 
     def __init__(self, theme=None, **params):
-        """App constructor
-
-        Keyword arguments:
-            theme -- optional Theme instance
-
-        """
+        """Create a new application given the (optional) theme instance."""
         self.set_global_app()
 
         if theme == None: 

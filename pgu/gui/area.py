@@ -12,23 +12,21 @@ import basic, button, slider
 class SlideBox(container.Container):
     """A scrollable area with no scrollbars.
     
-    <pre>SlideBox(widget,width,height)</pre>
-    
-    <dl>
-    <dt>widget<dd>widget to be able to scroll around
-    <dt>width, height<dd>size of scrollable area
-    </dl>
-    
-    <strong>Example</strong>
-    <code>
-    c = SlideBox(w,100,100)
-    c.offset = (10,10)
-    c.repaint()
-    </code>
+    Example:
+        c = SlideBox(w,100,100)
+        c.offset = (10,10)
+        c.repaint()
     
     """
     
     def __init__(self, widget, width, height, **params):
+        """SlideBox constructor.
+
+        Arguments:
+            widget -- widget to be able to scroll around
+            width, height -- size of scrollable area
+    
+        """
         params.setdefault('width', width)
         params.setdefault('height', height)
         container.Container.__init__(self, **params)
@@ -130,19 +128,19 @@ class SlideBox(container.Container):
 #        Area.__init__(self,*args,**params)
     
 class ScrollArea(table.Table):
-    """A scrollable area with scrollbars.
-    
-    <pre>ScrollArea(widget,width,height,hscrollbar=True)</pre>
-    
-    <dl>
-    <dt>widget<dd>widget to be able to scroll around
-    <dt>width, height<dd>size of scrollable area.  Set either to 0 to default to size of widget.
-    <dt>hscrollbar<dd>set to False if you do not wish to have a horizontal scrollbar
-    <dt>vscrollbar<dd>set to False if you do not wish to have a vertical scrollbar
-    <dt>step<dd>set to how far clicks on the icons will step 
-    </dl>
-    """
+    """A scrollable area with scrollbars."""
+
     def __init__(self, widget, width=0, height=0, hscrollbar=True, vscrollbar=True,step=24, **params):
+        """ScrollArea constructor.
+
+        Arguments:
+            widget -- widget to be able to scroll around
+            width, height -- size of scrollable area.  Set either to 0 to default to size of widget.
+            hscrollbar -- set to False if you do not wish to have a horizontal scrollbar
+            vscrollbar -- set to False if you do not wish to have a vertical scrollbar
+            step -- set to how far clicks on the icons will step 
+
+        """
         w= widget
         params.setdefault('cls', 'scrollarea')
         table.Table.__init__(self, width=width,height=height,**params)
@@ -372,9 +370,8 @@ class _List_Item(button._button):
 class List(ScrollArea):
     """A list of items in an area.
     
-    <p>This widget can be a form element, it has a value set to whatever item is selected.</p>
-    
-    <pre>List(width,height)</pre>
+    This widget can be a form element, it has a value set to whatever item is selected.
+
     """
     def _change(self, value):
         self.value = self.group.value
@@ -396,39 +393,13 @@ class List(ScrollArea):
 	self.remove = self._remove
         
     def clear(self):
-        """Clear the list.
-        
-        <pre>List.clear()</pre>
-        """
+        """Clear the list."""
         self.items = []
         self.group = group.Group()
         self.group.connect(CHANGE,self._change,None)
         self.table.clear()
         self.set_vertical_scroll(0)
         self.blur(self.myfocus)
-        
-    def _docs(self): #HACK: nasty hack to get the docs in "my way"
-        def add(self, label, image=None, value=None):
-            """Add an item to the list.
-            
-            <pre>List.add(label,image=None,value=None)</pre>
-            
-            <dl>
-            <dt>label<dd>a label for the item
-            <dt>image<dd>an image for the item
-            <dt>value<dd>a value for the item
-            </dl>
-            """
-            
-        def remove(self,value):
-            """Remove an item from the list.
-            
-            <pre>List.remove(value)</pre>
-            
-            <dl>
-            <dt>value<dd>a value of an item to remove from the list
-            </dl>
-            """
         
     def _add(self, label, image = None, value=None):
     	item = _List_Item(label,image=image,value=value)
@@ -446,8 +417,4 @@ class List(ScrollArea):
         self.items.remove(item)
         self.group.widgets.remove(item)
         self.table.remove_row(item.style.row)
-        
-#class List(ListArea):
-#    def __init__(self,*args,**params):
-#        print 'gui.List','Scheduled to be renamed to ListArea.  API may also be changed in the future.'
-#        ListArea.__init__(self,*args,**params)
+

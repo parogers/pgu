@@ -5,25 +5,23 @@ import widget
 class Form(widget.Widget):
     """A form that automatically will contain all named widgets.
     
-    <p>After a form is created, all named widget that are subsequently created are added
-    to that form.  You may use dict style access to access named widgets.</p>
+    After a form is created, all named widget that are subsequently created are 
+    added to that form.  You may use dict style access to access named widgets.
     
-    <pre>Form()</pre>
-    
-    <strong>Example</strong>
-    <code>
-    f = gui.Form()
-    
-    w = gui.Input("Phil",name="firstname")
-    w = gui.Input("Hassey",name="lastname")
-    
-    print f.results()
-    print ''
-    print f.items()
-    print ''
-    print f['firstname'].value
-    print f['lastname'].value
-    </code>
+    Example:
+
+        f = gui.Form()
+        
+        w = gui.Input("Phil",name="firstname")
+        w = gui.Input("Hassey",name="lastname")
+        
+        print f.results()
+        print ''
+        print f.items()
+        print ''
+        print f['firstname'].value
+        print f['lastname'].value
+
     """
 
     # The current form instance
@@ -61,10 +59,7 @@ class Form(widget.Widget):
         return False
     
     def results(self):
-        """Return a dict of name => values.
-        
-        <pre>Form.results(): return dict</pre>
-        """
+        """Return a dict of name, widget value pairs."""
         if self._dirty: self._clean()
         r = {}
         for e in self._elist:
@@ -72,11 +67,7 @@ class Form(widget.Widget):
         return r
     
     def items(self):
-        """Return a list of name, value keys.
-        
-        <pre>Form.items(): return list</pre>
-        """
+        """Return a list of name, widget pairs."""
         return self.results().items()
     
-    #def start(self):
-    #    Object.start(self,-1)
+

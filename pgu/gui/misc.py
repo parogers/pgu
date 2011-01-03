@@ -3,21 +3,12 @@ import widget
 import pguglobals
 
 class ProgressBar(widget.Widget):
-    """A progress bar.
+    """A progress bar widget.
     
-    <pre>ProgressBar(value,min,max)</pre>
-    
-    <dl>
-    <dt>value<dd>starting value
-    <dt>min<dd>minimum value rendered on the screen (usually 0)
-    <dt>max<dd>maximum value
-    </dl>
-    
-    <strong>Example</strong>
-    <code>
-    w = gui.ProgressBar(0,0,100)
-    w.value = 25
-    </code>
+    Example:
+        w = gui.ProgressBar(0,0,100)
+        w.value = 25
+
     """
 
     def __init__(self,value,min,max,**params):
@@ -41,3 +32,4 @@ class ProgressBar(widget.Widget):
         if k == 'value' and _v != NOATTR and _v != v: 
             self.send(CHANGE)
             self.repaint()
+

@@ -9,22 +9,19 @@ import widget
 class Input(widget.Widget):
     """A single line text input.
     
-    <pre>Input(value="",size=20)</pre>
-    
-    <dl>
-    <dt>value<dd>initial text
-    <dt>size<dd>size for the text box, in characters
-    </dl>
-    
-    <strong>Example</strong>
-    <code>
-    w = Input(value="Cuzco the Goat",size=20)
-    
-    w = Input("Marbles")
-    </code>
+    Example:
+        w = Input(value="Cuzco the Goat",size=20)
+        w = Input("Marbles")
     
     """
     def __init__(self,value="",size=20,**params):
+        """Create a new Input widget.
+
+        Keyword arguments:
+            value -- initial text
+            size -- size for the text box, in characters
+
+        """
         params.setdefault('cls','input')
         widget.Widget.__init__(self,**params)
         self.value = value
@@ -40,7 +37,6 @@ class Input(widget.Widget):
         #self.rect.h=h+self.style.padding_top+self.style.padding_bottom;
     
     def paint(self,s):
-        
         r = pygame.Rect(0,0,self.rect.w,self.rect.h)
         
         cs = 2 #NOTE: should be in a style
@@ -119,23 +115,7 @@ class Input(widget.Widget):
             self.repaint()
             
 class Password(Input):
-    """A password input, text is *-ed out.
-    
-    <pre>Password(value="",size=20)</pre>
-    
-    <dl>
-    <dt>value<dd>initial text
-    <dt>size<dd>size for the text box, in characters
-    </dl>
-    
-    <strong>Example</strong>
-    <code>
-    w = Password(value="password",size=20)
-    
-    w = Password("53[r3+")
-    </code>
-    
-    """
+    """A password input, in which text is rendered with '*' characters."""
 
     def paint(self,s):
         hidden="*"
@@ -163,4 +143,4 @@ class Password(Input):
             r.w = cs
             r.h = h
             s.fill(self.style.color,r)
-                       
+

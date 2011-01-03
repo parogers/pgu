@@ -1,7 +1,7 @@
 """animation loading and manipulating functions.
 
-<p>please note that this file is alpha, and is subject to modification in
-future versions of pgu!</p>
+Please note that this file is alpha, and is subject to modification in
+future versions of pgu!
 """
 
 print 'pgu.ani','This module is alpha, and is subject to change.'
@@ -23,20 +23,17 @@ def _ani_load(tv,name,parts,frames,shape):
         tv.images[name+".%d"%i] = frames[i],shape
 
 def ani_load(tv,name,img,size,shape,parts):
-    """load an animation from an image
-    
-    <pre>ani_load(tv,name,image,size,shape,parts)</pre>
-    
-    <dl>
-    <dt>tv<dd>vid to load into
-    <dt>name <dd>prefix name to give the images
-    <dt>image <dd>image to load anis from
-    <dt>size <dd>w,h size of image
-    <dt>shape <dd>shape of image (usually a subset of 0,0,w,h) used for collision detection
-    <dt>parts <dd>list of parts to divide the animation into 
-        <br>for example parts = [4,5] would yield 4 animations 5 frames long, 20 total
-        <br>for example parts = [a,b,c] would yield ... images['name.a.b.c'] ..., a*b*c total
-    </dl>
+    """Load an animation from an image
+
+    Arguments:    
+        tv -- vid to load into
+        name -- prefix name to give the images
+        image -- image to load anis from
+        size -- w,h size of image
+        shape -- shape of image (usually a subset of 0,0,w,h) used for collision detection
+        parts -- list of parts to divide the animation into 
+            for example parts = [4,5] would yield 4 animations 5 frames long, 20 total
+            for example parts = [a,b,c] would yield ... images['name.a.b.c'] ..., a*b*c total
     
     """
     parts = parts[:]
@@ -50,18 +47,16 @@ def ani_load(tv,name,img,size,shape,parts):
     
     
 def image_rotate(tv,name,img,shape,angles,diff=0):
-    """rotate an image and put it into tv.images
+    """Rotate an image and put it into tv.images
     
-    <pre>image_rotate(tv,name,image,shape,angles,diff=0)</pre>
-    
-    <dl>
-    <dt>tv <dd>vid to load into
-    <dt>name <dd>prefix name to give the images
-    <dt>image <dd>image to load anis from
-    <dt>shape <dd>shape fimage (usually a subset of 0,0,w,h) used for collision detection
-    <dt>angles <dd>a list of angles to render in degrees
-    <dt>diff <dd>a number to add to the angles, to correct for source image not actually being at 0 degrees
-    </dl>
+    Arguments:
+        tv -- vid to load into
+        name -- prefix name to give the images
+        image -- image to load anis from
+        shape -- shape fimage (usually a subset of 0,0,w,h) used for collision detection
+        angles -- a list of angles to render in degrees
+        diff -- a number to add to the angles, to correct for source image not actually being at 0 degrees
+
     """
     w1,h1 = img.get_width(),img.get_height()
     shape = pygame.Rect(shape)

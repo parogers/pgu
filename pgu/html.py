@@ -1,4 +1,4 @@
-"""a html renderer
+"""Code for html rendering
 """
 
 import sys
@@ -463,18 +463,16 @@ class _html(htmllib.HTMLParser):
             
 
 class HTML(gui.Document):
-    """a gui HTML object
+    """A gui HTML object
+
+    Arguments:
+        data -- html data
+        globals -- global variables (for scripting)
+        locals -- local variables (for scripting)
+        loader -- the resource loader
     
-    <pre>HTML(data,globals=None,locals=None)</pre>
-        
-    <dl>    
-    <dt>data <dd>html data
-    <dt>globals <dd>global variables (for scripting)
-    <dt>locals <dd>local variables (for scripting)
-    <dt>loader <dd>the resource loader
-    </dl>
-    
-    <p>you may access html elements that have an id via widget[id]</p>
+    You may access html elements that have an id via widget[id]
+
     """
     def __init__(self,data,globals=None,locals=None,loader=None,**params):
         gui.Document.__init__(self,**params)
@@ -542,30 +540,21 @@ def render_ext(font, rect, text, aa, color, bgcolor=(0,0,0,0), **params):
     return (surf, htm)
 
 def render(font, rect, text, aa, color, bgcolor=(0,0,0,0), **params):
-    """Renders some html
-    
-    <pre>render(font,rect,text,aa,color,bgcolor=(0,0,0,0))</pre>
-    """
+    """Renders some html"""
     return render_ext(font, rect, text, aa, color, bgcolor, **params)[0]
 
 def rendertrim(font,rect,text,aa,color,bgcolor=(0,0,0,0),**params):
-    """render html, and make sure to trim the size
-    
-    rendertrim(font,rect,text,aa,color,bgcolor=(0,0,0,0))
-    """
+    """Render html, and make sure to trim the size."""
     # Render the HTML
     (surf, htm) = render_ext(font, rect, text, aa, color, bgcolor, **params)
     return surf.subsurface(htm.get_bounding_box())
 
     
 def write(s,font,rect,text,aa=0,color=(0,0,0), **params):
-    """write html to a surface
-    
-    write(s,font,rect,text,aa=0,color=(0,0,0))
-    """
+    """Write html to a surface."""
     htm = HTML(text, font=font, color=color, **params)
     htm.resize(width=rect.w)
     s = s.subsurface(rect)
     htm.paint(s)
     
-# vim: set filetype=python sts=4 sw=4 noet si :
+

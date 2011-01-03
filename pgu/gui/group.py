@@ -6,29 +6,25 @@ import widget
 class Group(widget.Widget):
     """An object for grouping together Form elements.
     
-    <pre>Group(name=None,value=None)</pre>
-    
-    <dl>
-    <dt>name<dd>name as used in the Form
-    <dt>value<dd>values that are currently selected in the group
-    </dl>
-    
-    <p>See [[gui-button]] for several examples.</p>
-    
-    <p>When the value changes, an <tt>gui.CHANGE</tt> event is sent.
-    Although note, that when the value is a list, it may have to be sent by hand via
-    <tt>g.send(gui.CHANGE)</tt></p>
+    When the value changes, an gui.CHANGE event is sent. Although note, 
+    that when the value is a list, it may have to be sent by hand via 
+    g.send(gui.CHANGE).
+
     """
     
     def __init__(self,name=None,value=None):
+        """Create Group instance.
+
+        Arguments:
+        name -- name as used in the Form
+        value -- values that are currently selected in the group
+    
+        """
         widget.Widget.__init__(self,name=name,value=value)
         self.widgets = []
     
     def add(self,w):
-        """Add a widget to this group.
-        
-        <pre>Group.add(w)</pre>
-        """
+        """Add a widget to this group."""
         self.widgets.append(w)
     
     def __setattr__(self,k,v):
@@ -41,3 +37,4 @@ class Group(widget.Widget):
         self.send(CHANGE)
         for w in self.widgets:
             w.repaint()
+

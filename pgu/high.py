@@ -5,13 +5,11 @@ import os
 
 def High(fname,limit=10):
     """Create a Highs object and returns the default high score table.
-    
-    <pre>High(fname,limit=10)</pre>
-    
-    <dl>
-    <dt>fname <dd>filename to store high scores in
-    <dt>limit <dd>limit of scores to be recorded, defaults to 10
-    </dl>
+
+    Arguments:    
+        fname -- filename to store high scores in
+        limit -- limit of scores to be recorded, defaults to 10
+
     """
     return Highs(fname,limit)['default']
     
@@ -20,23 +18,18 @@ class _Score:
         self.score,self.name,self.data=score,name,data
     
 class _High:
-    """A high score table.  These objects are passed to the user, but should not be created directly.
+    """A high score table.  These objects are passed to the user, but should 
+    not be created directly.
     
-    <p>You can iterate them:</p>
-    <code>
-    for e in myhigh:
-        print e.score,e.name,e.data
-    </code>
+    You can iterate them:
+        for e in myhigh:
+            print e.score,e.name,e.data
         
-    <p>You can modify them:</p>
-    <code>
-    myhigh[0].name = 'Cuzco'
-    </code>
+    You can modify them:
+        myhigh[0].name = 'Cuzco'
     
-    <p>You can find out their length:</p>
-    <code>
-    print len(myhigh)
-    </code>
+    You can find out their length:
+        print len(myhigh)
     """
     
     def __init__(self,highs,limit=10):
@@ -45,18 +38,15 @@ class _High:
         self.limit = limit
         
     def save(self):
-        """Save the high scores.
-        
-        <pre>_High.save()</pre>
-        """
+        """Save the high scores."""
         self.highs.save()
         
     def submit(self,score,name,data=None):
         """Submit a high score to this table.
-        
-        <pre>_High.submit(score,name,data=None)</pre>
-        
-        <p>return -- the position in the table that the score attained.  None if the score did not attain a position in the table.</p>
+
+        Return -- the position in the table that the score attained.  None if
+        the score did not attain a position in the table.
+
         """
         n = 0
         for e in self._list:
@@ -72,9 +62,8 @@ class _High:
     def check(self,score):
         """Check if a score will attain a position in the table.
         
-        <pre>_High.check(score)</pre>
-        
-        <p>return -- the position the score will attain, else None</p>
+        Return -- the position the score will attain, else None
+
         """
         n = 0
         for e in self._list:
@@ -97,19 +86,15 @@ class _High:
 
 class Highs:
     """The high score object.
+
+    Arguments:    
+        fname -- filename to store high scores in
+        limit -- limit of scores to be recorded, defaults to 10
     
-    <pre>Highs(fname,limit=10)</pre>
-    <ul>
-    <dt>fname <dd>filename to store high scores in
-    <dt>limit <dd>limit of scores to be recorded, defaults to 10
-    </ul>
-    
-    <p>You may access _High objects through this object:</p>
-   
-    <code> 
-    my_easy_hs = highs['easy']
-    my_hard_hs = highs['hard']
-    </code>
+    You may access _High objects through this object:
+
+        my_easy_hs = highs['easy']
+        my_hard_hs = highs['hard']
     
     """
     def __init__(self,fname,limit=10):
@@ -118,10 +103,7 @@ class Highs:
         self.load()
         
     def load(self):
-        """Re-load the high scores.
-        
-        <pre>Highs.load()</pre>
-        """
+        """Re-load the high scores."""
         
         self._dict = {}
         try:
@@ -137,10 +119,7 @@ class Highs:
             pass
     
     def save(self):
-        """Save the high scores.
-        
-        <pre>Highs.save()</pre>
-        """
+        """Save the high scores."""
         
         f = open(self.fname,"w")
         for key,high in self._dict.items():
@@ -152,3 +131,4 @@ class Highs:
         if key not in self._dict:
             self._dict[key] = _High(self,self.limit)
         return self._dict[key]
+
