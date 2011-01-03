@@ -1,23 +1,21 @@
 """Sprite and tile engine.
 
-<p>[[tilevid]], [[isovid]], [[hexvid]] are all subclasses of
-this interface.</p>
+tilevid, isovid, hexvid are all subclasses of this interface.
 
-<p>Includes support for:</p>
+Includes support for:
 
-<ul>
-<li> Foreground Tiles
-<li> Background Tiles
-<li> Sprites
-<li> Sprite-Sprite Collision handling
-<li> Sprite-Tile Collision handling
-<li> Scrolling 
-<li> Loading from PGU tile and sprite formats (optional)
-<li> Set rate FPS (optional)
-</ul>
+* Foreground Tiles
+* Background Tiles
+* Sprites
+* Sprite-Sprite Collision handling
+* Sprite-Tile Collision handling
+* Scrolling 
+* Loading from PGU tile and sprite formats (optional)
+* Set rate FPS (optional)
 
-<p>This code was previously known as the King James Version (named after the
-Bible of the same name for historical reasons.)</p>
+This code was previously known as the King James Version (named after the
+Bible of the same name for historical reasons.)
+
 """
 
 import pygame
@@ -27,25 +25,21 @@ import math
 
 class Sprite:
     """The object used for Sprites.
+
+    Arguments:
+        ishape -- an image, or an image, rectstyle.  The rectstyle will
+            describe the shape of the image, used for collision
+            detection.
+        pos -- initial (x,y) position of the Sprite.
     
-    <pre>Sprite(ishape,pos)</pre>
-    
-    <dl>
-    <dt>ishape <dd>an image, or an image, rectstyle.  The rectstyle will
-                describe the shape of the image, used for collision
-                detection.
-    <dt>pos <dd>initial (x,y) position of the Sprite.
-    </dl>
-    
-    <strong>Attributes</strong>
-    <dl>
-    <dt>rect <dd>the current position of the Sprite
-    <dt>_rect <dd>the previous position of the Sprite
-    <dt>groups <dd>the groups the Sprite is in
-    <dt>agroups <dd>the groups the Sprite can hit in a collision
-    <dt>hit <dd>the handler for hits -- hit(g,s,a)
-    <dt>loop <dd>the loop handler, called once a frame
-    </dl>
+    Attributes:
+        rect -- the current position of the Sprite
+        _rect -- the previous position of the Sprite
+        groups -- the groups the Sprite is in
+        agroups -- the groups the Sprite can hit in a collision
+        hit -- the handler for hits -- hit(g,s,a)
+        loop -- the loop handler, called once a frame
+
     """
     def __init__(self,ishape,pos):
         if not isinstance(ishape, tuple):
@@ -69,12 +63,10 @@ class Sprite:
     def setimage(self,ishape):
         """Set the image of the Sprite.
         
-        <pre>Sprite.setimage(ishape)</pre>
-        
-        <dl>
-        <dt>ishape <dd>an image, or an image, rectstyle.  The rectstyle will
-                  describe the shape of the image, used for collision detection.
-        </dl>
+        Arguments:
+            ishape -- an image, or an image, rectstyle.  The rectstyle will
+                      describe the shape of the image, used for collision detection.
+
         """        
         if not isinstance(ishape, tuple):
             ishape = ishape,None
@@ -93,16 +85,13 @@ class Sprite:
 class Tile:
     """Tile Object used by TileCollide.
     
-    <pre>Tile(image=None)</pre>
-    <dl>
-    <dt>image <dd>an image for the Tile.
-    </dl>
+    Arguments:
+        image -- an image for the Tile.
     
-    <strong>Attributes</strong>
-    <dl>
-    <dt>agroups <dd>the groups the Tile can hit in a collision
-    <dt>hit <dd>the handler for hits -- hit(g,t,a)
-    </dl>
+    Attributes:
+        agroups -- the groups the Tile can hit in a collision
+        hit -- the handler for hits -- hit(g,t,a)
+
     """
     def __init__(self,image=None):
         self.image = image
@@ -131,25 +120,22 @@ class _Sprites(list):
 class Vid:
     """An engine for rendering Sprites and Tiles.
     
-    <pre>Vid()</pre>
-    
-    <strong>Attributes</strong>
-    <dl>
-    <dt>sprites <dd>a list of the Sprites to be displayed.  You may append and
-               remove Sprites from it.
-    <dt>images  <dd>a dict for images to be put in.  
-    <dt>size    <dd>the width, height in Tiles of the layers.  Do not modify.
-    <dt>view    <dd>a pygame.Rect of the viewed area.  You may change .x, .y,
-                etc to move the viewed area around.
-    <dt>bounds  <dd>a pygame.Rect (set to None by default) that sets the bounds
-                of the viewable area.  Useful for setting certain borders
-                as not viewable.
-    <dt>tlayer  <dd>the foreground tiles layer
-    <dt>clayer  <dd>the code layer (optional)
-    <dt>blayer  <dd>the background tiles layer (optional)
-    <dt>groups  <dd>a hash of group names to group values (32 groups max, as a tile/sprites 
-            membership in a group is determined by the bits in an integer)
-    </dl>
+    Attributes:
+        sprites -- a list of the Sprites to be displayed.  You may append and
+                   remove Sprites from it.
+        images  -- a dict for images to be put in.  
+        size    -- the width, height in Tiles of the layers.  Do not modify.
+        view    -- a pygame.Rect of the viewed area.  You may change .x, .y,
+                    etc to move the viewed area around.
+        bounds  -- a pygame.Rect (set to None by default) that sets the bounds
+                    of the viewable area.  Useful for setting certain borders
+                    as not viewable.
+        tlayer  -- the foreground tiles layer
+        clayer  -- the code layer (optional)
+        blayer  -- the background tiles layer (optional)
+        groups  -- a hash of group names to group values (32 groups max, as a tile/sprites 
+                membership in a group is determined by the bits in an integer)
+
     """
     
     def __init__(self):
@@ -168,13 +154,11 @@ class Vid:
     def resize(self,size,bg=0):
         """Resize the layers.
         
-        <pre>Vid.resize(size,bg=0)</pre>
-        
-        <dl>        
-        <dt>size <dd>w,h in Tiles of the layers
-        <dt>bg   <dd>set to 1 if you wish to use both a foreground layer and a
-                background layer
-        </dl>
+        Arguments:
+            size -- w,h in Tiles of the layers
+            bg   -- set to 1 if you wish to use both a foreground layer and a
+                    background layer
+
         """
         self.size = size
         w,h = size
@@ -195,17 +179,14 @@ class Vid:
     def set(self,pos,v):
         """Set a tile in the foreground to a value.
         
-        <p>Use this method to set tiles in the foreground, as it will make
+        Use this method to set tiles in the foreground, as it will make
         sure the screen is updated with the change.  Directly changing
         the tlayer will not guarantee updates unless you are using .paint()
-        </p>
         
-        <pre>Vid.set(pos,v)</pre>
-        
-        <dl>
-        <dt>pos <dd>(x,y) of tile
-        <dt>v <dd>value
-        </dl>
+        Arguments:
+            pos -- (x,y) of tile
+            v -- value
+
         """
         if self.tlayer[pos[1]][pos[0]] == v: return
         self.tlayer[pos[1]][pos[0]] = v
@@ -215,37 +196,31 @@ class Vid:
     def get(self,pos):
         """Get the tlayer at pos.
         
-        <pre>Vid.get(pos): return value</pre>
-        
-        <dl>
-        <dt>pos <dd>(x,y) of tile
-        </dl>
+        Arguments:
+            pos -- (x,y) of tile
+
         """
         return self.tlayer[pos[1]][pos[0]]
     
     def paint(self,s):
         """Paint the screen.
         
-        <pre>Vid.paint(screen): return [updates]</pre>
-        
-        <dl>
-        <dt>screen <dd>a pygame.Surface to paint to
-        </dl>
-        
-        <p>returns the updated portion of the screen (all of it)</p>
+        Arguments:
+            screen -- a pygame.Surface to paint to
+
+        Returns the updated portion of the screen (all of it)
+
         """
         return []
                 
     def update(self,s):
         """Update the screen.
         
-        <pre>Vid.update(screen): return [updates]</pre>
+        Arguments:
+            screen -- a pygame.Rect to update
         
-        <dl>
-        <dt>screen <dd>a pygame.Rect to update
-        </dl>
-        
-        <p>returns a list of updated rectangles.</p>
+        Returns a list of updated rectangles.
+
         """
         self.updates = []
         return []
@@ -253,13 +228,11 @@ class Vid:
     def tga_load_level(self,fname,bg=0):
         """Load a TGA level.  
         
-        <pre>Vid.tga_load_level(fname,bg=0)</pre>
-        
-        <dl>
-        <dt>g        <dd>a Tilevid instance
-        <dt>fname    <dd>tga image to load
-        <dt>bg        <dd>set to 1 if you wish to load the background layer
-        </dl>
+        Arguments:
+            g        -- a Tilevid instance
+            fname    -- tga image to load
+            bg        -- set to 1 if you wish to load the background layer
+
         """
         if type(fname) == str: img = pygame.image.load(fname)
         else: img = fname
@@ -274,12 +247,10 @@ class Vid:
                 
     def tga_save_level(self,fname):
         """Save a TGA level.
-        
-        <pre>Vid.tga_save_level(fname)</pre>
-        
-        <dl>
-        <dt>fname <dd>tga image to save to
-        </dl>
+
+        Arguments:
+            fname -- tga image to save to
+
         """
         w,h = self.size
         img = pygame.Surface((w,h),SWSURFACE,32)
@@ -300,14 +271,12 @@ class Vid:
     def tga_load_tiles(self,fname,size,tdata={}):
         """Load a TGA tileset.
         
-        <pre>Vid.tga_load_tiles(fname,size,tdata={})</pre>
-        
-        <dl>
-        <dt>g       <dd>a Tilevid instance
-        <dt>fname    <dd>tga image to load
-        <dt>size    <dd>(w,h) size of tiles in pixels
-        <dt>tdata    <dd>tile data, a dict of tile:(agroups, hit handler, config)
-        </dl>
+        Arguments:
+            g       -- a Tilevid instance
+            fname    -- tga image to load
+            size    -- (w,h) size of tiles in pixels
+            tdata    -- tile data, a dict of tile:(agroups, hit handler, config)
+
         """
         TW,TH = size
         if type(fname) == str: img = pygame.image.load(fname).convert_alpha()
@@ -331,11 +300,9 @@ class Vid:
     def load_images(self,idata):
         """Load images.
         
-        <pre>Vid.load_images(idata)</pre>
-        
-        <dl>
-        <dt>idata <dd>a list of (name, fname, shape)
-        </dl>
+        Arguments:
+            idata -- a list of (name, fname, shape)
+
         """
         for name,fname,shape in idata:
             self.images[name] = pygame.image.load(fname).convert_alpha(),shape
@@ -343,13 +310,11 @@ class Vid:
     def run_codes(self,cdata,rect):
         """Run codes.
         
-        <pre>Vid.run_codes(cdata,rect)</pre>
-        
-        <dl>
-        <dt>cdata <dd>a dict of code:(handler function, value)
-        <dt>rect <dd>a tile rect of the parts of the layer that should have
+        Arguments:
+            cdata -- a dict of code:(handler function, value)
+            rect -- a tile rect of the parts of the layer that should have
                  their codes run
-        </dl>
+
         """
         tw,th = self.tiles[0].image.get_width(),self.tiles[0].image.get_height()
 
@@ -367,17 +332,12 @@ class Vid:
 
         
     def string2groups(self,str):
-        """Convert a string to groups.
-        
-        <pre>Vid.string2groups(str): return groups</pre>
-        """
+        """Convert a string to groups."""
         if str == None: return 0
         return self.list2groups(str.split(","))
 
     def list2groups(self,igroups):
-        """Convert a list to groups.
-        <pre>Vid.list2groups(igroups): return groups</pre>
-        """
+        """Convert a list to groups."""
         for s in igroups:
             if not s in self.groups:
                 self.groups[s] = 2**len(self.groups)
@@ -387,9 +347,7 @@ class Vid:
         return v
 
     def groups2list(self,groups):
-        """Convert a groups to a list.
-        <pre>Vid.groups2list(groups): return list</pre>
-        """
+        """Convert a groups to a list."""
         v = []
         for s,n in self.groups.items():
             if (n&groups)!=0: v.append(s)
@@ -406,9 +364,7 @@ class Vid:
             t.hit(self,t,s)
 
     def loop(self):
-        """Update and hit testing loop.  Run this once per frame.
-        <pre>Vid.loop()</pre>
-        """
+        """Update and hit testing loop.  Run this once per frame."""
         self.loop_sprites() #sprites may move
         self.loop_tilehits() #sprites move
         self.loop_spritehits() #no sprites should move
@@ -546,15 +502,11 @@ class Vid:
 
 
     def screen_to_tile(self,pos):
-        """Convert a screen position to a tile position.
-        <pre>Vid.screen_to_tile(pos): return pos</pre>
-        """
+        """Convert a screen position to a tile position."""
         return pos
         
     def tile_to_screen(self,pos):
-        """Convert a tile position to a screen position.
-        <pre>Vid.tile_to_screen(pos): return pos</pre>
-        """
+        """Convert a tile position to a screen position."""
         return pos
                     
-# vim: set filetype=python sts=4 sw=4 noet si :
+

@@ -75,8 +75,8 @@ c.tr()
 c.td(gui.Label("Keysym"))
 c.td(gui.Keysym(),colspan=3)
 
-c.tr()
-c.td(gui.Label("Text Area"), colspan=4, align=-1)
+#c.tr()
+#c.td(gui.Label("Text Area"), colspan=4, align=-1)
 
 #c.tr()
 #c.td(gui.TextArea(value="Cuzco the Goat", width=150, height=70), colspan=4)

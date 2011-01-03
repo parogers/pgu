@@ -46,7 +46,7 @@ class Widget:
     _rect_content = None
     
     def __init__(self, **params): 
-        """Widget constructor.
+        """Create a new Widget instance given the style parameters.
 
         Keyword arguments:
             decorate -- whether to call theme.decorate(self) to allow the 

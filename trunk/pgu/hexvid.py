@@ -1,12 +1,12 @@
 """Hexagonal tile engine.
 
-<p>Note -- this engine is not finished.  Sprites are not supported.  It
+Note -- this engine is not finished.  Sprites are not supported.  It
 can still be useful for using the level editor, and for rendering hex
 terrains, however.  If you are able to update it and use it in a real game,
-help would be greatly appreciated!</p>
+help would be greatly appreciated!
 
-<p>please note that this file is alpha, and is subject to modification in
-future versions of pgu!</p>
+Please note that this file is alpha, and is subject to modification in
+future versions of pgu!
 
 """
 print 'pgu.hexvid','This module is alpha, and is subject to change.'

@@ -1,11 +1,11 @@
 """Isometric tile engine.
 
-<p>Note -- this engine is not finished, any may not work for your 
+Note -- this engine is not finished, any may not work for your 
 particular needs.  If you are able to update it, help would be 
-greatly appreciated!</p>
+greatly appreciated!
 
-<p>please note that this file is alpha, and is subject to modification in
-future versions of pgu!</p>
+Please note that this file is alpha, and is subject to modification in
+future versions of pgu!
 
 """
 print 'pgu.isovid','This module is alpha, and is subject to change.'

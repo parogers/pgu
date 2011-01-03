@@ -9,13 +9,18 @@ class Table(container.Container):
     Example:
         t = gui.Table()
         
+        # This starts a new row of the table
         t.tr()
-        t.td(gui.Label("First Name"), align=-1)
+        # The 'td' call creates a new table cell
+        t.td(gui.Label("Name:"), align=-1)
         t.td(gui.Input())
 
         t.tr()
-        t.td(gui.Label("Last Name"), align=-1)
-        t.td(gui.Input())
+        # The table cells can span multiple columns
+        t.td(gui.Label("Email"), align=-1, colspan=2)
+
+        t.tr()
+        t.td(gui.Input(), colspan=2)
         
     """
     

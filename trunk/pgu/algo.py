@@ -1,7 +1,7 @@
 """Some handy algorithms for use in games, etc.
 
-<p>please note that this file is alpha, and is subject to modification in
-future versions of pgu!</p>
+Please note that this file is alpha, and is subject to modification in
+future versions of pgu!
 """
 
 # The manhattan distance metric
@@ -18,18 +18,16 @@ class node:
 
 
 def astar(start,end,layer,dist=manhattan_dist):
-    """uses the a* algorithm to find a path
+    """Uses the a* algorithm to find a path, and returns a list of positions 
+    from start to end.
+
+    Arguments:
+        start -- start position
+        end -- end position
+        layer -- a grid where zero cells are open and non-zero cells are walls
+        dist -- a distance function dist(a,b) - manhattan distance is used 
+            by default
     
-    <pre>astar(start,end,layer,dist): return [list of positions]</pre>
-    
-    <dl>
-    <dt>start<dd>start position
-    <dt>end<dd>end position
-    <dt>layer<dd>a grid where zero cells are open and non-zero cells are walls
-    <dt>dist<dd>a distance function dist(a,b) - manhattan distance is used by default
-    </dl>
-    
-    <p>returns a list of positions from start to end</p>
     """
 
     w,h = len(layer[0]),len(layer)
@@ -91,16 +89,12 @@ def astar(start,end,layer,dist=manhattan_dist):
     
 
 def getline(a,b):
-    """returns a path of points from a to b
-    
-    <pre>getline(a,b): return [list of points]</pre>
-    
-    <dl>
-    <dt>a<dd>starting point
-    <dt>b<dd>ending point
-    </dl>
-    
-    <p>returns a list of points from a to b</p>
+    """Returns a path of points from a to b
+
+    Arguments:    
+        a -- starting point
+        b -- ending point
+
     """
            
     path = []
@@ -141,3 +135,4 @@ def getline(a,b):
         y += yi2
         c += 1
     return path
+

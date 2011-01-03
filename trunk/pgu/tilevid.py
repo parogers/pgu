@@ -192,4 +192,4 @@ class Tilevid(Vid):
         x,y = x - self.view.x, y - self.view.y
         return x,y
                     
-# vim: set filetype=python sts=4 sw=4 noet si :
+

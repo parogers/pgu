@@ -1,13 +1,3 @@
-"""All sliders and scroll bar widgets have the same parameters.
-   
-<pre>Slider(value,min,max,size)</pre> 
-<dl>
-<dt>value<dd>initial value
-<dt>min<dd>minimum value
-<dt>max<dd>maximum value
-<dt>size<dd>size of bar in pixels
-</dl>
-"""
 import pygame
 from pygame.locals import *
 
@@ -121,28 +111,32 @@ class _slider(widget.Widget):
             if self.max < self.min: self.max = self.min
 
 class VSlider(_slider):
-    """A verticle slider.
-    
-    <pre>VSlider(value,min,max,size)</pre>
-    """
+    """A verticle slider."""
+
     def __init__(self,value,min,max,size,step=1,**params):
+        """Construct a veritcal slider widget.
+
+        Arguments:
+            value -- the default position of the slider, between min and max
+            min -- the minimum value for the slider
+            max -- the maximum value
+            size -- the length of the slider bar in pixels
+            step -- how much to jump when using the keyboard
+
+        """
         params.setdefault('cls','vslider')
         _slider.__init__(self,value,_SLIDER_VERTICAL,min,max,size,step,**params)
 
 class HSlider(_slider):
-    """A horizontal slider.
-    
-    <pre>HSlider(value,min,max,size)</pre>
-    """
+    """A horizontal slider."""
+
     def __init__(self,value,min,max,size,step=1,**params):
         params.setdefault('cls','hslider')
         _slider.__init__(self,value,_SLIDER_HORIZONTAL,min,max,size,step,**params)
 	
 class HScrollBar(table.Table):
-    """A horizontal scroll bar.
-    
-    <pre>HScrollBar(value,min,max,size,step=1)</pre>
-    """
+    """A horizontal scroll bar."""
+
     def __init__(self,value,min,max,size,step=1,**params):
         params.setdefault('cls','hscrollbar')
         
@@ -208,10 +202,8 @@ class HScrollBar(table.Table):
         return table.Table.__getattr__(self,k) #self.__dict__[k]
 
 class VScrollBar(table.Table):
-    """A vertical scroll bar.
-    
-    <pre>VScrollBar(value,min,max,size,step=1)</pre>
-    """
+    """A vertical scroll bar."""
+
     def __init__(self,value,min,max,size,step=1,**params):
         params.setdefault('cls','vscrollbar')
         
@@ -277,3 +269,4 @@ class VScrollBar(table.Table):
         if k in ('min','max','value','step'):
             return getattr(self.slider,k)
         return table.Table.__getattr__(self,k)
+

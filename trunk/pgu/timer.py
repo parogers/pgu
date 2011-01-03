@@ -70,10 +70,7 @@ class Clock(object):
 
 
 class Timer:
-    """A timer for games with set-rate FPS.
-    
-    <pre>Timer(fps)</pre>
-    """
+    """A timer for games with set-rate FPS."""
     
     def __init__(self,fps):
         if fps == 0: 
@@ -87,10 +84,7 @@ class Timer:
         pass
         
     def tick(self):
-        """Wait correct amount of time each frame.  Call this once per frame.
-        
-        <pre>Timer.tick()</pre>
-        """
+        """Wait correct amount of time each frame.  Call this once per frame."""
         self.ct = pygame.time.get_ticks()
         if self.ct < self.nt:
             pygame.time.wait(self.nt-self.ct)
@@ -101,12 +95,10 @@ class Timer:
 
 class Speedometer:
     """A timer replacement that returns out FPS once a second.
-    <pre>Speedometer()</pre>
     
-    <strong>Attributes</strong>
-    <dl>
-    <dt>fps <dd>always set to the current FPS
-    </dl>
+    Attributes:
+        fps -- always set to the current FPS
+
     """
     def __init__(self):
         self.frames = 0
@@ -114,10 +106,7 @@ class Speedometer:
         self.fps = 0
         
     def tick(self):
-        """ Call this once per frame.
-        
-        <pre>Speedometer.tick()</pre>
-        """
+        """ Call this once per frame."""
         r = None
         self.frames += 1
         self.ct = pygame.time.get_ticks()
@@ -131,4 +120,4 @@ class Speedometer:
 
             
 
-# vim: set filetype=python sts=4 sw=4 noet si :
+

@@ -1,3 +1,11 @@
+0.14.0
+- fixed: removed string exceptions
+- fixed: converted docstrings to standard python format
+- fixed: table properly expands vertically
+- fixed: Widget.get_abs_rect now reporting correct rect
+- fixed: unicode and font problems with button and label widgets
+- fixed: various problems with handling of colors and alpha value
+
 0.12.0 -
 - active development and maintanence taken over by Peter Rogers
 - bug fixes for pygame 1.8.1

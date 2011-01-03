@@ -254,24 +254,14 @@ class Container(widget.Widget):
         return widgets
 
     def remove(self,w):
-        """Remove a widget from the container.
-        
-        <pre>Container.remove(w)</pre>
-        """
+        """Remove a widget from the container."""
         self.blur(w)
         self.widgets.remove(w)
         #self.repaint()
         self.chsize()
     
     def add(self,w,x,y):
-        """Add a widget to the container.
-        
-        <pre>Container.add(w,x,y)</pre>
-        
-        <dl>
-        <dt>x, y<dd>position of the widget
-        </dl>
-        """
+        """Add a widget to the container given the position."""
         w.style.x = x
         w.style.y = y 
         w.container = self

@@ -82,24 +82,18 @@ class _Menu(button.Button):
 
 class Menus(table.Table):
     """A drop down menu bar.
-    
-    <pre>Menus(data)</pre>
-    
-    <dl>
-    <dt>data<dd>Menu data, a list of (path,fnc,value), see example below
-    </dl>
-    
-    <strong>Example</strong>
-    <code>
-    data = [
-        ('File/Save',fnc_save,None),
-        ('File/New',fnc_new,None),
-        ('Edit/Copy',fnc_copy,None),
-        ('Edit/Cut',fnc_cut,None),
-        ('Help/About',fnc_help,help_about_content),
-        ('Help/Reference',fnc_help,help_reference_content),
-        ]
-    w = Menus(data)
+
+    Example:
+        data = [
+            ('File/Save', fnc_save, None),
+            ('File/New', fnc_new, None),
+            ('Edit/Copy', fnc_copy, None),
+            ('Edit/Cut', fnc_cut, None),
+            ('Help/About', fnc_help, help_about_content),
+            ('Help/Reference', fnc_help, help_reference_content),
+            ]
+        w = Menus(data)
+
     """
     
     def __init__(self,data,menu_cls='menu',**params):
@@ -117,3 +111,4 @@ class Menus(table.Table):
                 self.add(m,n,0)
                 n += 1
             m.add(basic.Label(parts[1],cls=m.cls+".option.label"),cmd,value)
+

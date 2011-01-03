@@ -7,25 +7,7 @@ from const import *
 import widget
 
 class Keysym(widget.Widget):
-    """A keysym input.
-    
-    <p>This widget records the keysym of the key pressed while this widget is in focus.</p>
-    
-    <pre>Keysym(value=None)</pre>
-    
-    <dl>
-    <dt>value<dd>initial keysym, see <a href="http://www.pygame.org/docs/ref/key.html">pygame keysyms</a> </dl>
-    
-    <strong>Example</strong>
-    <code>
-    w = Input(value=pygame.locals.K_g)
-    
-    w = Input(pygame.locals.K_g)
-    
-    w = Input()
-    </code>
-    
-    """
+    """A keysym input. This is deprecated and is scheduled to be removed from PGU."""
 
     def __init__(self,value=None,**params):
         params.setdefault('cls','keysym')

@@ -9,21 +9,10 @@ import widget
 class TextArea(widget.Widget):
 	"""A multi-line text input.
 	
-	<pre>TextArea(value="",width = 120, height = 30, size=20)</pre>
-	
-	<dl>
-	<dt>value<dd>initial text
-	<dt>size<dd>size for the text box, in characters
-	</dl>
-	
-	<strong>Example</strong>
-	<code>
-	w = TextArea(value="Cuzco the Goat",size=20)
-	
-	w = TextArea("Marbles")
-	
-	w = TextArea("Groucho\nHarpo\nChico\nGummo\nZeppo\n\nMarx", 200, 400, 12)
-	</code>
+	Example:
+	    w = TextArea(value="Cuzco the Goat",size=20)
+	    w = TextArea("Marbles")
+	    w = TextArea("Groucho\nHarpo\nChico\nGummo\nZeppo\n\nMarx", 200, 400, 12)
 	
 	"""
 	def __init__(self,value="",width = 120, height = 30, size=20,**params):
@@ -285,3 +274,4 @@ class TextArea(widget.Widget):
 			
 # The first version of this code was done by Clint Herron, and is a modified version of input.py (by Phil Hassey).
 # It is under the same license as the rest of the PGU library.
+
