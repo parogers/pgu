@@ -6,7 +6,8 @@ def subsurface(s,r):
     """Return the subsurface of a surface, with some help, checks."""
     r = pygame.Rect(r)
     if r.x < 0 or r.y < 0:
-        raise Exception("gui.subsurface: %d %d %s"%(s.get_width(),s.get_height(),r))
+        raise Exception("rectangle out of bounds: surface=%dx%d, rect=%s" % (
+		s.get_width(),s.get_height(),r))
     w,h = s.get_width(),s.get_height()
     if r.right > w:
         r.w -= r.right-w

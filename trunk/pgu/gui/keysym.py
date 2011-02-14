@@ -9,6 +9,8 @@ import widget
 class Keysym(widget.Widget):
     """A keysym input. This is deprecated and is scheduled to be removed from PGU."""
 
+    _value = None
+
     def __init__(self,value=None,**params):
         params.setdefault('cls','keysym')
         widget.Widget.__init__(self,**params)
@@ -43,12 +45,19 @@ class Keysym(widget.Widget):
         #r.x = self.style.padding_left;
         #r.y = self.style.padding_bottom;
         s.blit(self.style.font.render(name, 1, self.style.color), r)
-    
-    def __setattr__(self,k,v):
-        if k == 'value' and v != None:
-            v = int(v)
-        _v = self.__dict__.get(k,NOATTR)
-        self.__dict__[k]=v
-        if k == 'value' and _v != NOATTR and _v != v: 
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, val):
+        if (val != None):
+            val = int(val)
+        oldval = self._value
+        self._value = val
+        if (oldval != val):
             self.send(CHANGE)
             self.repaint()
+
+

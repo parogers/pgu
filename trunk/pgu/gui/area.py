@@ -18,6 +18,8 @@ class SlideBox(container.Container):
         c.repaint()
     
     """
+
+    _widget = None
     
     def __init__(self, widget, width, height, **params):
         """SlideBox constructor.
@@ -32,14 +34,19 @@ class SlideBox(container.Container):
         container.Container.__init__(self, **params)
         self.offset = [0, 0]
         self.widget = widget
-        
-    def __setattr__(self,k,v):
-        if k == 'widget':
-            if hasattr(self,'widget'):
-                self.remove(self.widget)
-            self.add(v,0,0)
-        self.__dict__[k] = v
-            
+
+    @property
+    def widget(self):
+        return self._widget
+
+    @widget.setter
+    def widget(self, val):
+        # Remove the old widget first
+        if self._widget:
+            self.remove(self._widget)
+        # Now add in the new widget
+        self._widget = val
+        self.add(val, 0, 0)
     
     def paint(self, s):
         #if not hasattr(self,'surface'):
@@ -130,6 +137,8 @@ class SlideBox(container.Container):
 class ScrollArea(table.Table):
     """A scrollable area with scrollbars."""
 
+    _widget = None
+
     def __init__(self, widget, width=0, height=0, hscrollbar=True, vscrollbar=True,step=24, **params):
         """ScrollArea constructor.
 
@@ -151,11 +160,15 @@ class ScrollArea(table.Table):
         self.hscrollbar = hscrollbar
         
         self.step = step
-    
-    def __setattr__(self,k,v):
-        if k == 'widget':
-            self.sbox.widget = v
-        self.__dict__[k] = v
+
+    @property
+    def widget(self):
+        return self._widget
+
+    @widget.setter
+    def widget(self, val):
+        self._widget = val
+        self.sbox.widget = val
 
     def resize(self,width=None,height=None):
         widget = self.widget

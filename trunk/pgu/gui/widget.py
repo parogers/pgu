@@ -11,7 +11,7 @@ class SignalCallback:
     # The parameters to pass to the function (as a list)
     params = None
 
-class Widget:
+class Widget(object):
     """Base class for all PGU graphical objects.
         
     Example - Creating your own Widget:

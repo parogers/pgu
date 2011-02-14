@@ -59,7 +59,7 @@ class _Menu(button.Button):
         self.repaint()
         self.options.close()
     
-    def _value(self,value):
+    def _valuefunc(self,value):
         self._close(None)
         if value['fnc'] != None:
             value['fnc'](value['value'])
@@ -73,7 +73,7 @@ class _Menu(button.Button):
     def add(self,w,fnc=None,value=None):
         w.style.align = -1
         b = button.Button(w,cls=self.cls+".option")
-        b.connect(CLICK,self._value,{'fnc':fnc,'value':value})
+        b.connect(CLICK,self._valuefunc,{'fnc':fnc,'value':value})
         
         self.options.tr()
         self.options.add(b)
@@ -110,5 +110,6 @@ class Menus(table.Table):
                 m = _Menu(self,basic.Label(mt,cls=menu_cls+".label"),cls=menu_cls)
                 self.add(m,n,0)
                 n += 1
+            print "add", parts[1], cmd, value
             m.add(basic.Label(parts[1],cls=m.cls+".option.label"),cmd,value)
 

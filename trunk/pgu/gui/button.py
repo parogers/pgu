@@ -7,6 +7,9 @@ import widget, surface
 import basic
 
 class _button(widget.Widget):
+    # The underlying 'value' accessed by the getter and setters below
+    _value = None
+
     def __init__(self,**params):
         widget.Widget.__init__(self,**params)
         self.state = 0
@@ -65,43 +68,37 @@ class Button(_button):
         params.setdefault('cls', 'button')
         _button.__init__(self, **params)
         self.value = value
-    
-    def __setattr__(self,k,v):
-        if (k == 'value' and isinstance(v, basestring)):
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, val):
+        if (isinstance(val, basestring)):
             # Allow the choice of font to propagate to the button label
             params = {}
             if (self.style.font):
                 params["font"] = self.style.font
-            v = basic.Label(v, cls=self.cls+".label", **params)
-            v.container = self
+            val = basic.Label(val, cls=self.cls+".label", **params)
+            val.container = self
 
-        _v = self.__dict__.get(k,NOATTR)
-        self.__dict__[k]=v
-        if k == 'value' and v != None:
-            pass
-        
-        if k == 'value' and _v != NOATTR and _v != None and _v != v:
+        oldval = self._value
+        self._value = val
+
+        if (val != oldval):
             self.send(CHANGE)
             self.chsize()
-    
+
     def resize(self,width=None,height=None):
         self.value.rect.x,self.value.rect.y = 0,0
         self.value.rect.w,self.value.rect.h = self.value.resize(width,height)
         return self.value.rect.w,self.value.rect.h
-#         
-#         self.value._resize()
-#         self.rect.w,self.rect.h = self.value.rect_margin.w,self.value.rect_margin.h
-#         
-#         if self.style.width: self.rect.w = max(self.rect.w,self.style.width)
-#         if self.style.height: self.rect.w = max(self.rect.w,self.style.height)
-#         
-#         xt,xr,xb,xl = self.value.getspacing()
-#         
-#         self.value._resize(self.rect.w-(xl+xr),self.rect.h-(xt+xb))
-#     
+
     def paint(self,s):
         self.value.pcls = self.pcls
         self.value.paint(surface.subsurface(s,self.value.rect))
+
 
 class Switch(_button):
     """A switch can have two states, on or off."""
@@ -122,10 +119,15 @@ class Switch(_button):
         else: img = self.style.off
         s.blit(img,(0,0))
     
-    def __setattr__(self,k,v):
-        _v = self.__dict__.get(k,NOATTR)
-        self.__dict__[k]=v
-        if k == 'value' and _v != NOATTR and _v != v: 
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, val):
+        oldval = self._value
+        self._value = val
+        if oldval != val:
             self.send(CHANGE)
             self.repaint()
     
