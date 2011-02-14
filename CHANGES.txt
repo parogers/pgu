@@ -1,3 +1,6 @@
+0.15.0
+- replaced use of __setattr__ with property and setter functions
+
 0.14.0
 - fixed: removed string exceptions
 - fixed: converted docstrings to standard python format

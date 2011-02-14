@@ -28,6 +28,7 @@ class Select(Table):
     firstOption = None
     # The PGU table of options
     options = None
+    _value = None
 
     def __init__(self,value=None,**params):
         params.setdefault('cls','select')
@@ -116,22 +117,25 @@ class Select(Table):
         #self.repaint() #this will happen anyways
         
     
-    
-    def __setattr__(self,k,v):
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, val):
         mywidget = None
-        if k == 'value':
-            for w in self.values:
-                if w._value == v:
-                    mywidget = w
-        _v = self.__dict__.get(k,NOATTR)
-        self.__dict__[k]=v
-        if k == 'value' and _v != NOATTR and _v != v: 
+        for w in self.values:
+            if w._value == val:
+                mywidget = w
+        oldval = self._value
+        self._value = val
+        if (oldval != val):
             self.send(CHANGE)
             self.repaint()
-        if k == 'value':
-            if not mywidget:
-                mywidget = Label(" ",cls=self.cls+".option.label")
-            self.top_selected.value = mywidget
+        if not mywidget:
+            mywidget = Label(" ",cls=self.cls+".option.label")
+        self.top_selected.value = mywidget
+        
     
     def add(self,w,value=None):
         """Add a widget and associated value to the dropdown box."""

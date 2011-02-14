@@ -14,6 +14,9 @@ class Input(widget.Widget):
         w = Input("Marbles")
     
     """
+
+    _value = None
+
     def __init__(self,value="",size=20,**params):
         """Create a new Input widget.
 
@@ -56,7 +59,8 @@ class Input(widget.Widget):
             s.fill(self.style.color,r)
     
     def _setvalue(self,v):
-        self.__dict__['value'] = v
+        #self.__dict__['value'] = v
+        self._value = v
         self.send(CHANGE)
     
     def event(self,e):
@@ -103,17 +107,23 @@ class Input(widget.Widget):
         
         return used
     
-    def __setattr__(self,k,v):
-        if k == 'value':
-            if v == None: v = ''
-            v = str(v)
-            self.pos = len(v)
-        _v = self.__dict__.get(k,NOATTR)
-        self.__dict__[k]=v
-        if k == 'value' and _v != NOATTR and _v != v: 
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, val):
+        if (val == None): 
+            val = ""
+        val = str(val)
+        self.pos = len(val)
+        oldval = self._value
+        self._value = val
+        if (oldval != val):
             self.send(CHANGE)
             self.repaint()
-            
+
+
 class Password(Input):
     """A password input, in which text is rendered with '*' characters."""
 

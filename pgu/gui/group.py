@@ -11,6 +11,9 @@ class Group(widget.Widget):
     g.send(gui.CHANGE).
 
     """
+
+    _value = None
+    widgets = None
     
     def __init__(self,name=None,value=None):
         """Create Group instance.
@@ -26,15 +29,21 @@ class Group(widget.Widget):
     def add(self,w):
         """Add a widget to this group."""
         self.widgets.append(w)
-    
-    def __setattr__(self,k,v):
-        _v = self.__dict__.get(k,NOATTR)
-        self.__dict__[k] = v
-        if k == 'value' and _v != NOATTR and _v != v:
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, val):
+        oldval = self._value
+        self._value = val
+        if (oldval != val):
             self._change()
     
     def _change(self):
         self.send(CHANGE)
-        for w in self.widgets:
-            w.repaint()
+        if (self.widgets):
+            for w in self.widgets:
+                w.repaint()
 
