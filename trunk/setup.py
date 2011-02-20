@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 
-from distutils.core import setup
-print 'When you get python 2.5, enable the next line...'
-#from setuptools import setup
+try:
+    from distutils.core import setup
+except:
+    from setuptools import setup
 
 import sys, os
 from glob import glob
@@ -19,9 +20,9 @@ def main():
         new_names = []
         for name in names[:]:
             path = os.path.join(dirname, name)
-            if "CVS" in path:
+            if ".svn" in path:
                 continue
-            if name == 'CVS': 
+            if name == '.svn': 
                 continue
             elif not os.path.isfile(path): 
                 continue
