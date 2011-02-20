@@ -15,9 +15,6 @@ class TextArea(widget.Widget):
         w = TextArea("Groucho\nHarpo\nChico\nGummo\nZeppo\n\nMarx", 200, 400, 12)
     
     """
-
-    _value = None
-
     def __init__(self,value="",width = 120, height = 30, size=20,**params):
         params.setdefault('cls','input')
         params.setdefault('width', width)
@@ -33,10 +30,13 @@ class TextArea(widget.Widget):
         if not self.style.height: self.style.height = h
         if not self.style.width: self.style.width = w
     
-    def resize(self,width=None,height=None):
-        if (width != None) and (height != None):
-            self.rect = pygame.Rect(self.rect.x, self.rect.y, width, height)
-        return self.rect.w, self.rect.h
+## BUG: This causes textarea to grow every time table._Table_td calculates its
+## size.
+##    def resize(self,width=None,height=None):
+##        if (width != None) and (height != None):
+##            print 'TextArea RESIZE'
+##            self.rect = pygame.Rect(self.rect.x, self.rect.y, width, height)
+##        return self.rect.w, self.rect.h
         
     def paint(self,s):
         
@@ -140,7 +140,8 @@ class TextArea(widget.Widget):
             # If we're on the proper line
             if (line_cnt == self.vpos):
                 # Make sure that we're not trying to go over the edge of the current line
-                if ( self.hpos >= len(line) ):
+##                if ( self.hpos >= len(line) ):
+                if ( self.hpos > len(line) ):
                     self.hpos = len(line) - 1
                 # Set the cursor position
                 self.pos = line_char_start + self.hpos
@@ -182,6 +183,9 @@ class TextArea(widget.Widget):
                 # Then make sure we added the last of the line
                 if (line_start < len( self.value ) ):
                     self.lines.append( self.value[ line_start : len( self.value ) ] )
+                ## NEW: next 2 lines
+                else:
+                    self.lines.append('')
             # If we reached a hard line break
             elif (self.value[inx] == "\n"):
                 # Then make a line break here as well.
@@ -195,13 +199,13 @@ class TextArea(widget.Widget):
                 pass
         
     def _setvalue(self,v):
-        #self.__dict__['value'] = v
-        self._value = v
+        self.__dict__['value'] = v
         self.send(CHANGE)
     
     def event(self,e):
         used = None
         if e.type == KEYDOWN:    
+            used = True
             if e.key == K_BACKSPACE:
                 if self.pos:
                     self._setvalue(self.value[:self.pos-1] + self.value[self.pos:])
@@ -221,10 +225,10 @@ class TextArea(widget.Widget):
                     self.pos = newPos
             elif e.key == K_LEFT:
                 if self.pos > 0: self.pos -= 1
-                used = True
+#                used = True
             elif e.key == K_RIGHT:
                 if self.pos < len(self.value): self.pos += 1
-                used = True
+#                used = True
             elif e.key == K_UP:
                 self.vpos -= 1
                 self.setCursorByHVPos()
@@ -238,6 +242,7 @@ class TextArea(widget.Widget):
 #                pass                
             else:
                 #c = str(e.unicode)
+                used = None
                 try:
                     if (e.key == K_RETURN):
                         c = "\n"
@@ -246,6 +251,7 @@ class TextArea(widget.Widget):
                     else:
                         c = (e.unicode).encode('latin-1')
                     if c:
+                        used = True
                         self._setvalue(self.value[:self.pos] + c + self.value[self.pos:])
                         self.pos += len(c)
                 except: #ignore weird characters
@@ -264,22 +270,15 @@ class TextArea(widget.Widget):
         if self.container.myfocus is self: self.pcls = "focus"
         
         return used
-
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, val):
-        if val == None: 
-            val = ''
-        val = str(val)
-        self.pos = len(val)
-
-        oldval = self._value
-        self._value = val
-        print oldval, "VS", val
-        if (oldval != val):
+    
+    def __setattr__(self,k,v):
+        if k == 'value':
+            if v == None: v = ''
+            v = str(v)
+            self.pos = len(v)
+        _v = self.__dict__.get(k,NOATTR)
+        self.__dict__[k]=v
+        if k == 'value' and _v != NOATTR and _v != v: 
             self.send(CHANGE)
             self.repaint()
             

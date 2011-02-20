@@ -2,18 +2,18 @@
 
 def write(s,font,pos,color,text,border=1):
     """Write text to a surface with a black border"""
-	# Render the text in black, at various offsets to fake a border
+    # Render the text in black, at various offsets to fake a border
     tmp = font.render(text,1,(0,0,0))
     dirs = [(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)]
     for dx,dy in dirs: 
-		s.blit(tmp,(pos[0]+dx*border,pos[1]+dy*border))
-	# Now render the text properly, in the proper color
+        s.blit(tmp,(pos[0]+dx*border,pos[1]+dy*border))
+    # Now render the text properly, in the proper color
     tmp = font.render(text,1,color)
     s.blit(tmp,pos)
 
 def writec(s,font,color,text,border=1):
     """Write centered text to a surface with a black border"""
-	# Center the text within the destination surface
+    # Center the text within the destination surface
     w,h = font.size(text)
     x = (s.get_width()-w)/2
     y = (s.get_height()-h)/2
@@ -36,7 +36,7 @@ def writewrap(s, font, rect, color, text, maxlines=None, wrapchar=False):
     """Write wrapped text on a pygame surface.
 
     maxlines -- specifies the maximum number of lines to write 
-		before stopping
+        before stopping
     wrapchar -- whether to wrap at the character level, or 
         word level
     """

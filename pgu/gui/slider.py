@@ -159,7 +159,7 @@ class HSlider(_slider):
     def __init__(self,value,min,max,size,step=1,**params):
         params.setdefault('cls','hslider')
         _slider.__init__(self,value,_SLIDER_HORIZONTAL,min,max,size,step,**params)
-	
+
 class HScrollBar(table.Table):
     """A horizontal scroll bar."""
 
