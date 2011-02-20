@@ -104,8 +104,8 @@ class Game:
         
         for e in pygame.event.get():
             #NOTE: this might break API?
-	    #if self.event(e): return
-	    if not self.event(e):
+        #if self.event(e): return
+        if not self.event(e):
                 if self.fnc('event',e): return
             
         self.tick()
