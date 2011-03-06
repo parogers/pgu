@@ -140,7 +140,6 @@ class TextArea(widget.Widget):
             # If we're on the proper line
             if (line_cnt == self.vpos):
                 # Make sure that we're not trying to go over the edge of the current line
-##                if ( self.hpos >= len(line) ):
                 if ( self.hpos > len(line) ):
                     self.hpos = len(line) - 1
                 # Set the cursor position
@@ -183,7 +182,6 @@ class TextArea(widget.Widget):
                 # Then make sure we added the last of the line
                 if (line_start < len( self.value ) ):
                     self.lines.append( self.value[ line_start : len( self.value ) ] )
-                ## NEW: next 2 lines
                 else:
                     self.lines.append('')
             # If we reached a hard line break
