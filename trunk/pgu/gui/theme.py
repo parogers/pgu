@@ -321,6 +321,11 @@ class Theme:
     def event(self,w,m):
         def func(e):
             rect = w._rect_content
+            if (not rect):
+                # This should never be the case, but it sometimes happens that _rect_content isn't
+                # set before a mouse event is received. In this case we'll ignore the event.
+                return m(e)
+
             if e.type == MOUSEBUTTONUP or e.type == MOUSEBUTTONDOWN:
                 sub = pygame.event.Event(e.type,{
                     'button':e.button,
@@ -336,8 +341,8 @@ class Theme:
                     'rel':e.rel})
             else:
                 sub = e
-            r = m(sub)
-            return r
+            return m(sub)
+
         return func
     
     def update(self,w,m):
