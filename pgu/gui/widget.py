@@ -1,5 +1,6 @@
-"""
-"""
+"""This modules defines the Widget class, which is the base of the PGU widget
+hierarchy."""
+
 import pygame
 
 from . import pguglobals
@@ -44,6 +45,8 @@ class Widget(object):
     background = None
     # ...
     _rect_content = None
+    # A dictionary of signal callbacks, hashed by signal ID
+    connects = None
     
     def __init__(self, **params): 
         """Create a new Widget instance given the style parameters.
@@ -340,4 +343,5 @@ class Widget(object):
         """Test if the given point hits this widget. Over-ride this function
         for more advanced collision testing."""
         return self.rect.collidepoint(pos)
+
 

@@ -1,5 +1,7 @@
+"""Modules for creating a widget-based user interface. See the examples folder 
+for sample scripts that use this module."""
+
 import pygame
-from pygame.locals import *
 
 # The basestring class was removed in Python 3, but we want to keep it to maintain 
 # compatibility with previous versions of python.
