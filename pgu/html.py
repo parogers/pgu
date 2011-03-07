@@ -2,7 +2,16 @@
 """
 
 import sys
-import htmllib
+
+# Import the html parser code, maintaing compatibility with older versions of python
+try:
+    oldpython = False
+    from html.parser import HTMLParser
+    htmllib = None
+except:
+    import htmllib
+    from htmllib import HTMLParser
+
 import re
 import pygame
 from pygame.locals import *
@@ -54,7 +63,7 @@ class _hr(gui.Color):
         #print self.rect
         #self.rect.w = 1
 
-class _html(htmllib.HTMLParser):
+class _html(HTMLParser):
     def init(self,doc,font,color,_globals,_locals,loader=None):
         self.mystack = []
         self.document = doc
@@ -396,7 +405,6 @@ class _html(htmllib.HTMLParser):
         r = self.attrs_to_map(attrs)
         params = self.map_to_params(r)
         params['style']['padding'] = h
-        print params
 
         self.item.block(0)
         self.item.add(_hr(**params))
@@ -426,7 +434,7 @@ class _html(htmllib.HTMLParser):
             else:
                 self.item.add(w)
         except:
-            print 'handle_image: missing %s'%src
+            print('handle_image: missing %s'%src)
                 
     def handle_data(self,txt):
         if self.type == 'table': return 
@@ -488,7 +496,11 @@ class HTML(gui.Document):
         self._locals = _locals
         
         #font = gui.theme.get("label","","font")
-        p = _html(htmllib.AS_IS,0)
+        if (htmllib):
+            # The constructor is slightly different
+            p = _html(None, 0)
+        else:
+            p = _html()
         p.init(self,self.style.font,self.style.color,_globals,_locals,
                loader=loader)
         p.feed(data) 

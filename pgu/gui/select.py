@@ -3,10 +3,10 @@
 
 import traceback
 
-from const import *
-from button import Button
-from basic import Label, Image
-from table import Table
+from .const import *
+from .button import Button
+from .basic import Label, Image
+from .table import Table
 
 class Select(Table):
     """A combo dropdown box widget.

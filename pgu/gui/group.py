@@ -1,7 +1,7 @@
 """
 """
-from const import *
-import widget
+from .const import *
+from . import widget
 
 class Group(widget.Widget):
     """An object for grouping together Form elements.

@@ -3,8 +3,8 @@
 import pygame
 from pygame.locals import *
 
-from const import *
-import widget
+from .const import *
+from . import widget
 
 class TextArea(widget.Widget):
     """A multi-line text input.
@@ -107,7 +107,8 @@ class TextArea(widget.Widget):
         return r
     
     # This function sets the cursor position according to an x/y value (such as by from a mouse click)
-    def setCursorByXY(self, (x, y)):
+    def setCursorByXY(self, pos):
+        (x, y) = pos
         self.vpos = ((int) (y / self.line_h)) + self.vscroll
         if (self.vpos >= len(self.lines)):
             self.vpos = len(self.lines) - 1

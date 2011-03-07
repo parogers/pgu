@@ -3,8 +3,8 @@
 import pygame
 from pygame.locals import *
 
-from const import *
-import widget
+from .const import *
+from . import widget
 
 class Keysym(widget.Widget):
     """A keysym input. This is deprecated and is scheduled to be removed from PGU."""

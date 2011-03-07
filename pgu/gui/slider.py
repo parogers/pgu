@@ -1,11 +1,11 @@
 import pygame
 from pygame.locals import *
 
-from const import *
-import widget
-import table
-import basic
-import pguglobals
+from .const import *
+from . import widget
+from . import table
+from . import basic
+from . import pguglobals
 
 _SLIDER_HORIZONTAL = 0
 _SLIDER_VERTICAL = 1
