@@ -29,7 +29,7 @@ class StarControl(gui.Table):
 
         def fullscreen_changed(btn):
             #pygame.display.toggle_fullscreen()
-            print "TOGGLE FULLSCREEN"
+            print("TOGGLE FULLSCREEN")
 
         def stars_changed(slider):
             n = slider.value - len(stars)

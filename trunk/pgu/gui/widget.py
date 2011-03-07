@@ -2,8 +2,8 @@
 """
 import pygame
 
-import pguglobals
-import style
+from . import pguglobals
+from . import style
 
 class SignalCallback:
     # The function to call
@@ -93,7 +93,7 @@ class Widget(object):
         self.cls = 'default'
         if 'cls' in params: self.cls = params['cls']
         if 'name' in params:    
-            import form
+            from . import form
             self.name = params['name']
             if form.Form.form:
                 form.Form.form.add(self)
@@ -104,7 +104,7 @@ class Widget(object):
         if params['decorate'] != False:
             if (not pguglobals.app):
                 # TODO - fix this somehow
-                import app
+                from . import app
                 app.App()
             pguglobals.app.theme.decorate(self,params['decorate'])
 
@@ -283,9 +283,20 @@ class Widget(object):
             func = cb.func
             values = list(cb.params)
 
-            nargs = func.func_code.co_argcount
-            names = list(func.func_code.co_varnames)[:nargs]
-            if hasattr(func,'im_class'): names.pop(0)
+            # Attempt to be compatible with previous versions of python
+            try:
+                code = func.__code__
+            except:
+                code = func.func_code
+
+            nargs = code.co_argcount
+            names = list(code.co_varnames)[:nargs]
+
+            # If the function is bound to an instance, remove the first argument name. Again
+            # we keep compatibility with older versions of python.
+            if (hasattr(func, "__self__") and hasattr(func.__self__, "__class__") or 
+                hasattr(func,'im_class')): 
+                names.pop(0)
             
             args = []
             magic = {'_event':event,'_code':code,'_widget':self}

@@ -65,9 +65,9 @@ if __name__ == '__main__':
     ##The dialog's CHANGE event is connected to this function that will display the form values.
     ##::
     def onchange(value):
-        print '-----------'
+        print('-----------')
         for k,v in value.value.items():
-            print k,v
+            print(k,v)
         value.close()
     
     dialog.connect(gui.CHANGE,onchange,dialog)

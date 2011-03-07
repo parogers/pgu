@@ -285,7 +285,12 @@ class App(gui.Desktop):
         self.color_d = ColorDialog(default)
         
         color.connect(gui.CLICK,self.color_d.open,None)
-        self.color_d.connect(gui.CHANGE,gui.action_setvalue,(self.color_d,self.color))
+
+        # Updates the toolbox color picker with the value in the color dialog box
+        def change_cb(*args):
+            self.color.value = self.color_d.value
+        self.color_d.connect(gui.CHANGE, change_cb)
+
         c.add(self.color,0,mode.rect.bottom+spacer)
         self.color.rect.w,self.color.rect.h = self.color.resize()
         #self.color._resize()

@@ -1,8 +1,8 @@
 """
 """
-from const import *
-import table
-import basic, button
+from .const import *
+from . import table
+from . import basic, button
 
 class _Menu_Options(table.Table):
     def __init__(self,menu,**params):
@@ -110,6 +110,6 @@ class Menus(table.Table):
                 m = _Menu(self,basic.Label(mt,cls=menu_cls+".label"),cls=menu_cls)
                 self.add(m,n,0)
                 n += 1
-            print "add", parts[1], cmd, value
+            print ("add", parts[1], cmd, value)
             m.add(basic.Label(parts[1],cls=m.cls+".option.label"),cmd,value)
 

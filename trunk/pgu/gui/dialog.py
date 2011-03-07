@@ -2,10 +2,10 @@
 """
 import os
 
-from const import *
-import table, area
-import basic, input, button
-import pguglobals
+from .const import *
+from . import table, area
+from . import basic, input, button
+from . import pguglobals
 
 class Dialog(table.Table):
     """A dialog window with a title bar and an "close" button on the bar.

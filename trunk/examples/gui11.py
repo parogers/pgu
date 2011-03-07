@@ -18,8 +18,7 @@ def clear_list(arg):
 def remove_list_item(arg):
     v = my_list.value
     if v:
-        #item, item_value = v
-	item = v
+        item = v
         my_list.remove(item)
         my_list.resize()
         my_list.repaint()

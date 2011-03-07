@@ -1,6 +1,6 @@
 """
 """
-import widget
+from . import widget
 
 class Form(widget.Widget):
     """A form that automatically will contain all named widgets.

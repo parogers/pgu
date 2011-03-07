@@ -2,8 +2,8 @@
 """
 import pygame
 
-import container
-import layout
+from . import container
+from . import layout
 
 class _document_widget:
     def __init__(self,w,align=None):

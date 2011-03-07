@@ -18,7 +18,7 @@ c.add(gui.Label("Click on Cuzco's Face!"),0,0)
 img = gui.Image("cuzco.png")
 
 def myfnc(_event,_widget,_code,a,b,c):
-    print _event,_widget,_code,a,b,c
+    print(_event,_widget,_code,a,b,c)
     pos = _event.pos
     img.value.fill((255,0,0),(pos[0],pos[1],2,2))
     img.repaint()

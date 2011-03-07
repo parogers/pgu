@@ -15,9 +15,9 @@ app = gui.Desktop()
 ##::
 fname = "../docs/index.html"
 if not os.path.isfile(fname):
-    print 'to run this demo, the documentation must be built'
-    print '$ cd docs'
-    print '$ python build.py'
+    print('to run this demo, the documentation must be built')
+    print('$ cd docs')
+    print('$ python build.py')
 ##
 else:
 
