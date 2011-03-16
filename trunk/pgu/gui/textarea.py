@@ -203,7 +203,7 @@ class TextArea(widget.Widget):
     
     def event(self,e):
         used = None
-        if e.type == KEYDOWN:    
+        if e.type == KEYDOWN:
             used = True
             if e.key == K_BACKSPACE:
                 if self.pos:
@@ -212,7 +212,7 @@ class TextArea(widget.Widget):
             elif e.key == K_DELETE:
                 if len(self.value) > self.pos:
                     self._setvalue(self.value[:self.pos] + self.value[self.pos+1:])
-            elif e.key == K_HOME: 
+            elif e.key == K_HOME:
                 # Find the previous newline
                 newPos = self.value.rfind('\n', 0, self.pos)
                 if (newPos >= 0):
@@ -248,7 +248,10 @@ class TextArea(widget.Widget):
                     elif (e.key == K_TAB):
                         c = "  "
                     else:
-                        c = (e.unicode).encode('latin-1')
+                        if (type(e.unicode) == str):
+                            c = e.unicode
+                        else:
+                            c = (e.unicode).encode('latin-1')
                     if c:
                         used = True
                         self._setvalue(self.value[:self.pos] + c + self.value[self.pos:])

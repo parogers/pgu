@@ -89,8 +89,12 @@ class Input(widget.Widget):
                 pass
             else:
                 #c = str(e.unicode)
-                try:
+                if (type(e.unicode) == str):
+                    c = e.unicode
+                else:
                     c = (e.unicode).encode('latin-1')
+
+                try:
                     if c:
                         self._setvalue(self.value[:self.pos] + c + self.value[self.pos:])
                         self.pos += 1
