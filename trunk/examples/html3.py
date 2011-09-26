@@ -67,7 +67,7 @@ onchange='form["fullname"].value = "%s, %s"%(form["lastname"].value,form["firstn
 </table>
 
 <center>
-<input type='submit' value='Submit' onclick='print form.results()'>
+<input type='submit' value='Submit' onclick='print(form.results())'>
 </center>
 
 </form>

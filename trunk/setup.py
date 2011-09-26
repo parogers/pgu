@@ -13,24 +13,12 @@ from glob import glob
 #############################################################################
 
 def main():
-    # add data files
+    # Add themes from the data folder
     installdatafiles = []
-    def visit(l, dirname, names):
-        r = []
-        new_names = []
-        for name in names[:]:
-            path = os.path.join(dirname, name)
-            if ".svn" in path:
-                continue
-            if name == '.svn': 
-                continue
-            elif not os.path.isfile(path): 
-                continue
-            r.append(path)
-        if r:
-            l.append((os.path.join('share', 'pgu', dirname[5:]), r))
-
-    os.path.walk('data', visit, installdatafiles)
+    for name in ("default", "gray", "tools"):
+        installdatafiles.append(
+            (os.path.join("share", "pgu", "themes", name), glob(os.path.join("data", "themes", name, "*")))
+        )
 
     #import pprint
     #pprint.pprint(installdatafiles)

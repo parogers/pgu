@@ -65,7 +65,11 @@ c.td(gui.Tool(g,gui.Label('C'),value='c'))
 
 c.tr()
 c.td(gui.Label("Input"))
-c.td(gui.Input(value='Cuzco',size=8),colspan=3)
+def cb():
+    print("Input received")
+w = gui.Input(value='Cuzco',size=8)
+w.connect("activate", cb)
+c.td(w,colspan=3)
 
 c.tr()
 c.td(gui.Label("Slider"))

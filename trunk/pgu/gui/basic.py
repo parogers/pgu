@@ -59,7 +59,7 @@ class Color(widget.Widget):
         widget.Widget.__init__(self,**params)
     
     def paint(self,s):
-        if hasattr(self,'value'): s.fill(self.value)
+        if hasattr(self,'value') and is_color(self.value): s.fill(self.value)
 
     @property
     def value(self):

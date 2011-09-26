@@ -74,19 +74,18 @@ button.label color #000000
 
 slider background slider.png
 slider bar slider.bar.normal.png
-slider:down bar slider.bar.down.png
 slider width 16
 slider height 16
 
 hslider background slider.png
 hslider bar slider.bar.normal.png
-hslider:down bar slider.bar.down.png
+hslider:down bar slider.bar.normal.png
 hslider width 16
 hslider height 16
 
 vslider background slider.png
 vslider bar slider.bar.normal.png
-vslider:down bar slider.bar.down.png
+vslider:down bar slider.bar.normal.png
 vslider width 16
 vslider height 16
 
