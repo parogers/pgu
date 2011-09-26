@@ -4,13 +4,14 @@
 import sys
 
 # Import the html parser code, maintaing compatibility with older versions of python
-try:
-    oldpython = False
-    from html.parser import HTMLParser
-    htmllib = None
-except:
+if (sys.version_info[0] < 3):
+    # Import the old style htmllib parser
     import htmllib
     from htmllib import HTMLParser
+else:
+    # Import the new html.parser module
+    from html.parser import HTMLParser
+    htmllib = None
 
 import re
 import pygame
@@ -93,14 +94,31 @@ class _html(HTMLParser):
         if not self.font: self.font = self.myfont
         if not self.color: self.color = self.mycolor
         
-    def myclose(self,type_):
-        t = None
+    def myclose(self, tag):
         self.mydone()
-        while t != type_:
-            #if len(self.mystack)==0: return
-            t,w = self.mystack.pop()
-        t,w = self.mystack.pop()
-        self.myopen(t,w)
+        n = len(self.mystack)-1
+        while (n >= 0):
+            (t, w) = self.mystack[n]
+            if (t == tag):
+                # Found the tag in the stack. Drop everything from that tag onwards
+                # from the stack.
+                self.mystack = self.mystack[0:n]
+                # Pop off the parent element, then add it back on to set the
+                # font, color, etc.
+                # TODO - tacky
+                t,w = self.mystack.pop()
+                self.myopen(t,w)
+                break
+            n -= 1
+
+#        t = None
+#        while t != type_:
+#            if len(self.mystack)==0:
+#                # Closing a tag that was never opened
+#                break
+#            t,w = self.mystack.pop()
+#        t,w = self.mystack.pop()
+#        self.myopen(t,w)
         
     def myback(self,type_):
         if type(type_) == str: type_ = [type_,]
@@ -363,15 +381,11 @@ class _html(HTMLParser):
     def start_object(self,attrs):
         r = self.attrs_to_map(attrs)
         params = self.map_to_params(r)
-        code = "e = %s(**params)"%r['type']
-        #print code
-        #print params
-        exec(code)
-        #print e
-        #print e.style.width,e.style.height
+        # Use eval to automagically get the class being refered
+        cls = eval(r["type"])
+        e = cls(**params)
         self.map_to_connects(e,r)
         self.item.add(e)
-        
         self._locals[r.get('id',None)] = e
     
     def start_select(self,attrs):
@@ -468,7 +482,39 @@ class _html(HTMLParser):
             w = gui.Image(self.font.render(word,1,self.color))
             self.item.add(w)
             self.item.space(self.font.size(" "))
-            
+
+if (sys.version_info[0] >= 3):
+    # These functions are for compatibility with python 3, where it seems that HTMLParser 
+    # was rewritten to be more general. There is a problem though, since python pre 3 
+    # defines these same functions with an extra argument. So we have to include them
+    # conditionally, depending on whether we're using python 2 or 3. Ugh.
+    def handle_starttag(this, tag, attrs):
+        func = getattr(this, "start_" + tag, None)
+        if (not func):
+            print("ERROR - unrecognized tag %s" % tag)
+            return
+        func(attrs)
+
+    def handle_endtag(this, tag):
+        func = getattr(this, "end_" + tag, None)
+        if (func):
+            func()
+
+    def start_img(this, attrs):
+#        src = ""
+#        align = ""
+#        for (key, value) in attrs:
+#            if (key == "src"): src = value
+#            elif (key == "align"): align = value
+        args = this.attrs_to_map(attrs)
+        src = args.get("src", "")
+        align = args.get("align", "")
+        this.handle_image(src, "", "", align, "", "")
+
+    _html.handle_starttag = handle_starttag
+    _html.handle_endtag = handle_endtag
+    _html.start_img = start_img
+
 
 class HTML(gui.Document):
     """A gui HTML object

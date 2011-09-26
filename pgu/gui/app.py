@@ -36,7 +36,7 @@ class App(container.Container):
         """Create a new application given the (optional) theme instance."""
         self.set_global_app()
 
-        if theme == None: 
+        if theme == None:
             from .theme import Theme
             theme = Theme()
         self.theme = theme
