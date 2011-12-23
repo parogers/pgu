@@ -10,7 +10,12 @@ import sys; sys.path.insert(0, "..")
 
 from pgu import gui
 
-app = gui.Desktop()
+# Load an alternate theme to show how it is done. You can also 
+# specify a path (absolute or relative) to your own custom theme:
+#
+#   app = gui.Desktop(theme=gui.Theme("path/to/theme"))
+#
+app = gui.Desktop(theme=gui.Theme("simple"))
 app.connect(gui.QUIT,app.quit,None)
 
 ##The table code is entered much like HTML.
@@ -21,9 +26,14 @@ c = gui.Table()
 c.tr()
 c.td(gui.Label("Gui Widgets"),colspan=4)
 
+def cb():
+    print("Clicked!")
+btn = gui.Button("Click Me!")
+btn.connect(gui.CLICK, cb)
+
 c.tr()
 c.td(gui.Label("Button"))
-c.td(gui.Button("Click Me!"),colspan=3)
+c.td(btn,colspan=3)
 ##
 
 c.tr()

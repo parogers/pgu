@@ -84,7 +84,7 @@ class Input(widget.Widget):
                 if self.pos < len(self.value): self.pos += 1
                 used = True
             elif e.key == K_RETURN:
-                self.send("activate")
+                self.send(ACTIVATE)
             elif e.key == K_TAB:
                 pass
             else:

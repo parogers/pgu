@@ -34,6 +34,7 @@ CHANGE = pygame.locals.USEREVENT + 5
 OPEN = pygame.locals.USEREVENT + 6
 CLOSE = pygame.locals.USEREVENT + 7
 INIT = 'init'
+ACTIVATE = "activate"
 
 class NOATTR: 
     pass

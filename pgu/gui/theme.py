@@ -12,13 +12,6 @@ from .basic import parse_color, is_color
 
 __file__ = os.path.abspath(__file__)
 
-def _list_themes(dir):
-    d = {}
-    for entry in os.listdir(dir):
-        if os.path.exists(os.path.join(dir, entry, 'config.txt')):
-            d[entry] = os.path.join(dir, entry)
-    return d
-
 class Theme:
     """Theme interface.
     
@@ -26,6 +19,10 @@ class Theme:
     pass it to gui.App via gui.App(theme=MyTheme()).
     
     """
+
+    # Image extensions automatically recognized by the theme class
+    image_extensions = (".gif", ".jpg", ".bmp", ".png", ".tga")
+
     def __init__(self,dirs='default'):
         """Theme constructor.
 
@@ -109,7 +106,6 @@ class Theme:
                     vals = cfg.get(section,attr).strip().split()
                     self.config[cls,pcls,attr] = (dname, vals)
     
-    image_extensions = (".gif", ".jpg", ".bmp", ".png", ".tga")
     def _get(self, cls, pcls, attr):
         key = (cls, pcls, attr)
         if not key in self.config:
@@ -156,7 +152,7 @@ class Theme:
             pcls -- pseudo class, for example "hover", "down", etc.
             attr -- attribute, for example "image", "background", "font", "color", etc.
         
-        This method is called from [[gui-style]]
+        This method is called from gui.style
 
         """
 
@@ -166,22 +162,16 @@ class Theme:
 
         o = (cls, pcls, attr)
         
-        #if o in self.cache: 
-        #    return self.cache[o]
-
         v = self._get(cls, pcls, attr)
         if v: 
-            #self.cache[o] = v
             return v
         
         v = self._get(cls, "", attr)
         if v: 
-            #self.cache[o] = v
             return v
         
         v = self._get("default", "", attr)
         if v: 
-            #self.cache[o] = v
             return v
         
         self.cache[o] = 0
@@ -212,7 +202,7 @@ class Theme:
         return w._spacing
 
         
-    def resize(self,w,m):
+    def resize(self,w,func):
         # Returns the rectangle expanded in each direction
         def expand_rect(rect, left, top, right, bottom):
             return pygame.Rect(rect.x - left, 
@@ -220,7 +210,7 @@ class Theme:
                                rect.w + left + right, 
                                rect.h + top + bottom)
 
-        def func(width=None,height=None):
+        def theme_resize(width=None,height=None):
             s = w.style
             
             pt,pr,pb,pl = (s.padding_top,s.padding_right,
@@ -240,7 +230,7 @@ class Theme:
             ww,hh = None,None
             if width != None: ww = width-ttw
             if height != None: hh = height-tth
-            ww,hh = m(ww,hh)
+            ww,hh = func(ww,hh)
 
             if width == None: width = ww
             if height == None: height = hh
@@ -269,11 +259,13 @@ class Theme:
             w._rect_content = rect
 
             return (w._rect_margin.w, w._rect_margin.h)
-        return func
+        return theme_resize
 
 
-    def paint(self,w,m):
-        def func(s):
+    def paint(self,w,func):
+        # The function that renders the widget according to the theme, then calls the 
+        # widget's own paint function.
+        def theme_paint(s):
 #             if w.disabled:
 #                 if not hasattr(w,'_disabled_bkgr'):
 #                     w._disabled_bkgr = s.convert()
@@ -303,7 +295,7 @@ class Theme:
                 w.background.paint(surface.subsurface(s,w._rect_border))
 
             self.box(w,surface.subsurface(s,w._rect_border))
-            r = m(surface.subsurface(s,w._rect_content))
+            r = func(surface.subsurface(s,w._rect_content))
             
             if w.disabled:
                 s.set_alpha(128)
@@ -316,15 +308,15 @@ class Theme:
             
             w._painted = True
             return r
-        return func
+        return theme_paint
     
-    def event(self,w,m):
-        def func(e):
+    def event(self,w,func):
+        def theme_event(e):
             rect = w._rect_content
             if (not rect):
                 # This should never be the case, but it sometimes happens that _rect_content isn't
                 # set before a mouse event is received. In this case we'll ignore the event.
-                return m(e)
+                return func(e)
 
             if e.type == MOUSEBUTTONUP or e.type == MOUSEBUTTONDOWN:
                 sub = pygame.event.Event(e.type,{
@@ -334,6 +326,7 @@ class Theme:
                 sub = pygame.event.Event(e.type,{
                     'button':e.button,
                     'pos':(e.pos[0]-rect.x,e.pos[1]-rect.y)})
+                print sub
             elif e.type == MOUSEMOTION:
                 sub = pygame.event.Event(e.type,{
                     'buttons':e.buttons,
@@ -341,23 +334,23 @@ class Theme:
                     'rel':e.rel})
             else:
                 sub = e
-            return m(sub)
+            return func(sub)
 
-        return func
+        return theme_event
     
-    def update(self,w,m):
-        def func(s):
+    def update(self,w,func):
+        def theme_update(s):
             if w.disabled: return []
-            r = m(surface.subsurface(s,w._rect_content))
+            r = func(surface.subsurface(s,w._rect_content))
             if type(r) == list:
                 dx,dy = w._rect_content.topleft
                 for rr in r:
                     rr.x,rr.y = rr.x+dx,rr.y+dy
             return r
-        return func
+        return theme_update
         
-    def open(self,w,m):
-        def func(widget=None,x=None,y=None):
+    def open(self,w,func):
+        def theme_open(widget=None,x=None,y=None):
             if not hasattr(w,'_rect_content'):
                 # HACK: so that container.open won't resize again!
                 w.rect.w,w.rect.h = w.resize()
@@ -365,14 +358,9 @@ class Theme:
             ##print w.__class__.__name__, rect
             if x != None: x += rect.x
             if y != None: y += rect.y
-            return m(widget,x,y)
-        return func
-            
-    #def open(self,w,m):
-    #    def func(widget=None):
-    #        return m(widget)
-    #    return func
-        
+            return func(widget,x,y)
+        return theme_open
+
     def decorate(self,widget,level):
         """Interface method -- decorate a widget.
         

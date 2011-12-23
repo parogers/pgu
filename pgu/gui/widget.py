@@ -14,7 +14,7 @@ class SignalCallback:
 
 class Widget(object):
     """Base class for all PGU graphical objects.
-        
+
     Example - Creating your own Widget:
 
         class Draw(gui.Widget):
@@ -239,7 +239,7 @@ class Widget(object):
         
         Example:
             def onclick(value):
-                print 'click', value
+                print ('click', value)
             
             w = Button("PGU!")
             w.connect(gui.CLICK,onclick,'PGU Button Clicked')

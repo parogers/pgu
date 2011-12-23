@@ -4,14 +4,13 @@ Please note that this file is alpha, and is subject to modification in
 future versions of pgu!
 """
 
-print 'pgu.ani','This module is alpha, and is subject to change.'
+print ('pgu.ani - This module is alpha, and is subject to change.')
 
 import math
 import pygame
 
 def _ani_load(tv,name,parts,frames,shape):
     l = len(frames)
-    #print name,parts,l
     n = parts.pop()
     if len(parts):
         s = l/n
@@ -78,7 +77,6 @@ def image_rotate(tv,name,img,shape,angles,diff=0):
             maxx = max(maxx,x2)
             maxy = max(maxy,y2)
         r = pygame.Rect(minx,miny,maxx-minx,maxy-miny)
-        #print r
         #((ww-w)/2,(hh-h)/2,w,h)
         tv.images["%s.%d"%(name,a)] = img2,r
         

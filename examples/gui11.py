@@ -32,7 +32,7 @@ def add_list_item(arg):
 
 
 
-#gui.theme.load('../data/themes/default')
+#theme = gui.Theme('../data/themes/default')
 app = gui.Desktop()
 app.connect(gui.QUIT,app.quit,None)
 
