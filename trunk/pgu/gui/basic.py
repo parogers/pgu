@@ -51,6 +51,7 @@ class Color(widget.Widget):
 
     """
 
+    # The pygame Color instance
     _value = None
     
     def __init__(self,value=None,**params):

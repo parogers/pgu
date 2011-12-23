@@ -1,5 +1,5 @@
-Phil's pyGame Utilities
-=======================
+PGU - PyGame Utilities
+======================
 
 A collection of handy utilities and libraries created by Phil Hassey, released
 under the LGPL v2.1 (see LICENSE.txt for more details). PGU is currently 

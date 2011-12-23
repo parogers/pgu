@@ -10,12 +10,14 @@ from . import pguglobals
 class Container(widget.Widget):
     """The base container widget, can be used as a template as well as stand alone."""
 
+    # The widget in this container that the mouse is hovering over
+    myhover = None
+    # The widget that has input focus in this container
+    myfocus = None
+
     def __init__(self,**params):
         widget.Widget.__init__(self,**params)
-        self.myfocus = None
         self.mywindow = None
-        self.myhover = None
-        #self.background = 0
         self.widgets = []
         self.windows = []
         self.toupdate = {}
@@ -90,13 +92,6 @@ class Container(widget.Widget):
                 print(s.get_width(), s.get_height(), w.rect)
                 print("")
             else:
-#                if (not hasattr(w,'_container_bkgr') or 
-#                    w._container_bkgr.get_size() != sub.get_size()):
-#                         #w._container_bkgr.get_width() == sub.get_width() and 
-#                         #w._container_bkgr.get_height() == sub.get_height())):
-#                    w._container_bkgr = sub.copy()
-#                w._container_bkgr.fill((0,0,0,0))
-#                w._container_bkgr.blit(sub,(0,0))
                 w.paint(sub)
 
         for w in self.windows:

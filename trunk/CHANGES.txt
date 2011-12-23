@@ -2,6 +2,8 @@
 - fixed a python3 compatibility problem with setup.py
 - module html.py now working under python3
 - added an "activate" signal to text input box
+- removed some obsolete files
+- removed html5.py example
 
 0.16.0
 - fixed the documentation generator script so it works with the new docstrings

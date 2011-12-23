@@ -31,6 +31,8 @@ class _button(widget.Widget):
                 sub = pygame.event.Event(CLICK,{'pos':(0,0),'button':1})
                 #self.send(sub.type,sub)
                 self._event(sub)
+                #self.event(sub)
+                #self.click()
             
             self.state = 0
             self.repaint()
@@ -56,6 +58,8 @@ class Button(_button):
     Example:
         w = gui.Button("Click Me")
         w.connect(gui.CLICK, fnc, value)
+        # Assign a new button label
+        w.value = "Hello World"
 
     """
 
@@ -87,7 +91,9 @@ class Button(_button):
         self._value = val
 
         if (val != oldval):
+            # Notify any listeners that we've changed the label
             self.send(CHANGE)
+            # Resize as needed
             self.chsize()
 
     def resize(self,width=None,height=None):

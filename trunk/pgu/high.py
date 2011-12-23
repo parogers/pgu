@@ -23,13 +23,13 @@ class _High:
     
     You can iterate them:
         for e in myhigh:
-            print e.score,e.name,e.data
+            print(e.score,e.name,e.data)
         
     You can modify them:
         myhigh[0].name = 'Cuzco'
     
     You can find out their length:
-        print len(myhigh)
+        print(len(myhigh))
     """
     
     def __init__(self,highs,limit=10):
