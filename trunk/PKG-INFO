@@ -1,11 +1,13 @@
 Metadata-Version: 1.2
 Name: pgu
-Version: 0.15
+Version: 0.18
 Summary: Phil's pyGame Utilities - a collection of handy modules and scripts for PyGame.
 Home-page: http://code.google.com/p/pgu
 Author: Phil Hassey
 Author-email: philhassey@yahoo.com
-License: UNKNOWN
+Maintainer: Peter Rogers
+Maintainer-email: peter.rogers@gmail.com
+License: LGPL v2.1
 Description: Phil's pyGame Utilities - a collection of handy modules and scripts for PyGame.
     
     tileedit  -- edit tga based images

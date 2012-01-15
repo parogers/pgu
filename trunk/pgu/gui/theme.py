@@ -5,9 +5,15 @@
 import os, re
 import pygame
 
+try:
+    from configparser import ConfigParser
+except:
+    from ConfigParser import ConfigParser
+
 from .const import *
 from . import widget
 from . import surface
+from .errors import StyleError
 from .basic import parse_color, is_color
 
 __file__ = os.path.abspath(__file__)
@@ -70,9 +76,14 @@ class Theme:
         dnames.append(os.path.join(os.path.dirname(__file__),"..","..","share","pgu","themes",name)) 
         for dname in dnames:
             if os.path.isdir(dname): break
+
         if not os.path.isdir(dname): 
             raise Exception('could not find theme '+name)
-            
+
+        # Normalize the path to make it look nicer (gets rid of the ..'s)
+        dname = os.path.normpath(dname)
+
+        # Try parsing the theme in the custom txt file format
         fname = os.path.join(dname,"config.txt")
         if os.path.isfile(fname):
             try:
@@ -91,10 +102,12 @@ class Theme:
                     self.config[cls, pcls, attr] = (dname, vals)
             finally:
                 f.close()
+            return
+
+        # Try parsing the theme data as an ini file
         fname = os.path.join(dname,"style.ini")
         if os.path.isfile(fname):
-            import ConfigParser
-            cfg = ConfigParser.ConfigParser()
+            cfg = ConfigParser()
             f = open(fname,'r')
             cfg.readfp(f)
             for section in cfg.sections():
@@ -105,7 +118,11 @@ class Theme:
                 for attr in cfg.options(section):
                     vals = cfg.get(section,attr).strip().split()
                     self.config[cls,pcls,attr] = (dname, vals)
-    
+            return
+
+        # The folder probably doesn't contain a theme
+        raise IOError("Cannot load theme: missing style.ini or config.txt")
+
     def _get(self, cls, pcls, attr):
         key = (cls, pcls, attr)
         if not key in self.config:
@@ -144,7 +161,16 @@ class Theme:
         self.cache[key] = v
         return v
 
+    # TODO - obsolete, use 'getstyle' below instead
     def get(self,cls,pcls,attr):
+        try:
+            return self.getstyle(cls, pcls, attr)
+        except StyleError:
+            return 0
+
+    # Returns the style information, given the class, sub-class and attribute names. 
+    # This raises a StylError if the style isn't found.
+    def getstyle(self, cls, pcls, attr):
         """Interface method -- get the value of a style attribute.
         
         Arguments:
@@ -174,22 +200,22 @@ class Theme:
         if v: 
             return v
         
+        # The style doesn't exist
         self.cache[o] = 0
-        return 0
+        raise StyleError("Style not defined: '%s', '%s', '%s'" % o)
 
-    def box(self,w,s):
-        style = w.style
-        
-        c = (0,0,0)
-        if style.border_color != 0: c = style.border_color
-        w,h = s.get_width(),s.get_height()
-        
-        s.fill(c,(0,0,w,style.border_top))
-        s.fill(c,(0,h-style.border_bottom,w,style.border_bottom))
-        s.fill(c,(0,0,style.border_left,h))
-        s.fill(c,(w-style.border_right,0,style.border_right,h))
-        
-        
+    # Draws a box around the surface in the given style
+    def box(self, style, surf):
+        c = (0, 0, 0)
+        if style.border_color != 0:
+            c = style.border_color
+        w,h = surf.get_size()
+
+        surf.fill(c,(0,0,w,style.border_top))
+        surf.fill(c,(0,h-style.border_bottom,w,style.border_bottom))
+        surf.fill(c,(0,0,style.border_left,h))
+        surf.fill(c,(w-style.border_right,0,style.border_right,h))
+
     def getspacing(self,w):
         # return the top, right, bottom, left spacing around the widget
         if not hasattr(w,'_spacing'): #HACK: assume spacing doesn't change re pcls
@@ -227,21 +253,21 @@ class Theme:
             ttw = left+right
             tth = top+bottom
             
-            ww,hh = None,None
-            if width != None: ww = width-ttw
-            if height != None: hh = height-tth
-            ww,hh = func(ww,hh)
+            tilew,tileh = None,None
+            if width != None: tilew = width-ttw
+            if height != None: tileh = height-tth
+            tilew,tileh = func(tilew,tileh)
 
-            if width == None: width = ww
-            if height == None: height = hh
+            if width == None: width = tilew
+            if height == None: height = tileh
             
             #if the widget hasn't respected the style.width,
             #style height, we'll add in the space for it...
-            width = max(width-ttw, ww, w.style.width)
-            height = max(height-tth, hh, w.style.height)
+            width = max(width-ttw, tilew, w.style.width)
+            height = max(height-tth, tileh, w.style.height)
             
-            #width = max(ww,w.style.width-tw)
-            #height = max(hh,w.style.height-th)
+            #width = max(tilew,w.style.width-tw)
+            #height = max(tileh,w.style.height-th)
 
             r = pygame.Rect(left,top,width,height)
             
@@ -250,7 +276,7 @@ class Theme:
             w._rect_margin = expand_rect(w._rect_border, ml, mt, mr, mb)
 
             # align it within it's zone of power.   
-            rect = pygame.Rect(left, top, ww, hh)
+            rect = pygame.Rect(left, top, tilew, tileh)
             dx = width-rect.w
             dy = height-rect.h
             rect.x += (w.style.align+1)*dx/2
@@ -294,17 +320,12 @@ class Theme:
             if w.background:
                 w.background.paint(surface.subsurface(s,w._rect_border))
 
-            self.box(w,surface.subsurface(s,w._rect_border))
+            self.box(w.style, surface.subsurface(s,w._rect_border))
             r = func(surface.subsurface(s,w._rect_content))
             
             if w.disabled:
                 s.set_alpha(128)
                 orig.blit(s,(0,0))
-            
-#             if w.disabled:
-#                 orig.blit(w._disabled_bkgr,(0,0))
-#                 s.set_alpha(128)
-#                 orig.blit(s,(0,0))
             
             w._painted = True
             return r
@@ -326,7 +347,6 @@ class Theme:
                 sub = pygame.event.Event(e.type,{
                     'button':e.button,
                     'pos':(e.pos[0]-rect.x,e.pos[1]-rect.y)})
-                print sub
             elif e.type == MOUSEMOTION:
                 sub = pygame.event.Event(e.type,{
                     'buttons':e.buttons,
@@ -393,75 +413,88 @@ class Theme:
         w.resize = self.resize(w,w.resize)
         w.open = self.open(w,w.open)
 
-    def render(self,s,box,r):
-        """Interface method - render a special widget feature.
+    def render(self,surf,box,r,size=None,offset=None):
+        """Renders a box using an image.
 
         Arguments:
-            s -- a pygame surface
-            box -- box data, a value returned from Theme.get, typically a surface
-            r -- pygame.Rect with the size that the box data should be rendered
-        
+            surf -- the target pygame surface
+            box -- pygame surface or color
+            r -- pygame rect describing the size of the image to render
+
+        If 'box' is a surface, it is interpreted as a 3x3 grid of tiles. The 
+        corner tiles are rendered in the corners of the box. The side tiles 
+        are used to fill the top, bottom and sides of the box. The centre tile 
+        is used to fill the interior of the box.
         """
-        
+
         if box == 0: return
-        
+
         if is_color(box):
-            s.fill(box,r)
+            surf.fill(box,r)
             return
         
         x,y,w,h=r.x,r.y,r.w,r.h
-        ww,hh=int(box.get_width()/3),int(box.get_height()/3)
-        xx,yy=x+w,y+h
-        src = pygame.rect.Rect(0,0,ww,hh)
-        dest = pygame.rect.Rect(0,0,ww,hh)
-        
-        s.set_clip(pygame.Rect(x+ww,y+hh,w-ww*2,h-hh*2))
-        src.x,src.y = ww,hh
-        for dest.y in range(y+hh,yy-hh,hh):
-            for dest.x in range(x+ww,xx-ww,ww): s.blit(box,dest,src)
-        
-        s.set_clip(pygame.Rect(x+ww,y,w-ww*3,hh))
-        src.x,src.y,dest.y = ww,0,y
-        for dest.x in range(x+ww,xx-ww*2,ww): s.blit(box,dest,src)
-        dest.x = xx-ww*2
-        s.set_clip(pygame.Rect(x+ww,y,w-ww*2,hh))
-        s.blit(box,dest,src)
-        
-        s.set_clip(pygame.Rect(x+ww,yy-hh,w-ww*3,hh))
-        src.x,src.y,dest.y = ww,hh*2,yy-hh
-        for dest.x in range(x+ww,xx-ww*2,ww): s.blit(box,dest,src)
-        dest.x = xx-ww*2
-        s.set_clip(pygame.Rect(x+ww,yy-hh,w-ww*2,hh))
-        s.blit(box,dest,src)
-    
-        s.set_clip(pygame.Rect(x,y+hh,xx,h-hh*3))
-        src.y,src.x,dest.x = hh,0,x
-        for dest.y in range(y+hh,yy-hh*2,hh): s.blit(box,dest,src)
-        dest.y = yy-hh*2
-        s.set_clip(pygame.Rect(x,y+hh,xx,h-hh*2))
-        s.blit(box,dest,src)
-    
-        s.set_clip(pygame.Rect(xx-ww,y+hh,xx,h-hh*3))
-        src.y,src.x,dest.x=hh,ww*2,xx-ww
-        for dest.y in range(y+hh,yy-hh*2,hh): s.blit(box,dest,src)
-        dest.y = yy-hh*2
-        s.set_clip(pygame.Rect(xx-ww,y+hh,xx,h-hh*2))
-        s.blit(box,dest,src)
-        
-        s.set_clip()
-        src.x,src.y,dest.x,dest.y = 0,0,x,y
-        s.blit(box,dest,src)
-        
-        src.x,src.y,dest.x,dest.y = ww*2,0,xx-ww,y
-        s.blit(box,dest,src)
-        
-        src.x,src.y,dest.x,dest.y = 0,hh*2,x,yy-hh
-        s.blit(box,dest,src)
-        
-        src.x,src.y,dest.x,dest.y = ww*2,hh*2,xx-ww,yy-hh
-        s.blit(box,dest,src)
 
+        if (size and offset):
+            pass
+#        destx = x
+#        desty = y
+
+        # Calculate the size of each tile
+        tilew, tileh = int(box.get_width()/3), int(box.get_height()/3)
+        xx, yy = x+w, y+h
+        src = pygame.rect.Rect(0, 0, tilew, tileh)
+        dest = pygame.rect.Rect(0, 0, tilew, tileh)
+
+        # Render the interior of the box
+        surf.set_clip(pygame.Rect(x+tilew, y+tileh, w-tilew*2, h-tileh*2))
+        src.x,src.y = tilew,tileh
+        for dest.y in range(y+tileh,yy-tileh,tileh):
+            for dest.x in range(x+tilew,xx-tilew,tilew): 
+                surf.blit(box,dest,src)
+
+        # Render the top side of the box
+        surf.set_clip(pygame.Rect(x+tilew,y,w-tilew*2,tileh))
+        src.x,src.y,dest.y = tilew,0,y
+        for dest.x in range(x+tilew, xx-tilew*2+tilew, tilew): 
+            surf.blit(box,dest,src)
         
+        # Render the bottom side
+        surf.set_clip(pygame.Rect(x+tilew,yy-tileh,w-tilew*2,tileh))
+        src.x,src.y,dest.y = tilew,tileh*2,yy-tileh
+        for dest.x in range(x+tilew,xx-tilew*2+tilew,tilew): 
+            surf.blit(box,dest,src)
+
+        # Render the left side
+        surf.set_clip(pygame.Rect(x,y+tileh,xx,h-tileh*2))
+        src.y,src.x,dest.x = tileh,0,x
+        for dest.y in range(y+tileh,yy-tileh*2+tileh,tileh): 
+            surf.blit(box,dest,src)
+
+        # Render the right side
+        surf.set_clip(pygame.Rect(xx-tilew,y+tileh,xx,h-tileh*2))
+        src.y,src.x,dest.x=tileh,tilew*2,xx-tilew
+        for dest.y in range(y+tileh,yy-tileh*2+tileh,tileh): 
+            surf.blit(box,dest,src)
+
+        # Render the upper-left corner
+        surf.set_clip()
+        src.x,src.y,dest.x,dest.y = 0,0,x,y
+        surf.blit(box,dest,src)
+        
+        # Render the upper-right corner
+        src.x,src.y,dest.x,dest.y = tilew*2,0,xx-tilew,y
+        surf.blit(box,dest,src)
+        
+        # Render the lower-left corner
+        src.x,src.y,dest.x,dest.y = 0,tileh*2,x,yy-tileh
+        surf.blit(box,dest,src)
+        
+        # Render the lower-right corner
+        src.x,src.y,dest.x,dest.y = tilew*2,tileh*2,xx-tilew,yy-tileh
+        surf.blit(box,dest,src)
+
+
 class Background(widget.Widget):
     def __init__(self,value,theme,**params):
         params['decorate'] = False
@@ -469,11 +502,8 @@ class Background(widget.Widget):
         self.value = value
         self.theme = theme
     
-    def paint(self,s):
+    def paint(self, s, size=None, offset=None):
         r = pygame.Rect(0,0,s.get_width(),s.get_height())
         v = self.value.style.background
-        if is_color(v):
-            s.fill(v)
-        else: 
-            self.theme.render(s,v,r)
+        self.theme.render(s,v,r, size=size, offset=offset)
 

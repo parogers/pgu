@@ -6,6 +6,7 @@ from . import widget
 from . import table
 from . import basic
 from . import pguglobals
+from .errors import PguError
 
 _SLIDER_HORIZONTAL = 0
 _SLIDER_VERTICAL = 1
@@ -17,7 +18,7 @@ class _slider(widget.Widget):
         params.setdefault('cls','slider')
         widget.Widget.__init__(self,**params)
         self.min,self.max,self.value,self.orient,self.size,self.step = min,max,value,orient,size,step
-        
+        self.style.check("bar")
     
     def paint(self,s):
         
@@ -31,7 +32,7 @@ class _slider(widget.Widget):
             r.h = self.size;
             
         self.bar = r
-        
+
         pguglobals.app.theme.render(s,self.style.bar,r)
     
     def event(self,e):
@@ -167,9 +168,12 @@ class HScrollBar(table.Table):
         params.setdefault('cls','hscrollbar')
         
         table.Table.__init__(self,**params)
-        
+
+        # Check that these styles are defined
+        self.style.check("minus")
+        self.style.check("plus")
+
         self.slider = _slider(value,_SLIDER_HORIZONTAL,min,max,size,step=step,cls=self.cls+'.slider')
-        
         self.minus = basic.Image(self.style.minus)
         self.minus.connect(MOUSEBUTTONDOWN,self._click,-1)
         self.slider.connect(CHANGE,self.send,CHANGE)
@@ -266,7 +270,11 @@ class VScrollBar(table.Table):
         params.setdefault('cls','vscrollbar')
         
         table.Table.__init__(self,**params)
-        
+
+        # Check that these styles are defined
+        self.style.check("minus")
+        self.style.check("plus")
+
         self.minus = basic.Image(self.style.minus)
         self.minus.connect(MOUSEBUTTONDOWN,self._click,-1)
         
