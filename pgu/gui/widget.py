@@ -5,6 +5,7 @@ import pygame
 
 from . import pguglobals
 from . import style
+from .errors import PguError
 
 class SignalCallback:
     # The function to call
@@ -44,9 +45,14 @@ class Widget(object):
     # The widget used to paint the background
     background = None
     # ...
+    _rect_margin = None
+    _rect_border = None
+    _rect_padding = None
     _rect_content = None
     # A dictionary of signal callbacks, hashed by signal ID
     connects = None
+    # The area covered by the widget, relative to the parent widget
+    rect = None
     
     def __init__(self, **params): 
         """Create a new Widget instance given the style parameters.
@@ -181,6 +187,7 @@ class Widget(object):
     def repaint(self): 
         """Request a repaint of this Widget."""
         if self.container: self.container.repaint(self)
+        #pguglobals.app.repaint_widget(self)
 
     def repaintall(self):
         """Request a repaint of all Widgets."""
@@ -343,5 +350,4 @@ class Widget(object):
         """Test if the given point hits this widget. Over-ride this function
         for more advanced collision testing."""
         return self.rect.collidepoint(pos)
-
 

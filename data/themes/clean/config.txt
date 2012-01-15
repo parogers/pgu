@@ -1,3 +1,4 @@
+pgu themealpha 1
 desktop background desktop.png
 
 input font Vera.ttf 16 
@@ -6,8 +7,8 @@ input color #000000
 input:focus background input.focus.png
 input padding_left 6
 input padding_right 6
-input padding_top 3
-input padding_bottom 3
+input padding_top 6
+input padding_bottom 6
 
 label font Vera.ttf 16
 label color #000000
@@ -50,44 +51,46 @@ code color #000000
 
 checkbox off checkbox.off.normal.png
 checkbox on checkbox.on.normal.png
-checkbox:down off checkbox.off.down.png
+checkbox:down off checkbox.on.down.png
 checkbox:down on checkbox.on.down.png
 
 switch off checkbox.off.normal.png
 switch on checkbox.on.normal.png
-switch:down off checkbox.off.down.png
+switch:down off checkbox.on.down.png
 switch:down on checkbox.on.down.png
 
 radio off radio.off.normal.png
 radio on radio.on.normal.png
-radio:down off radio.off.down.png
+radio:down off radio.on.down.png
 radio:down on radio.on.down.png
 
 button background button.normal.png
 button:down background button.down.png
 button padding_left 8
 button padding_right 8
-button padding_top 1
-button padding_bottom 1
+button padding_top 8
+button padding_bottom 8
 button.label font Vera.ttf 16
 button.label color #000000
+button down_offset_x 1
+button down_offset_y 1
 
 slider background slider.png
 slider bar slider.bar.normal.png
-slider width 16
-slider height 16
+slider width 20
+slider height 20
 
 hslider background slider.png
 hslider bar slider.bar.normal.png
 hslider:down bar slider.bar.normal.png
-hslider width 16
-hslider height 16
+hslider width 20
+hslider height 20
 
 vslider background slider.png
 vslider bar slider.bar.normal.png
 vslider:down bar slider.bar.normal.png
-vslider width 16
-vslider height 16
+vslider width 20
+vslider height 20
 
 select.selected background select.selected.normal.png
 #select.selected:down background select.selected.down.png
@@ -95,22 +98,19 @@ select.selected padding_left 4
 select.selected padding_right 4
 select.selected padding_top 1
 select.selected padding_bottom 1
+
 select.arrow background select.arrow.normal.png
 select.arrow:down background select.arrow.down.png
-select.arrow padding_left 1
-select.arrow padding_right 1
+select.arrow padding_left 2
+select.arrow padding_right 6
 
 select.options background select.options.png
 select.option background select.option.normal.png
-#select.option:hover background select.option.hover.png
+select.option:hover background select.option.hover.png
 select.option padding_left 4
 select.option padding_right 4
 select.option padding_top 1
 select.option padding_bottom 1
-#select.option border_top 1
-#select.option border_right 1
-#select.option border_bottom 1
-#select.option border_left 1
 
 select.option.label font Vera.ttf 16
 select.option.label color #000000
@@ -145,10 +145,10 @@ keysym padding_bottom 3
 
 tool background tool.normal.png
 tool:down background tool.down.png
-tool padding_left 4
-tool padding_right 4
-tool padding_top 1
-tool padding_bottom 1
+tool padding_left 7
+tool padding_right 7
+tool padding_top 5
+tool padding_bottom 5
 tool.label font Vera.ttf 16
 tool.label color #000000
 
@@ -191,25 +191,28 @@ scrollarea.content padding_left 1
 scrollarea.content padding_right 1
 scrollarea.content padding_top 1
 scrollarea.content padding_bottom 1
-hscrollbar height 15
-##hscrollbar background scroller.slide.h.png
+
+hscrollbar height 24
 hscrollbar background slider.png
-##hscrollbar bar scroller.slide.bar.normal.png
 hscrollbar bar slider.bar.normal.png
-##hscrollbar:down bar scroller.slide.bar.down.png
 hscrollbar minus hslider.left.png
 hscrollbar plus hslider.right.png
+hscrollbar padding_left 4
+hscrollbar padding_right 4
+hscrollbar.slider bar slider.bar.normal.png
+hscrollbar.slider width 20
+hscrollbar.slider height 20
 
-
-vscrollbar width 15
-##vscrollbar background scroller.slide.v.png
+vscrollbar width 20
 vscrollbar background slider.png
-##vscrollbar bar scroller.slide.bar.normal.png
 vscrollbar bar slider.bar.normal.png
-##vscrollbar:down bar scroller.slide.bar.down.png
 vscrollbar minus vslider.up.png
 vscrollbar plus vslider.down.png
-
+vscrollbar padding_top 4
+vscrollbar padding_bottom 4
+vscrollbar.slider bar slider.bar.normal.png
+vscrollbar.slider width 20
+vscrollbar.slider height 20
 
 list.item background list.item.normal.png
 #list.item:down background list.item.down.png
@@ -247,6 +250,4 @@ filedialog.input padding_right 6
 filedialog.input padding_top 3
 filedialog.input padding_bottom 3
 
-dialog.title.label font Vera.ttf 16
-dialog.title.label color #000000
 

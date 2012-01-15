@@ -45,9 +45,8 @@ class ColorDialog(gui.Dialog):
     ##The custom adjust handler.
     ##::
     def adjust(self,value):
-        n,e = value
-        self.value[n] = e.value
-        #self.repaint() 
+        (num, slider) = value
+        self.value[num] = slider.value
         self.color.repaint()
         self.send(gui.CHANGE)
     ##
@@ -66,3 +65,4 @@ if __name__ == '__main__':
     c.td(e)
     
     app.run(c)
+

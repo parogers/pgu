@@ -1,10 +1,12 @@
 """Defines the top-level application widget"""
 
 import pygame
+import os
 from pygame.locals import *
 
 from . import pguglobals
 from . import container
+from .theme import Theme
 from .const import *
 
 class App(container.Container):
@@ -36,10 +38,17 @@ class App(container.Container):
         """Create a new application given the (optional) theme instance."""
         self.set_global_app()
 
-        if theme == None:
-            from .theme import Theme
-            theme = Theme()
-        self.theme = theme
+        if (not theme):
+            name = os.getenv("PGU_THEME", "").strip()
+            if (name):
+                # Use the environment variable defined theme
+                self.theme = Theme(name)
+            else:
+                # Default theme
+                self.theme = Theme()
+        else:
+            # Use the user-supplied theme
+            self.theme = theme
         
         params['decorate'] = 'app'
         container.Container.__init__(self,**params)
@@ -239,7 +248,7 @@ class App(container.Container):
     def reupdate(self,w=None): 
         pass
 
-    def repaint(self,w=None): 
+    def repaint(self,w=None):
         self._repaint = True
 
     def repaintall(self): 

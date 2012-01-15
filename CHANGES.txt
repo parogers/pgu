@@ -1,3 +1,13 @@
+0.18.0
+- added "clean" theme with experimental alpha support
+- added pngs missing in "gray" theme
+- added various checks for required style information
+- added "down_offset" style for shifting button contents when clicked
+- added support for PGU_THEME environment variable
+- added code for handling widgets that need alpha blending
+- bug fix in basic.is_color
+- bug fix in basic.Label.set_font
+
 0.17.0
 - fixed a python3 compatibility problem with setup.py
 - module html.py now working under python3

@@ -74,11 +74,11 @@ class FileDialog(Dialog):
 
         """
 
-        cls1 = 'filedialog'
+        cls1 = "filedialog"
         if not path: self.curdir = os.getcwd()
         else: self.curdir = path
         self.dir_img = basic.Image(
-            pguglobals.app.theme.get(cls1+'.folder', '', 'image'))
+            pguglobals.app.theme.get(cls1+".folder", "", 'image'))
         td_style = {'padding_left': 4,
                     'padding_right': 4,
                     'padding_top': 2,

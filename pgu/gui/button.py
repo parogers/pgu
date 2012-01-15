@@ -102,8 +102,13 @@ class Button(_button):
         return self.value.rect.w,self.value.rect.h
 
     def paint(self,s):
+        rect = self.value.rect
+        if (self.pcls == "down"):
+            # Shift the contents down to emphasize the button being pressed. This
+            # is defined in the theme config file.
+            rect = rect.move((self.style.down_offset_x, self.style.down_offset_y))
         self.value.pcls = self.pcls
-        self.value.paint(surface.subsurface(s,self.value.rect))
+        self.value.paint(surface.subsurface(s, rect))
 
 
 class Switch(_button):

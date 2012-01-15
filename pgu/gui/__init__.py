@@ -10,6 +10,8 @@ try:
 except KeyError:
     __builtins__["basestring"] = str
 
+from .errors import *
+
 from .theme import Theme
 from .style import Style
 from .widget import Widget
@@ -39,3 +41,4 @@ from .dialog import Dialog, FileDialog
 from .textarea import TextArea
 
 from .deprecated import Toolbox, action_open, action_setvalue, action_quit, action_exec
+

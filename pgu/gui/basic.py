@@ -1,10 +1,19 @@
-"""These widgets are all grouped together because they are non-interactive widgets.
+"""Basic widgets and various utility functions.
 """
+
+###########
+# Imports #
+###########
 
 import pygame
 
 from .const import *
 from . import widget
+from .errors import PguError
+
+#############
+# Functions #
+#############
 
 # Turns a descriptive string or a tuple into a pygame color
 def parse_color(desc):
@@ -22,7 +31,7 @@ def parse_color(desc):
 def is_color(col):
     # In every version of pygame (up to 1.8.1 so far) will interpret
     # a tuple as a color.
-    if (type(col) == tuple):
+    if (type(col) == tuple or type(col) == list):
         return col
     if (hasattr(pygame, "Color") and type(pygame.Color) == type):
         # This is a recent version of pygame that uses a proper type
@@ -30,6 +39,10 @@ def is_color(col):
         return (isinstance(col, pygame.Color))
     # Otherwise, this version of pygame only supports tuple colors
     return False
+
+###########
+# Classes #
+###########
 
 class Spacer(widget.Widget):
     """An invisible space widget."""
@@ -60,7 +73,8 @@ class Color(widget.Widget):
         widget.Widget.__init__(self,**params)
     
     def paint(self,s):
-        if hasattr(self,'value') and is_color(self.value): s.fill(self.value)
+        if hasattr(self,'value') and is_color(self.value): 
+            s.fill(self.value)
 
     @property
     def value(self):
@@ -86,6 +100,7 @@ class Label(widget.Widget):
         params.setdefault('focusable', False)
         params.setdefault('cls', 'label')
         widget.Widget.__init__(self, **params)
+        self.style.check("font")
         self.value = value
         self.font = self.style.font
         self.style.width, self.style.height = self.font.size(self.value)
@@ -102,9 +117,9 @@ class Label(widget.Widget):
 
     def set_font(self, font):
         """Set the font used to render this label."""
-        this.font = font
+        self.font = font
         # Signal to the application that we need a resize
-        this.chsize()
+        self.chsize()
 
     def resize(self,width=None,height=None):
         # Calculate the size of the rendered text
@@ -118,8 +133,16 @@ class Image(widget.Widget):
     def __init__(self,value,**params):
         params.setdefault('focusable',False)
         widget.Widget.__init__(self,**params)
-        if type(value) == str: value = pygame.image.load(value)
-        
+
+        if (not value):
+            raise PguError("Image widget takes a path or pygame surface as first argument")
+
+        if (isinstance(value, basestring)):
+            # Assume the argument is a path
+            value = pygame.image.load(value)
+            if (not value):
+                raise PguError("Cannot load the image '%s'" % value)
+
         ow,oh = iw,ih = value.get_width(),value.get_height()
         sw,sh = self.style.width,self.style.height
         

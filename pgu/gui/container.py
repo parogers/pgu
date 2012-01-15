@@ -1,4 +1,4 @@
-"""
+"""Defines the Container class which is the base class for all widgets that contain other widgets.
 """
 import pygame
 from pygame.locals import *
@@ -6,6 +6,8 @@ from pygame.locals import *
 from .const import *
 from . import widget, surface
 from . import pguglobals
+from .surface import ProxySurface
+from .errors import StyleError
 
 class Container(widget.Widget):
     """The base container widget, can be used as a template as well as stand alone."""
@@ -14,10 +16,11 @@ class Container(widget.Widget):
     myhover = None
     # The widget that has input focus in this container
     myfocus = None
+    # The currently open window
+    mywindow = None
 
     def __init__(self,**params):
         widget.Widget.__init__(self,**params)
-        self.mywindow = None
         self.widgets = []
         self.windows = []
         self.toupdate = {}
@@ -28,46 +31,92 @@ class Container(widget.Widget):
         
         if self.myfocus: self.toupdate[self.myfocus] = self.myfocus
         
+        # Paint all child widgets, skipping over the currently open window (if any)
         for w in self.topaint:
             if w is self.mywindow:
                 continue
-            else:
-                sub = surface.subsurface(s,w.rect)
-                #if (hasattr(w, "_container_bkgr")):
-                #    sub.blit(w._container_bkgr,(0,0))
-                w.paint(sub)
-                updates.append(pygame.rect.Rect(w.rect))
+            sub = surface.subsurface(s,w.rect)
+            #if (hasattr(w, "_container_bkgr")):
+            #    sub.blit(w._container_bkgr,(0,0))
+
+            # Check for the theme alpha hack. This is needed (for now) to accomodate rendering
+            # images with alpha blending (eg alpha value between fully opaque and fully transparent). 
+            # Normally in PGU when a widget changes state (eg normal to highlighted state) the new 
+            # widget appearance is rendered directly overtop of the old image. This usually works okay.
+            #
+            # However, if the images have a different shape, then the new image may fail to 
+            # completely paint over the old image, leaving bits behind. As well, if the images use
+            # alpha blending you have a similar situation where the old image isn't completely
+            # covered by the new image (since alpha blending preserves some of the pixel data). The
+            # work-around is to paint the background behind the image, then paint the new image.
+            # And that's what this hack does.
+            try:
+                # This hack isn't perfect and so it's not enabled by default, but only by
+                # themes that explicitly request it.
+                alpha = pguglobals.app.theme.getstyle("pgu", "", "themealpha")
+            except StyleError,e:
+                alpha = False
+
+            if (alpha):
+                # Look for the first parent container that has a rendered background
+                cnt = self
+                (x, y) = w._rect_content.topleft
+                while (cnt and not cnt.background):
+                    cnt = cnt.container
+
+#                if (cnt and cnt.background):
+#                    if (cnt._rect_content):
+#                        x += cnt._rect_content.left
+#                        y += cnt._rect_content.top
+#                    r1 = cnt.get_abs_rect()
+#                    r2 = w.get_abs_rect()
+#                    x = r2.left - r1.left
+#                    y = r2.top - r1.top
+#                    subrect = (x, y, sub.get_width(), sub.get_height())
+#                    tmp = pygame.Surface(r1.size).convert_alpha()
+#                    tmp.set_clip(subrect)
+#                    cnt.background.paint(tmp)
+#                    tmp.set_clip()
+#                    sub.blit(tmp, (0,0), subrect)
+                if (cnt):
+                    # Paint the background. This works reasonably okay but it's not exactly correct.
+                    r1 = cnt.get_abs_rect()
+                    r2 = w.get_abs_rect()
+                    x = r2.left - r1.left
+                    y = r2.top - r1.top
+                    cnt.background.paint(sub) #, size=r1.size, offset=(x, y))
+
+            w.paint(sub)
+            updates.append(pygame.rect.Rect(w.rect))
         
+        # Update the child widgets, excluding the open window
         for w in self.toupdate:
             if w is self.mywindow:
                 continue
-            else:            
-                us = w.update(surface.subsurface(s,w.rect))
+            us = w.update(surface.subsurface(s,w.rect))
             if us:
                 for u in us:
                     updates.append(pygame.rect.Rect(u.x + w.rect.x,u.y+w.rect.y,u.w,u.h))
-        
-        for w in self.topaint:
-            if w is self.mywindow:
-                w.paint(self.top_surface(s,w))
-                updates.append(pygame.rect.Rect(w.rect))
-            else:
-                continue 
-        
-        for w in self.toupdate:
-            if w is self.mywindow:
-                us = w.update(self.top_surface(s,w))
-            else:            
-                continue 
+
+        # Now handle the open window (if any)        
+        if self.mywindow:
+            # Render the window
+            self.mywindow.paint(self.top_surface(s,self.mywindow))
+            updates.append(pygame.rect.Rect(self.mywindow.rect))
+            # Update the surface
+            us = self.mywindow.update(self.top_surface(s,self.mywindow))
             if us:
                 for u in us:
-                    updates.append(pygame.rect.Rect(u.x + w.rect.x,u.y+w.rect.y,u.w,u.h))
+                    updates.append(pygame.rect.Rect(
+                        u.x + self.mywindow.rect.x,
+                        u.y + self.mywindow.rect.y,
+                        u.w, u.h))
         
         self.topaint = {}
         self.toupdate = {}
         
         return updates
-    
+
     def repaint(self,w=None):
         if not w:
             return widget.Widget.repaint(self)

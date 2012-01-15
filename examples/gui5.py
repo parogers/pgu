@@ -1,4 +1,4 @@
-"""<title>Tables, Widgets, and Groups!</title>
+"""Tables, Widgets, and Groups!
 An example of tables and most of the included widgets.
 """
 
@@ -15,7 +15,7 @@ from pgu import gui
 #
 #   app = gui.Desktop(theme=gui.Theme("path/to/theme"))
 #
-app = gui.Desktop(theme=gui.Theme("simple"))
+app = gui.Desktop()
 app.connect(gui.QUIT,app.quit,None)
 
 ##The table code is entered much like HTML.
@@ -83,7 +83,7 @@ c.td(w,colspan=3)
 
 c.tr()
 c.td(gui.Label("Slider"))
-c.td(gui.HSlider(value=23,min=0,max=100,size=20,height=16,width=120),colspan=3)
+c.td(gui.HSlider(value=23,min=0,max=100,size=20,width=120),colspan=3)
 
 c.tr()
 c.td(gui.Label("Keysym"))
@@ -96,3 +96,4 @@ c.tr()
 c.td(gui.TextArea(value="Cuzco the Goat", width=150, height=70), colspan=4)
 
 app.run(c)
+
