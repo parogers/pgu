@@ -2,6 +2,8 @@
 
 """
 """
+
+import StringIO
 import os, re
 import pygame
 
@@ -18,13 +20,24 @@ from .basic import parse_color, is_color
 
 __file__ = os.path.abspath(__file__)
 
-class Theme:
+class Theme(object):
     """Theme interface.
     
     If you wish to create your own theme, create a class with this interface, and 
     pass it to gui.App via gui.App(theme=MyTheme()).
     
     """
+
+    # The cache of style information hashed by the tuple (cls, pcls, attr) where
+    #   cls = the class name (eg button)
+    #   pcls = the psuedo-class name (eg hover)
+    #   attr = the attribute name (eg font)
+    config = None
+
+    # A cache of previously created font instances hashed by name and size. This is
+    # maintained in addition to the 'config' cache, since the same font (and size)
+    # can be used by multiple widgets.
+    fontCache = None
 
     # Image extensions automatically recognized by the theme class
     image_extensions = (".gif", ".jpg", ".bmp", ".png", ".tga")
@@ -58,8 +71,6 @@ class Theme:
             self._loaded.append(d)
     
     def _load(self, name):
-        #theme_dir = themes[name]
-        
         #try to load the local dir, or absolute path
         dnames = [name]
         
@@ -78,12 +89,22 @@ class Theme:
             if os.path.isdir(dname): break
 
         if not os.path.isdir(dname): 
-            raise Exception('could not find theme '+name)
+            raise Exception("Could not find theme: %s" % name)
 
         # Normalize the path to make it look nicer (gets rid of the ..'s)
         dname = os.path.normpath(dname)
 
-        # Try parsing the theme in the custom txt file format
+        # Empty the font cache
+        self.fontCache = {}
+
+        # Try parsing the theme data as an ini file
+        fname = os.path.join(dname,"style.ini")
+        if os.path.isfile(fname):
+            txt = open(fname).read()
+            self.configure(txt, path=dname)
+            return
+
+        # Fall back to  parsing the theme in the custom txt file format
         fname = os.path.join(dname,"config.txt")
         if os.path.isfile(fname):
             try:
@@ -99,29 +120,13 @@ class Theme:
                     if (":" in cls):
                         (cls, pcls) = cls.split(":")
 
-                    self.config[cls, pcls, attr] = (dname, vals)
+                    self.config[cls, pcls, attr] = (dname, " ".join(vals))
             finally:
                 f.close()
             return
 
-        # Try parsing the theme data as an ini file
-        fname = os.path.join(dname,"style.ini")
-        if os.path.isfile(fname):
-            cfg = ConfigParser()
-            f = open(fname,'r')
-            cfg.readfp(f)
-            for section in cfg.sections():
-                cls = section
-                pcls = ''
-                if cls.find(":")>=0:
-                    cls,pcls = cls.split(":")
-                for attr in cfg.options(section):
-                    vals = cfg.get(section,attr).strip().split()
-                    self.config[cls,pcls,attr] = (dname, vals)
-            return
-
         # The folder probably doesn't contain a theme
-        raise IOError("Cannot load theme: missing style.ini or config.txt")
+        raise IOError("Cannot load theme: missing style.ini")
 
     def _get(self, cls, pcls, attr):
         key = (cls, pcls, attr)
@@ -132,32 +137,42 @@ class Theme:
             # This property is already in the cache
             return self.cache[key]
 
-        (dname, vals) = self.config[key]
+        (dname, value) = self.config[key]
 
-        if (os.path.splitext(vals[0].lower())[1] in self.image_extensions):
+        if (os.path.splitext(str(value).lower())[1] in self.image_extensions):
             # This is an image attribute
-            v = pygame.image.load(os.path.join(dname, vals[0]))
+            v = pygame.image.load(os.path.join(dname, value))
 
         elif (attr == "color" or attr == "background"):
             # This is a color value
-            v = parse_color(vals[0])
+            v = parse_color(value)
 
         elif (attr == "font"):
             # This is a font value
-            name = vals[0]
-            size = int(vals[1])
-            if (name.endswith(".ttf")):
-                # Load the font from a file
-                v = pygame.font.Font(os.path.join(dname, name), size)
-            else:
-                # Must be a system font
-                v = pygame.font.SysFont(name, size)
+            args = value.split()
+            name = args[0]
+            try:
+                (tmp, size) = self.config[cls, pcls, "font-size"]
+                size = int(size)
+            except KeyError:
+                size = int(args[1])
+            try:
+                v = self.fontCache[name, size]
+            except KeyError:
+                if (name.lower().endswith(".ttf")):
+                    # Load the font from a file
+                    v = pygame.font.Font(os.path.join(dname, name), size)
+                else:
+                    # Must be a system font
+                    v = pygame.font.SysFont(name, size)
+                # Cache the font for later
+                self.fontCache[name, size] = v
 
         else:
             try:
-                v = int(vals[0])
+                v = int(value)
             except:
-                v = vals[0]
+                v = value
         self.cache[key] = v
         return v
 
@@ -204,6 +219,25 @@ class Theme:
         self.cache[o] = 0
         raise StyleError("Style not defined: '%s', '%s', '%s'" % o)
 
+    def putstyle(self, cls, pcls, attr, *values):
+        self.config[cls, pcls, attr] = [".", values]
+
+    def configure(self, txt, path="."):
+        cfg = ConfigParser()
+        cfg.readfp(StringIO.StringIO(txt))
+        for section in cfg.sections():
+            cls = section
+            pcls = ''
+            if cls.find(":")>=0:
+                cls,pcls = cls.split(":")
+            for attr in cfg.options(section):
+                value = cfg.get(section,attr).strip()
+                key = (cls,pcls,attr)
+                self.config[key] = (path, value)
+                if (key in self.cache):
+                    # Remove the style from the cache
+                    del self.cache[key]
+
     # Draws a box around the surface in the given style
     def box(self, style, surf):
         c = (0, 0, 0)
@@ -226,7 +260,6 @@ class Theme:
             xl = s.margin_left+s.border_left+s.padding_left
             w._spacing = xt,xr,xb,xl
         return w._spacing
-
         
     def resize(self,w,func):
         # Returns the rectangle expanded in each direction
@@ -426,6 +459,8 @@ class Theme:
         are used to fill the top, bottom and sides of the box. The centre tile 
         is used to fill the interior of the box.
         """
+
+        #print "render", surf, box, r
 
         if box == 0: return
 
