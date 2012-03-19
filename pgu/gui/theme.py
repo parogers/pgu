@@ -39,6 +39,9 @@ class Theme(object):
     # can be used by multiple widgets.
     fontCache = None
 
+    # The directory where the loaded theme is located
+    baseThemePath = None
+
     # Image extensions automatically recognized by the theme class
     image_extensions = (".gif", ".jpg", ".bmp", ".png", ".tga")
 
@@ -98,8 +101,9 @@ class Theme(object):
         self.fontCache = {}
 
         # Try parsing the theme data as an ini file
-        fname = os.path.join(dname,"style.ini")
+        fname = os.path.join(dname, "style.ini")
         if os.path.isfile(fname):
+            self.baseThemePath = dname
             txt = open(fname).read()
             self.configure(txt, path=dname)
             return
@@ -107,6 +111,7 @@ class Theme(object):
         # Fall back to  parsing the theme in the custom txt file format
         fname = os.path.join(dname,"config.txt")
         if os.path.isfile(fname):
+            self.baseThemePath = dname
             try:
                 f = open(fname)
                 for line in f.readlines():
@@ -151,11 +156,7 @@ class Theme(object):
             # This is a font value
             args = value.split()
             name = args[0]
-            try:
-                (tmp, size) = self.config[cls, pcls, "font-size"]
-                size = int(size)
-            except KeyError:
-                size = int(args[1])
+            size = int(args[1])
             try:
                 v = self.fontCache[name, size]
             except KeyError:
@@ -216,13 +217,15 @@ class Theme(object):
             return v
         
         # The style doesn't exist
-        self.cache[o] = 0
+        #self.cache[o] = 0
         raise StyleError("Style not defined: '%s', '%s', '%s'" % o)
 
     def putstyle(self, cls, pcls, attr, *values):
         self.config[cls, pcls, attr] = [".", values]
 
-    def configure(self, txt, path="."):
+    def configure(self, txt, path=None):
+        if (not path):
+            path = self.baseThemePath
         cfg = ConfigParser()
         cfg.readfp(StringIO.StringIO(txt))
         for section in cfg.sections():
@@ -239,16 +242,17 @@ class Theme(object):
                     del self.cache[key]
 
     # Draws a box around the surface in the given style
-    def box(self, style, surf):
-        c = (0, 0, 0)
-        if style.border_color != 0:
-            c = style.border_color
-        w,h = surf.get_size()
+    def box(self, style, surf, rect):
+        color = style.border_color
+        if (not color):
+            color = (0, 0, 0)
+        (x, y) = rect.topleft
+        (w, h) = rect.size
 
-        surf.fill(c,(0,0,w,style.border_top))
-        surf.fill(c,(0,h-style.border_bottom,w,style.border_bottom))
-        surf.fill(c,(0,0,style.border_left,h))
-        surf.fill(c,(w-style.border_right,0,style.border_right,h))
+        surf.fill(color, (x, y, rect.width, style.border_top))
+        surf.fill(color, (x, y+h-style.border_bottom, w, style.border_bottom))
+        surf.fill(color, (x, y, style.border_left, h))
+        surf.fill(color, (x+w-style.border_right, y, style.border_right, h))
 
     def getspacing(self,w):
         # return the top, right, bottom, left spacing around the widget
@@ -353,7 +357,7 @@ class Theme(object):
             if w.background:
                 w.background.paint(surface.subsurface(s,w._rect_border))
 
-            self.box(w.style, surface.subsurface(s,w._rect_border))
+            self.box(w.style, s, w._rect_border) #surface.subsurface(s,w._rect_border))
             r = func(surface.subsurface(s,w._rect_content))
             
             if w.disabled:
@@ -459,8 +463,6 @@ class Theme(object):
         are used to fill the top, bottom and sides of the box. The centre tile 
         is used to fill the interior of the box.
         """
-
-        #print "render", surf, box, r
 
         if box == 0: return
 

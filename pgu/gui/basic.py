@@ -102,12 +102,12 @@ class Label(widget.Widget):
         widget.Widget.__init__(self, **params)
         self.style.check("font")
         self.value = value
-        self.font = self.style.font
         self.style.width, self.style.height = self.font.size(self.value)
     
     def paint(self,s):
         """Renders the label onto the given surface in the upper-left corner."""
-        s.blit(self.font.render(self.value, 1, self.style.color),(0,0))
+        #s.blit(self.font.render(self.value, 1, self.style.color),(0,0))
+        s.blit(self.style.font.render(self.value, 1, self.style.color),(0,0))
 
     def set_text(self, txt):
         """Set the text of this label."""
@@ -116,16 +116,23 @@ class Label(widget.Widget):
         self.chsize()
 
     def set_font(self, font):
-        """Set the font used to render this label."""
+        """Set the font used to render this label. Obsolete: use label.font instead"""
         self.font = font
-        # Signal to the application that we need a resize
-        self.chsize()
 
     def resize(self,width=None,height=None):
         # Calculate the size of the rendered text
         (self.style.width, self.style.height) = self.font.size(self.value)
         return (self.style.width, self.style.height)
 
+    @property
+    def font(self):
+        return self.style.font
+
+    @font.setter
+    def font(self, font):
+        self.style.font = font
+        # Signal to the application that we need a resize
+        self.chsize()
 
 class Image(widget.Widget):
     """An image widget. The constructor takes a file name or a pygame surface."""

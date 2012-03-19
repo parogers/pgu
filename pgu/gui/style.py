@@ -51,15 +51,15 @@ class Style(object):
             return False
 
     def getstyle(self, attr):
+#        if (attr == "font"):
+#            print "getstyle", self.widget, self.widget.name
+
         if (hasattr(self.widget, "name") and self.widget.name):
-            cls = self.widget.cls
-            pcls = self.widget.pcls
-            if (pcls): pcls += "#" + self.widget.name
-            else: cls += "#" + self.widget.name
             try:
-                return pguglobals.app.theme.getstyle(cls, pcls, attr)
+                return pguglobals.app.theme.getstyle(self.widget.cls+"#"+self.widget.name, self.widget.pcls, attr)
             except StyleError:
                 pass
+        #print "fallback", self.widget.cls, self.widget.pcls, attr
         return pguglobals.app.theme.getstyle(self.widget.cls, self.widget.pcls, attr)
 
     def __getattr__(self, attr):
