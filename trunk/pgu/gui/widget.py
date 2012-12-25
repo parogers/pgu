@@ -297,7 +297,12 @@ class Widget(object):
             try:
                 code = func.__code__
             except:
-                code = func.func_code
+                try:
+                    code = func.func_code
+                except:
+                    # Nothing to inspect, so just call the object and hope for the best
+                    func(*cb.params)
+                    continue
 
             nargs = code.co_argcount
             names = list(code.co_varnames)[:nargs]
