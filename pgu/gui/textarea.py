@@ -15,21 +15,23 @@ class TextArea(widget.Widget):
         w = TextArea("Groucho\nHarpo\nChico\nGummo\nZeppo\n\nMarx", 200, 400, 12)
     
     """
+
     def __init__(self,value="",width = 120, height = 30, size=20,**params):
         params.setdefault('cls','input')
         params.setdefault('width', width)
         params.setdefault('height', height)
-        
+
         widget.Widget.__init__(self,**params)
         self.value = value                # The value of the TextArea
         self.pos = len(str(value))        # The position of the cursor
         self.vscroll = 0                # The number of lines that the TextArea is currently scrolled
         self.font = self.style.font        # The font used for rendering the text
         self.cursor_w = 2                 # Cursor width (NOTE: should be in a style)
+        self.editable = params.get("editable", True)
         w,h = self.font.size("e"*size)    
         if not self.style.height: self.style.height = h
         if not self.style.width: self.style.width = w
-    
+
 ## BUG: This causes textarea to grow every time table._Table_td calculates its
 ## size.
 ##    def resize(self,width=None,height=None):
@@ -203,7 +205,7 @@ class TextArea(widget.Widget):
     
     def event(self,e):
         used = None
-        if e.type == KEYDOWN:
+        if self.editable and e.type == KEYDOWN:
             used = True
             if e.key == K_BACKSPACE:
                 if self.pos:
@@ -259,7 +261,7 @@ class TextArea(widget.Widget):
                 except: #ignore weird characters
                     pass
             self.repaint()
-        elif e.type == MOUSEBUTTONDOWN:
+        elif self.editable and e.type == MOUSEBUTTONDOWN:
             self.setCursorByXY(e.pos)
             self.repaint()
             
@@ -269,8 +271,9 @@ class TextArea(widget.Widget):
             self.repaint()
         
         self.pcls = ""
-        if self.container.myfocus is self: self.pcls = "focus"
-        
+        if self.editable and self.container.myfocus is self:
+            self.pcls = "focus"
+
         return used
     
     def __setattr__(self,k,v):
