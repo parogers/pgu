@@ -136,9 +136,10 @@ class App(container.Container):
         self.widgets.append(w)
         w.container = self
         self.focus(w)
-        
-        pygame.key.set_repeat(500,30)
-        
+
+        # Set a default key repeat rate (makes text input more intuitive)
+        pygame.key.set_repeat(500, 30)
+
         self._repaint = True
         self._quit = False
         

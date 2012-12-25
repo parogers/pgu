@@ -5,6 +5,7 @@ import sys
 
 from .const import *
 from . import container
+from .style import StyleError
 
 class Table(container.Container):
     """A table style container widget.
@@ -34,8 +35,8 @@ class Table(container.Container):
         self._rows = []
         self._curRow = 0
         self._trok = False
-        self._hpadding = params.get("hpadding", 0)
-        self._vpadding = params.get("vpadding", 0)
+#        self._hpadding = params.get("hpadding", 0)
+#        self._vpadding = params.get("vpadding", 0)
     
     def getRows(self):
         return len(self._rows)
@@ -242,9 +243,19 @@ class Table(container.Container):
                             for arow in rows:
                                 rowsizes[arow] += _table_div(self._rows[row][cell]["widget"].rect.h - totalheight, self._rows[row][cell]["rowspan"],arow)
 
+        # Lookup the style definition for horizontal and vertical cell padding
+        try:
+            hpadding = self.style.getstyle("hpadding")
+        except StyleError:
+            hpadding = 0
+        try:
+            vpadding = self.style.getstyle("vpadding")
+        except StyleError:
+            vpadding = 0
+
         # Now calculate the total width and height occupied by the rows and columns
-        rowsizes = [sz+2*self._vpadding for sz in rowsizes]
-        columnsizes = [sz+2*self._hpadding for sz in columnsizes]
+        rowsizes = [sz+2*vpadding for sz in rowsizes]
+        columnsizes = [sz+2*hpadding for sz in columnsizes]
 
         # Now possibly expand the table cells to fill out the specified width
         w = sum(columnsizes)
