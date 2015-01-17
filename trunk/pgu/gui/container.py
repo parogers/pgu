@@ -54,7 +54,7 @@ class Container(widget.Widget):
                 # This hack isn't perfect and so it's not enabled by default, but only by
                 # themes that explicitly request it.
                 alpha = pguglobals.app.theme.getstyle("pgu", "", "themealpha")
-            except StyleError,e:
+            except StyleError:
                 alpha = False
 
             if (alpha):

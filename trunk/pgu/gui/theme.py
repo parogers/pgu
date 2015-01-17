@@ -3,7 +3,11 @@
 """
 """
 
-import StringIO
+try:
+    from StringIO import StringIO
+except:
+    from io import StringIO
+
 import os, re
 import pygame
 
@@ -227,7 +231,7 @@ class Theme(object):
         if (not path):
             path = self.baseThemePath
         cfg = ConfigParser()
-        cfg.readfp(StringIO.StringIO(txt))
+        cfg.readfp(StringIO(txt))
         for section in cfg.sections():
             cls = section
             pcls = ''
