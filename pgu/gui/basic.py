@@ -25,6 +25,8 @@ def parse_color(desc):
         # alpha value otherwise it will default to transparent.
         if (len(desc) == 7):
             desc += "FF"
+    if type(desc) == unicode:
+        desc = str(desc)
     return pygame.Color(desc)
 
 # Determines if the given object is a pygame-compatible color or not
