@@ -23,6 +23,12 @@ from pygame.rect import Rect
 from pygame.locals import *
 import math
 
+# Quick fix for python3
+try:
+    xrange
+except:
+    xrange = range
+
 class Sprite:
     """The object used for Sprites.
 

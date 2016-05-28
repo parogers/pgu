@@ -83,8 +83,8 @@ def get3(l,tx,ty):
     
 def diff(a,b):
     r = 0
-    for y in xrange(0,5):
-        for x in xrange(0,5):
+    for y in range(0,5):
+        for x in range(0,5):
             va,vb = a[y][x],b[y][x]
             if va == vb: r += scoring[y][x]
             else: r -= scoring[y][x]
@@ -115,8 +115,8 @@ width,height = m_level.size
 lookup = {}
 used = []
 rmap = {}
-for y in xrange(0,height):
-    for x in xrange(0,width):
+for y in range(0,height):
+    for x in range(0,width):
         v = get(at,x,y)
         if v not in used: used.append(v)
         
@@ -138,17 +138,17 @@ for y in xrange(0,height):
         
 
 width,height = i_level.size
-for y in xrange(0,height):
+for y in range(0,height):
     print y
-    for x in xrange(0,width):
+    for x in range(0,width):
         v = get(it,x,y)
         if v in used:
-            idata = [[get3(it,tx,ty) for tx in xrange(x-2,x+3)] for ty in xrange(y-2,y+3)]
+            idata = [[get3(it,tx,ty) for tx in range(x-2,x+3)] for ty in range(y-2,y+3)]
             k = (get3(it,x,y),get3(it,x,y-1),get3(it,x+1,y),get3(it,x,y+1),get3(it,x-1,y))
             if k in lookup:
                 v,score = 0,-100000
                 for xx,yy in lookup[k]:
-                    adata = [[get(at,tx,ty) for tx in xrange(xx-2,xx+3)] for ty in xrange(yy-2,yy+3)]
+                    adata = [[get(at,tx,ty) for tx in range(xx-2,xx+3)] for ty in range(yy-2,yy+3)]
                     _v = get(bt,xx,yy)
                     _score = diff(idata,adata)
                     if _score > score: v,score = _v,_score

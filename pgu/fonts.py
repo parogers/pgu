@@ -9,6 +9,12 @@ print('pgu.fonts - This module is alpha, and is subject to change.')
 import pygame
 from pygame.locals import *
 
+# Quick fix for python3
+try:
+    xrange
+except:
+    xrange = range
+
 class TileFont:
     """Creates an instance of the TileFont class.  Interface compatible 
     with pygame.Font

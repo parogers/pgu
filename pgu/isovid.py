@@ -13,6 +13,12 @@ print('pgu.isovid - This module is alpha, and is subject to change.')
 from pgu.vid import *
 import pygame
 
+# Quick fix for python3
+try:
+    xrange
+except:
+    xrange = range
+
 class Isovid(Vid):
     """Create an iso vid engine.  See [[vid]]"""
     def update(self,screen):
@@ -65,13 +71,13 @@ class Isovid(Vid):
         sx,sy = self.iso_to_view((ox*iso_w,oy*iso_h))
         dx,dy = sx - self.view.x,sy - self.view.y
         
-        for i2 in xrange(-bot,self.view.h/base_h2+bot):
+        for i2 in xrange(-bot,self.view.h//base_h2+bot):
             tx,ty = ox + i2/2 + i2%2,oy + i2/2
             x,y = (i2%2)*base_w2 + dx,i2*base_h2 + dy
             
             #to adjust for the -1 in i1
             x,tx,ty = x-base_w,tx-1,ty+1
-            for i1 in xrange(-1,self.view.w/base_w+2): #NOTE: not sure why +2
+            for i1 in xrange(-1,self.view.w//base_w+2): #NOTE: not sure why +2
                 if ty >= 0 and ty < h and tx >= 0 and tx < w:
                     z = zlayer[ty][tx]*iso_z
                     if blayer != None:

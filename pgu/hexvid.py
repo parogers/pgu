@@ -63,7 +63,7 @@ class Hexvid(Vid):
         
         #dx += tile_w/2
         
-        for i2 in xrange(-bot,self.view.h/tile_h2+bot*3): #NOTE: 3 seems a bit much, but it works.
+        for i2 in xrange(-bot,self.view.h//tile_h2+bot*3): #NOTE: 3 seems a bit much, but it works.
             tx,ty = ox + i2/2 + i2%2,oy + i2/2
             x,y = (i2%2)*tile_wi2 + dx,i2*tile_h2 + dy
             
@@ -71,7 +71,7 @@ class Hexvid(Vid):
             x,tx,ty = x-tile_wi,tx-1,ty+1
             
             x -= tile_w/2
-            for i1 in xrange(-1,self.view.w/tile_wi+1):
+            for i1 in xrange(-1,self.view.w//tile_wi+1):
                 if ty >= 0 and ty < h and tx >= 0 and tx < w:
                     if blayer != None:
                         n = blayer[ty][tx]

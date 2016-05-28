@@ -9,6 +9,12 @@ print ('pgu.ani - This module is alpha, and is subject to change.')
 import math
 import pygame
 
+# Quick fix for python3
+try:
+    xrange
+except:
+    xrange = range
+
 def _ani_load(tv,name,parts,frames,shape):
     l = len(frames)
     n = parts.pop()

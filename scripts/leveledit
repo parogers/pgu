@@ -178,7 +178,7 @@ class _app(gui.Container):
 
         
         tmp = self.level.tiles
-        self.level.tiles = [None for i in xrange(0,256)]
+        self.level.tiles = [None for i in range(0,256)]
         self.level.tga_load_tiles(self.codes,(self.tile_w,self.tile_h))
         self.level.codes = self.level.tiles
         self.level.tiles = tmp
@@ -454,8 +454,8 @@ class vdraw(gui.Widget):
         s = pygame.Surface((self.rect.w,self.rect.h))
         clrs = [(148,148,148),(108,108,108)]
         inc = 7
-        for y in range(0,self.rect.w/inc):
-            for x in range(0,self.rect.h/inc):
+        for y in range(0,self.rect.w//inc):
+            for x in range(0,self.rect.h//inc):
                 s.fill(clrs[(x+y)%2],(x*inc,y*inc,inc,inc))
         self.bg = s
 
@@ -840,8 +840,8 @@ def cmd_delete(value):
 def cmd_tswitch(value):
     blayer = app.level.blayer
     tlayer = app.level.tlayer
-    for ty in xrange(0,app.level.size[1]):
-        for tx in xrange(0,app.level.size[0]):
+    for ty in range(0,app.level.size[1]):
+        for tx in range(0,app.level.size[0]):
             tmp = blayer[ty][tx]
             blayer[ty][tx] = tlayer[ty][tx]
             tlayer[ty][tx] = tmp

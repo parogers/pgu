@@ -3,6 +3,12 @@
 from pgu.vid import *
 import pygame
 
+# Quick fix for python3
+try:
+    xrange
+except:
+    xrange = range
+
 class Tilevid(Vid):
     """Based on [[vid]] -- see for reference."""
     def paint(self,s):
@@ -27,7 +33,7 @@ class Tilevid(Vid):
         if (oy+sh)%th: my += 1
         
         if blayer != None:
-            for y in xrange(oy/th,my):
+            for y in xrange(oy//th,my):
                 if y >=0 and y < h:
                     trow = tlayer[y]
                     brow = blayer[y]
@@ -35,7 +41,7 @@ class Tilevid(Vid):
                     xx= - (self.view.x%tw)
                     mx = (ox+sw)/tw
                     #if (ox+sh)%tw: mx += 1
-                    for x in xrange(ox/tw,mx+1):
+                    for x in xrange(ox//tw,mx+1):
                         if x >=0and x<w:
                             blit(tiles[brow[x]].image,(xx,yy))
                             blit(tiles[trow[x]].image,(xx,yy))
@@ -43,14 +49,14 @@ class Tilevid(Vid):
                         xx += tw
                 yy+=th
         else:
-            for y in xrange(oy/th,my):
+            for y in xrange(oy//th,my):
                 if y >=0 and y<h:
                     trow = tlayer[y]
                     arow = alayer[y]
                     xx= - (self.view.x%tw)
                     mx = (ox+sw)/tw
                     #if (ox+sh)%tw: mx += 1
-                    for x in xrange(ox/tw,mx+1):
+                    for x in xrange(ox//tw,mx+1):
                         if x >=0 and x<w:
                             blit(tiles[trow[x]].image,(xx,yy))
                             arow[x]=0
