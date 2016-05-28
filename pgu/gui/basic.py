@@ -25,6 +25,16 @@ def parse_color(desc):
         # alpha value otherwise it will default to transparent.
         if (len(desc) == 7):
             desc += "FF"
+    # pygame.Color in python2 doesn't want a unicode string as an argument,
+    # so we need to check that here and convert to a regular string first.
+    try:
+        if (type(desc) == unicode):
+            desc = str(desc)
+    except:
+        # Throws an exception in python3 since it doesn't the 'unicode' 
+        # function.
+        pass
+
     return pygame.Color(desc)
 
 # Determines if the given object is a pygame-compatible color or not
