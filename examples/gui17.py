@@ -36,7 +36,7 @@ def lkey(_event):
         try:
             code = compile(val,'<string>','single')
             eval(code,globals(),_locals)
-        except: 
+        except Exception: 
             e_type,e_value,e_traceback = sys.exc_info()
             print('Traceback (most recent call last):')
             traceback.print_tb(e_traceback,None,s)

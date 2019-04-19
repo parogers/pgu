@@ -67,7 +67,7 @@ return - toggle fullscreen
 
 import os,sys    
 from optparse import OptionParser
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 import pygame
 from pygame.locals import *
 
@@ -206,8 +206,6 @@ class _app(gui.Container):
         #self.view_w = min(self.level.size[0],self.view_w)
         #self.view_h = min(self.level.size[1],self.view_h)
         
-        #print self.view_w,self.view_h
-        
         #self.view = self.level.subsurface((0,0,self.view_w,self.view_h))
         self.select = Rect(0,0,self.level.size[0],self.level.size[1]) #self.view_w,self.view_h)
         
@@ -262,7 +260,6 @@ class _app(gui.Container):
         #bx,by = lvl.screen_to_tile((self.vdraw.rect.w,self.vdraw.rect.h))
         
         #rect = pygame.Rect(ox,oy,bx-ox,by-oy)
-        #print self.modrect
         
         h.append(self.changes)
         self.changes = []
@@ -454,8 +451,8 @@ class vdraw(gui.Widget):
         s = pygame.Surface((self.rect.w,self.rect.h))
         clrs = [(148,148,148),(108,108,108)]
         inc = 7
-        for y in range(0,self.rect.w//inc):
-            for x in range(0,self.rect.h//inc):
+        for y in range(0,self.rect.w/inc):
+            for x in range(0,self.rect.h/inc):
                 s.fill(clrs[(x+y)%2],(x*inc,y*inc,inc,inc))
         self.bg = s
 
@@ -471,8 +468,8 @@ class vdraw(gui.Widget):
 
         
     def paint(self,s):
-        #print s
-        #print s.get_width(),s.get_height(),s.get_clip()
+        #print (s)
+        #print (s.get_width(),s.get_height(),s.get_clip())
         #s.blit(self.bg,(0,0))
         s.fill((128,128,128))
 
@@ -683,7 +680,7 @@ def cmd_all(value):
     app.select = Rect(0,0,app.level.size[0],app.level.size[1])
     app.vdraw.repaint()
     
-    #print 'deprecated in v0.5'
+    #print('deprecated in v0.5')
     
 def cmd_shrink(value):    
     if app.select.w <= 2 or app.select.h <= 2: return
@@ -711,7 +708,7 @@ def cmd_copy(value):
     #app.clipboard.fill((0,0,0,0))
     #app.clipboard.blit(s,(0,0))
     
-    print app.clipboard.get_at((0,0))
+    print(app.clipboard.get_at((0,0)))
     
 def cmd_paste(value):
     if app.clipboard != None:
@@ -761,7 +758,7 @@ def _cmd_new(value):
             cfg['tiles'] = tiles
             cfg['class'] = klass
             ok = 1
-        except Exception, v:
+        except Exception as v:
             ErrorDialog("New failed.",v).open()
         if ok:
             raise Restart()
@@ -795,7 +792,7 @@ def _cmd_open(value):
 
             
             ok = 1
-        except Exception,v:
+        except Exception as v:
             ErrorDialog("Open failed.",v).open()
             
         if ok: raise Restart()
@@ -912,7 +909,7 @@ def cmd_save(value):
         cfg_to_ini(['class','codes','tiles','tile_w','tile_h'],app.fname)
         ini_save()
         app.dirty = 0
-    except Exception, v:
+    except Exception as v:
         ErrorDialog("Save failed.",v).open()
         return
 
@@ -921,7 +918,7 @@ import os
 def cmd_preview(value):
     app.level.tga_save_level("_preview.tga")
     cmd = "python preview.py _preview.tga"
-    print cmd
+    print(cmd)
     os.system(cmd)
     
 def cmd_quit(value):
@@ -1140,7 +1137,7 @@ def init_ini():
     ini.read([ini_fname])
 
 def ini_save():
-    f = open(ini_fname,"wb")
+    f = open(ini_fname,"wt")
     ini.write(f)
     f.close()
 
@@ -1194,8 +1191,10 @@ def init_opts():
         opts.codes = args[2]
     if len(args) in (4,5):
         n = len(args)-2
-        try: opts.tile_w,opts.tile_h = int(args[n]),int(args[n+1])
-        except: parser.error("width and height must be integers")
+        try: 
+            opts.tile_w,opts.tile_h = int(args[n]),int(args[n+1])
+        except ValueError:
+            parser.error("width and height must be integers")
         if opts.tile_w < 1 or opts.tile_h < 1: parser.error("width and height must be greater than 0")
         
     fname = opts.fname
@@ -1382,7 +1381,8 @@ def main():
         try:
             init_app()
             run()
-        except Restart: restart = 1
+        except Restart: 
+            restart = 1
 
 main()
 # vim: set filetype=python sts=4 sw=4 noet si :

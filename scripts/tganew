@@ -18,9 +18,13 @@ parser = OptionParser(usage)
 if len(args) != 3:
 	parser.error("incorrect number of arguments")
 
-try: fname,w,h = args[0],int(args[1]),int(args[2])
-except: parser.error("width and height must be integers")
-if w < 1 or h < 1: parser.error("width and height must be greater than 0")
+try: 
+    fname,w,h = args[0],int(args[1]),int(args[2])
+except ValueError: 
+    parser.error("width and height must be integers")
+
+if w < 1 or h < 1: 
+    parser.error("width and height must be greater than 0")
 
 import pygame
 from pygame.locals import *

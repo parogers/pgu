@@ -21,20 +21,10 @@ def parse_color(desc):
         # Already a color
         return desc
     elif (desc and desc[0] == "#"):
-        # Because of a bug in pygame 1.8.1 we need to explicitly define the 
+        # Because of a bug in pygame 1.8.1 we need to explicitly define the
         # alpha value otherwise it will default to transparent.
         if (len(desc) == 7):
             desc += "FF"
-    # pygame.Color in python2 doesn't want a unicode string as an argument,
-    # so we need to check that here and convert to a regular string first.
-    try:
-        if (type(desc) == unicode):
-            desc = str(desc)
-    except:
-        # Throws an exception in python3 since it doesn't the 'unicode' 
-        # function.
-        pass
-
     return pygame.Color(desc)
 
 # Determines if the given object is a pygame-compatible color or not
@@ -59,13 +49,13 @@ class Spacer(widget.Widget):
 
     def __init__(self,width,height,**params):
         params.setdefault('focusable',False)
-        widget.Widget.__init__(self,width=width,height=height,**params)
-        
+        super(Spacer, self).__init__(width=width,height=height,**params)
+
 
 class Color(widget.Widget):
     """A widget that renders as a solid block of color.
-    
-    Note the color can be changed by setting the 'value' field, and the 
+
+    Note the color can be changed by setting the 'value' field, and the
     widget will automatically be repainted, eg:
 
         c = Color()
@@ -76,14 +66,14 @@ class Color(widget.Widget):
 
     # The pygame Color instance
     _value = None
-    
+
     def __init__(self,value=None,**params):
         params.setdefault('focusable',False)
         if value != None: params['value']=value
-        widget.Widget.__init__(self,**params)
-    
+        super(Color, self).__init__(**params)
+
     def paint(self,s):
-        if hasattr(self,'value') and is_color(self.value): 
+        if hasattr(self,'value') and is_color(self.value):
             s.fill(self.value)
 
     @property
@@ -92,7 +82,7 @@ class Color(widget.Widget):
 
     @value.setter
     def value(self, val):
-        if (isinstance(val, basestring)):
+        if isinstance(val, str):
             # Parse the string as a color
             val = parse_color(val)
         oldval = self._value
@@ -101,7 +91,7 @@ class Color(widget.Widget):
             # Emit a change signal
             self.send(CHANGE)
             self.repaint()
-    
+
 
 class Label(widget.Widget):
     """A text label widget."""
@@ -109,15 +99,15 @@ class Label(widget.Widget):
     def __init__(self, value="", **params):
         params.setdefault('focusable', False)
         params.setdefault('cls', 'label')
-        widget.Widget.__init__(self, **params)
+        super(Label, self).__init__(**params)
         self.style.check("font")
         self.value = value
+        self.font = self.style.font
         self.style.width, self.style.height = self.font.size(self.value)
-    
+
     def paint(self,s):
         """Renders the label onto the given surface in the upper-left corner."""
-        #s.blit(self.font.render(self.value, 1, self.style.color),(0,0))
-        s.blit(self.style.font.render(self.value, 1, self.style.color),(0,0))
+        s.blit(self.font.render(self.value, 1, self.style.color),(0,0))
 
     def set_text(self, txt):
         """Set the text of this label."""
@@ -126,35 +116,28 @@ class Label(widget.Widget):
         self.chsize()
 
     def set_font(self, font):
-        """Set the font used to render this label. Obsolete: use label.font instead"""
+        """Set the font used to render this label."""
         self.font = font
+        # Signal to the application that we need a resize
+        self.chsize()
 
     def resize(self,width=None,height=None):
         # Calculate the size of the rendered text
         (self.style.width, self.style.height) = self.font.size(self.value)
         return (self.style.width, self.style.height)
 
-    @property
-    def font(self):
-        return self.style.font
-
-    @font.setter
-    def font(self, font):
-        self.style.font = font
-        # Signal to the application that we need a resize
-        self.chsize()
 
 class Image(widget.Widget):
     """An image widget. The constructor takes a file name or a pygame surface."""
 
     def __init__(self,value,**params):
         params.setdefault('focusable',False)
-        widget.Widget.__init__(self,**params)
+        super(Image, self).__init__(**params)
 
         if (not value):
             raise PguError("Image widget takes a path or pygame surface as first argument")
 
-        if (isinstance(value, basestring)):
+        if isinstance(value, str):
             # Assume the argument is a path
             value = pygame.image.load(value)
             if (not value):
@@ -162,19 +145,19 @@ class Image(widget.Widget):
 
         ow,oh = iw,ih = value.get_width(),value.get_height()
         sw,sh = self.style.width,self.style.height
-        
+
         if sw and not sh:
             iw,ih = sw,ih*sw/iw
         elif sh and not sw:
             iw,ih = iw*sh/ih,sh
         elif sw and sh:
             iw,ih = sw,sh
-        
+
         if (ow,oh) != (iw,ih):
             value = pygame.transform.scale(value,(iw,ih))
         self.style.width,self.style.height = iw,ih
         self.value = value
-    
+
     def paint(self,s):
         s.blit(self.value,(0,0))
 

@@ -62,15 +62,15 @@ F10 - toggle fullscreen
 
 import os,sys    
 from optparse import OptionParser
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 import pygame
 from pygame.locals import *
 
 # try:
 #     import Image
 #     have_pil=True
-# except:
-#     print "import Image failure; PIL not found."
+# except ImportError:
+#     print ("import Image failure; PIL not found.")
 #     have_pil=False
 
 have_pil = False
@@ -422,8 +422,6 @@ class tdraw(gui.Widget):
         app.select.w = max(0,app.select.w)
         app.select.h = max(0,app.select.h)
         
-        #print app.select
-        
         self.repaint()
         
 
@@ -559,7 +557,7 @@ def cmd_save(value):
         # so as to avoid race with anything reading it.
 
         temp_file_name = "tmp_" + app.fname
-        print temp_file_name
+        print(temp_file_name)
         if have_pil==True:
             stim = pygame.image.tostring(app.tiles, "RGB")
             im=Image.fromstring("RGB", (app.tiles.get_width(),app.tiles.get_height()), stim)
@@ -571,7 +569,7 @@ def cmd_save(value):
         cfg_to_ini(['tile_w','tile_h','palette'],app.fname)
         ini_save()
         app.dirty = 0
-    except Exception, v:
+    except Exception as v:
         ErrorDialog("Save failed.",v).open()
         return
     
@@ -612,7 +610,7 @@ def _cmd_open(value):
             cfg['tile_w'] = tile_w
             cfg['tile_h'] = tile_h
             ok = 1
-        except Exception,v:
+        except Exception as v:
             ErrorDialog("Open failed.",v).open()
             
         if ok: raise Restart()
@@ -653,7 +651,7 @@ def _cmd_new(value):
             cfg['tile_w'] = tile_w
             cfg['tile_h'] = tile_h
             ok = 1
-        except Exception, v:
+        except Exception as v:
             ErrorDialog("New failed.",v).open()
         if ok:
             raise Restart()
@@ -759,13 +757,18 @@ def init_opts():
         opts.fname = args[0]
     elif len(args) == 2:
         opts.fname = "None"
-        try: opts.tile_w,opts.tile_h = int(args[0]),int(args[1])
-        except: parser.error("tile width and height must be integers")
+        try: 
+	    opts.tile_w,opts.tile_h = int(args[0]),int(args[1])
+        except ValueError: 
+	    parser.error("tile width and height must be integers")
         if opts.tile_w < 1 or opts.tile_h < 1: parser.error("width and height must be greater than 0")
     else:
-        try: opts.fname,opts.tile_w,opts.tile_h = args[0],int(args[1]),int(args[2])
-        except: parser.error("tile width and height must be integers")
-        if opts.tile_w < 1 or opts.tile_h < 1: parser.error("width and height must be greater than 0")
+        try:
+	    opts.fname,opts.tile_w,opts.tile_h = args[0],int(args[1]),int(args[2])
+        except ValueError:
+	    parser.error("tile width and height must be integers")
+        if opts.tile_w < 1 or opts.tile_h < 1: 
+	    parser.error("width and height must be greater than 0")
         
     fname = opts.fname
     
@@ -1112,7 +1115,8 @@ def main():
         try:
             init_app()
             run()
-        except Restart: restart = 1
+        except Restart:
+	    restart = 1
         
 
         

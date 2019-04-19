@@ -11,18 +11,18 @@ class Keysym(widget.Widget):
 
     _value = None
 
-    def __init__(self,value=None,**params):
-        params.setdefault('cls','keysym')
-        widget.Widget.__init__(self,**params)
+    def __init__(self, value=None, **params):
+        params.setdefault('cls', 'keysym')
+        super(Keysym, self).__init__(**params)
         self.value = value
-        
+
         self.font = self.style.font
-        w,h = self.font.size("Right Super") #"Right Shift")
-        self.style.width,self.style.height = w,h
+        w, h = self.font.size("Right Super") #"Right Shift")
+        self.style.width, self.style.height = w, h
         #self.rect.w=w+self.style.padding_left+self.style.padding_right
         #self.rect.h=h+self.style.padding_top+self.style.padding_bottom
-    
-    def event(self,e):
+
+    def event(self, e):
         used = None
         if e.type == FOCUS or e.type == BLUR: self.repaint()
         elif e.type == KEYDOWN:
@@ -35,10 +35,10 @@ class Keysym(widget.Widget):
         self.pcls = ""
         if self.container.myfocus is self: self.pcls = "focus"
         return used
-    
-    def paint(self,s):
-        r = pygame.rect.Rect(0,0,self.rect.w,self.rect.h)
-        #render_box(s,self.style.background,r)
+
+    def paint(self, s):
+        r = pygame.rect.Rect(0, 0, self.rect.w, self.rect.h)
+        #render_box(s, self.style.background, r)
         if self.value == None: return
         name = ""
         for p in pygame.key.name(self.value).split(): name += p.capitalize()+" "

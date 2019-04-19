@@ -42,13 +42,6 @@ but those base tiles look better when rendered using lots of fancier tiles.
 import os,sys
 from optparse import OptionParser
 
-try:
-    import psyco
-    psyco.full()
-    print 'psyco installed'
-except:
-    print 'psyco not installed'
-
 from pgu.tilevid import Tilevid
 
 scoring = [
@@ -139,7 +132,6 @@ for y in range(0,height):
 
 width,height = i_level.size
 for y in range(0,height):
-    print y
     for x in range(0,width):
         v = get(it,x,y)
         if v in used:

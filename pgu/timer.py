@@ -69,33 +69,33 @@ class Clock(object):
         return (time.time()-self.startTime)
 
 
-class Timer:
+class Timer(object):
     """A timer for games with set-rate FPS."""
-    
+
     def __init__(self,fps):
-        if fps == 0: 
+        if fps == 0:
             self.tick = self._blank
             return
-        self.wait = 1000/fps
+        self.wait = 1000 // fps
         self.nt = pygame.time.get_ticks()
         pygame.time.wait(0)
-        
+
     def _blank(self):
         pass
-        
+
     def tick(self):
         """Wait correct amount of time each frame.  Call this once per frame."""
         self.ct = pygame.time.get_ticks()
         if self.ct < self.nt:
-            pygame.time.wait(self.nt-self.ct)
+            pygame.time.wait(int(self.nt-self.ct))
             self.nt+=self.wait
-        else: 
+        else:
             self.nt = pygame.time.get_ticks()+self.wait
 
 
-class Speedometer:
+class Speedometer(object):
     """A timer replacement that returns out FPS once a second.
-    
+
     Attributes:
         fps -- always set to the current FPS
 
@@ -104,20 +104,16 @@ class Speedometer:
         self.frames = 0
         self.st = pygame.time.get_ticks()
         self.fps = 0
-        
+
     def tick(self):
         """ Call this once per frame."""
         r = None
         self.frames += 1
         self.ct = pygame.time.get_ticks()
-        if (self.ct - self.st) >= 1000: 
+        if (self.ct - self.st) >= 1000:
             r = self.fps = self.frames
             #print "%s: %d fps"%(self.__class__.__name__,self.fps)
             self.frames = 0
             self.st += 1000
         pygame.time.wait(0) #NOTE: not sure why, but you gotta call this now and again
         return r
-
-            
-
-
