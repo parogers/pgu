@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from setuptools import setup
+from textwrap import dedent
 
 import sys, os
 from glob import glob
@@ -25,36 +26,37 @@ def main():
     setup_args = {
         'name': "pygame-pgu",
         'version': __version__,
+        'install_requires' : ['pygame > 1.9.0'],
         'description': "Phil's pyGame Utilities - a collection of handy "
             "modules and scripts for PyGame.",
-        'long_description':
-'''Phil's pyGame Utilities - a collection of handy modules and scripts for PyGame.
+        'long_description': dedent('''\
+            Phil's pyGame Utilities - a collection of handy modules and scripts for PyGame.
 
-tileedit  -- edit tga based images
-leveledit -- edit tga based levels in tile, isometric, and hexagonal formats
+            tileedit  -- edit tga based images
+            leveledit -- edit tga based levels in tile, isometric, and hexagonal formats
 
-gui     -- gui with standard widget, dialog, connections, and themes
-html    -- html rendering utilities
-layout  -- layout utilities
-text    -- text rendering utilities
+            gui     -- gui with standard widget, dialog, connections, and themes
+            html    -- html rendering utilities
+            layout  -- layout utilities
+            text    -- text rendering utilities
 
-tilevid -- sprite and tile engine
-isovid  -- isometric sprite and tile engine
-hexvid  -- hexagonal sprite and tile engine
-engine  -- state engine
-timer   -- a timer for games with set-rate FPS
-high    -- high score tracking
-ani     -- animation helpers
-algo    -- helpful pathfinding algoritms
-fonts   -- font wrappers, bitmapped fonts
-''',
+            tilevid -- sprite and tile engine
+            isovid  -- isometric sprite and tile engine
+            hexvid  -- hexagonal sprite and tile engine
+            engine  -- state engine
+            timer   -- a timer for games with set-rate FPS
+            high    -- high score tracking
+            ani     -- animation helpers
+            algo    -- helpful pathfinding algoritms
+            fonts   -- font wrappers, bitmapped fonts
+        '''),
         'author': "Phil Hassey",
         'author_email': "philhassey@yahoo.com",
         'url': 'https://github.com/parogers/pgu',
-        'project_urls': {
-        # "Documentation": "https://pygame-pgu.readthedocs.io/en/stable/",
-        "Source Code":'https://github.com/parogers/pgu',
-    },
+            'project_urls': {
+            # "Documentation": "https://pygame-pgu.readthedocs.io/en/stable/",
+            "Source Code":'https://github.com/parogers/pgu',
+            },
         'packages': ['pgu','pgu.gui'],
         'classifiers': [
             'Development Status :: 5 - Production/Stable',
@@ -66,7 +68,7 @@ fonts   -- font wrappers, bitmapped fonts
             'Programming Language :: Python :: 3 :: Only',
         ],
         'data_files': installdatafiles,
-    'scripts': ['scripts/tileedit','scripts/leveledit','scripts/tganew','scripts/levelfancy'],
+        'scripts': ['scripts/tileedit','scripts/leveledit','scripts/tganew','scripts/levelfancy'],
     }
     setup(**setup_args)
 
