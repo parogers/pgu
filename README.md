@@ -1,9 +1,14 @@
 PGU - PyGame Utilities
 ======================
 
-*NOTE* PGU is in need of a new maintainer. Email me (peter.rogers@gmail.com) 
-if you're interested in taking over the codebase, or if you'd like to join 
-the project as a contributor.
+Install
+--------
+
+pip install pygame-pgu
+
+
+*NOTE* PGU is in need of more contributors. Email me (peter.rogers@gmail.com)
+or jsobueno@gmail.com if you're interested in evolving the codebase.
 
 A collection of handy utilities and libraries created by Phil Hassey, released
 under the LGPL v2.1 (see LICENSE.txt for more details).
@@ -78,4 +83,4 @@ THANKS
 * piman -- testing, suggestions
 * coca-cola -- testing
 * tenoften -- testing
-
+* Joao S. O. Bueno - evolving the code base to Python3 (pygame 1.9.5)

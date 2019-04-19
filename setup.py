@@ -1,9 +1,6 @@
 #! /usr/bin/env python
 
-try:
-    from distutils.core import setup
-except:
-    from setuptools import setup
+from setuptools import setup
 
 import sys, os
 from glob import glob
@@ -26,7 +23,7 @@ def main():
     # perform the setup action
     from pgu import __version__
     setup_args = {
-        'name': "pgu",
+        'name': "pygame-pgu",
         'version': __version__,
         'description': "Phil's pyGame Utilities - a collection of handy "
             "modules and scripts for PyGame.",
@@ -53,15 +50,20 @@ fonts   -- font wrappers, bitmapped fonts
 ''',
         'author': "Phil Hassey",
         'author_email': "philhassey@yahoo.com",
-        'url': 'http://www.imitationpickles.org/pgu/',
+        'url': 'https://github.com/parogers/pgu',
+        'project_urls': {
+        # "Documentation": "https://pygame-pgu.readthedocs.io/en/stable/",
+        "Source Code":'https://github.com/parogers/pgu',
+    },
         'packages': ['pgu','pgu.gui'],
         'classifiers': [
-            'Development Status :: 4 - Beta',
+            'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Developers',
             'Operating System :: MacOS :: MacOS X',
             'Operating System :: Microsoft :: Windows',
             'Operating System :: POSIX',
             'Programming Language :: Python',
+            'Programming Language :: Python :: 3 :: Only',
         ],
         'data_files': installdatafiles,
     'scripts': ['scripts/tileedit','scripts/leveledit','scripts/tganew','scripts/levelfancy'],
