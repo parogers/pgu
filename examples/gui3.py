@@ -29,3 +29,4 @@ c.add(e,0,0)
 ##
 
 app.run(c)
+pygame.quit()

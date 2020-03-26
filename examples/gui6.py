@@ -67,3 +67,4 @@ if __name__ in '__main__':
     c.td(e)
     
     app.run(c)
+    pygame.quit()

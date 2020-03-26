@@ -60,7 +60,5 @@ main.add(b, 40, 170)
 b.connect(gui.CLICK, clear_list, None)
 
 
-
-
-
 app.run(main)
+pygame.quit()

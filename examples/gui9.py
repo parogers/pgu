@@ -328,3 +328,4 @@ class App(gui.Desktop):
         
 app = App()
 app.run()
+pygame.quit()

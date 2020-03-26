@@ -44,3 +44,4 @@ c.add(prog,50,400)
 
 app.connect(gui.QUIT,app.quit,None)
 app.run(c)
+pygame.quit()

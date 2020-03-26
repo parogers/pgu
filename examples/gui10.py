@@ -183,4 +183,4 @@ while not done:
     app.paint()
     pygame.display.flip()
 
-
+pygame.quit()

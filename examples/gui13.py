@@ -30,3 +30,4 @@ c.td(s)
 
 app.connect(gui.QUIT,app.quit,None)
 app.run(c)
+pygame.quit()

@@ -66,3 +66,4 @@ t.td(Hack(1,1))
 
 app.connect(gui.QUIT,app.quit,None)
 app.run(t)
+pygame.quit()

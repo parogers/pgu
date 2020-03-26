@@ -118,3 +118,4 @@ tt.td(box,style={'border':1},colspan=3)
 
 app.connect(gui.QUIT,app.quit,None)
 app.run(tt)
+pygame.quit()

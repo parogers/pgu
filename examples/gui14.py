@@ -120,3 +120,4 @@ tt.td(d,style={'border':1})
 
 app.connect(gui.QUIT,app.quit,None)
 app.run(tt)
+pygame.quit()

@@ -216,4 +216,4 @@ class GameEngine(object):
 disp = pygame.display.set_mode((800, 600))
 eng = GameEngine(disp)
 eng.run()
-
+pygame.quit()
