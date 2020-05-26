@@ -322,8 +322,8 @@ class tpicker(gui.Widget):
     def paint(self,s):
         s.fill((128,128,128))
         s.blit(app.tiles,(0,0))
-        w = app.tiles_w/app.tile_w
-        x,y = app.tile%w,app.tile/w
+        w = app.tiles_w//app.tile_w
+        x,y = app.tile%w,app.tile//w
         off = x*app.tile_w,y*app.tile_h
         pygame.draw.rect(s,(255,255,255),(off[0],off[1],app.tile_w,app.tile_h),2)
         
@@ -350,8 +350,8 @@ class cpicker(gui.Widget):
     def paint(self,s):
         s.fill((128,128,128))
         s.blit(app.codes,(0,0))
-        w = app.codes_w/app.tile_w
-        x,y = app.code%w,app.code/w
+        w = app.codes_w//app.tile_w
+        x,y = app.code%w,app.code//w
         off = x*app.tile_w,y*app.tile_h
         pygame.draw.rect(s,(255,255,255),(off[0],off[1],app.tile_w,app.tile_h),2)
         
@@ -837,8 +837,8 @@ def cmd_pick(value):
     
     
     if (mods&KMOD_SHIFT) != 0:
-        app.level.view.x += dx*app.vdraw.rect.w/8
-        app.level.view.y += dy*app.vdraw.rect.h/8
+        app.level.view.x += dx*app.vdraw.rect.w//8
+        app.level.view.y += dy*app.vdraw.rect.h//8
         app.vdraw.repaint()
         #x,y = app.view.get_offset()
         #x = x + 1*dx
@@ -860,7 +860,7 @@ def cmd_pick(value):
         
     
     else:
-        w = app.tiles_w/app.tile_w
+        w = app.tiles_w//app.tile_w
         if app.mode == 'code':
             n = app.code + dx + dy*w
             app.cpicker.set(n)
