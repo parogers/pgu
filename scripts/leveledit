@@ -115,9 +115,6 @@ class _app(gui.Container):
         #self.level_w, self.level_h = (self.level.get_width(), self.level.get_height())
         self.level_w, self.level_h = len(self.level.tlayer[0]),len(self.level.tlayer)
 
-        self.tiles_last_ctime = None
-        self.codes_last_ctime = None
-
         self.load_tiles_and_codes()
         
 
@@ -145,15 +142,6 @@ class _app(gui.Container):
 
         self.tiles_fname = cfg['tiles']
         if os.path.isfile(self.tiles_fname):
-            # we check to see if the ctime is the same.
-
-            newctime = os.stat(self.tiles_fname)[9]
-            if newctime <= self.tiles_last_ctime:
-                #nothing to do, so we return.
-                return
-
-            self.tiles_last_ctime = newctime
-
             self.tiles = pygame.image.load(self.tiles_fname)
         else:
             self.tiles = hex_image(self)
@@ -163,12 +151,6 @@ class _app(gui.Container):
 
         self.codes_fname = cfg['codes']
         if os.path.isfile(self.codes_fname):
-            newctime = os.stat(self.codes_fname)[9]
-            if newctime <= self.codes_last_ctime:
-                #nothing to do, so we return.
-                return
-            self.codes_last_ctime = newctime
-
             self.codes = pygame.image.load(self.codes_fname)
         else:
             self.codes = hex_image(self)
