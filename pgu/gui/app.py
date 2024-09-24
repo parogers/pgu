@@ -185,7 +185,9 @@ class App(container.Container):
             if not (e.type == QUIT and self.mywindow):
                 self.event(e)
         rects = self.update(self.screen)
-        pygame.display.update(rects)
+        # Hack - rect updates not working in pygame-ce 2.5.1 - 2024
+        pygame.display.flip()
+        #pygame.display.update(rects)
         
         
     def paint(self,screen=None):
