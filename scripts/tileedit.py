@@ -727,7 +727,7 @@ def init_ini():
     ini.read([ini_fname])
 
 def ini_save():
-    f = open(ini_fname,"wb")
+    f = open(ini_fname,"wt")
     ini.write(f)
     f.close()
     
@@ -758,17 +758,17 @@ def init_opts():
     elif len(args) == 2:
         opts.fname = "None"
         try: 
-	    opts.tile_w,opts.tile_h = int(args[0]),int(args[1])
+             opts.tile_w,opts.tile_h = int(args[0]),int(args[1])
         except ValueError: 
-	    parser.error("tile width and height must be integers")
+             parser.error("tile width and height must be integers")
         if opts.tile_w < 1 or opts.tile_h < 1: parser.error("width and height must be greater than 0")
     else:
         try:
-	    opts.fname,opts.tile_w,opts.tile_h = args[0],int(args[1]),int(args[2])
+             opts.fname,opts.tile_w,opts.tile_h = args[0],int(args[1]),int(args[2])
         except ValueError:
-	    parser.error("tile width and height must be integers")
+             parser.error("tile width and height must be integers")
         if opts.tile_w < 1 or opts.tile_h < 1: 
-	    parser.error("width and height must be greater than 0")
+             parser.error("width and height must be greater than 0")
         
     fname = opts.fname
     
@@ -1116,7 +1116,7 @@ def main():
             init_app()
             run()
         except Restart:
-	    restart = 1
+             restart = 1
         
 
         
