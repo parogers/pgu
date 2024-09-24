@@ -48,7 +48,7 @@ class Table(container.Container):
 
     def remove_row(self, n): #NOTE: won't work in all cases.
         if n >= self.getRows():
-            print("Trying to remove a nonexistant row:", n, "there are only", self.getRows(), "rows")
+            print("Trying to remove a nonexistant row:", n, "there are only", self.getRows(), "rows", file=sys.stderr)
             return
 
         for cell in self._rows[n]:
@@ -113,15 +113,6 @@ class Table(container.Container):
         w.style.col = col #HACK - to work with gal's list
         self._rows[row][col] = {"widget":w, "colspan":colspan, "rowspan":rowspan}
         self.widgets.append(self._rows[row][col]["widget"])
-
-        #set the spanned columns
-        #for acell in range(col + 1, col + colspan):
-        #    self._rows[row][acell] = True
-
-        #set the spanned rows and the columns on them
-        #for arow in range(row + 1, row + rowspan):
-        #    for acell in range(col, col + colspan): #incorrect?
-        #        self._rows[arow][acell] = True
 
         for arow in range(row, row + rowspan):
             for acell in range(col, col + colspan): #incorrect?
@@ -235,7 +226,7 @@ class Table(container.Container):
                                 columnsizes[acol] += _table_div(self._rows[row][cell]["widget"].rect.w - totalwidth, self._rows[row][cell]["colspan"], acol)
                     if self._rows[row][cell]["rowspan"] > 1:
                         rows = range(row, row + self._rows[row][cell]["rowspan"])
-                        totalheight = 0
+                        totheight = 0
                         for arow in rows:
                             totalheight += rowsizes[arow]
                         if totalheight < self._rows[row][cell]["widget"].rect.h:

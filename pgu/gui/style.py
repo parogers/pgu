@@ -12,9 +12,9 @@ class Style(object):
     from the theme via value = theme.get(widget.cls,widget.pcls,attr)
 
     """
-    def __init__(self, obj, dict):
+    def __init__(self, obj, dict_):
         self.obj = obj
-        for k,v in dict.items():
+        for k,v in dict_.items():
             self.__dict__[k]=v
 
     # Verify that the given style is defined, otherwise raises an StyleError exception. This

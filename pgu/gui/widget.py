@@ -308,7 +308,7 @@ class Widget(object):
             args = []
             magic = {'_event':event,'_code':code,'_widget':self}
             for name in names:
-                if name in magic.keys():
+                if name in magic:
                     args.append(magic[name])
                 elif len(values):
                     args.append(values.pop(0))

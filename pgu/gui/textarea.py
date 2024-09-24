@@ -1,5 +1,7 @@
 """
 """
+import sys
+
 import pygame
 from pygame.locals import *
 
@@ -250,15 +252,13 @@ class TextArea(widget.Widget):
                     elif (e.key == K_TAB):
                         c = "  "
                     else:
-                        if (type(e.unicode) == str):
-                            c = e.unicode
-                        else:
-                            c = (e.unicode).encode('latin-1')
+                        c = e.unicode
                     if c:
                         used = True
                         self._setvalue(self.value[:self.pos] + c + self.value[self.pos:])
                         self.pos += len(c)
-                except: #ignore weird characters
+                except Exception as error:
+                    print(f"Keypress ignored due to error: {e.key} - {error} ", file=sys.stderr)
                     pass
             self.repaint()
         elif self.editable and e.type == MOUSEBUTTONDOWN:
