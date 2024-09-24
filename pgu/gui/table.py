@@ -226,7 +226,7 @@ class Table(container.Container):
                                 columnsizes[acol] += _table_div(self._rows[row][cell]["widget"].rect.w - totalwidth, self._rows[row][cell]["colspan"], acol)
                     if self._rows[row][cell]["rowspan"] > 1:
                         rows = range(row, row + self._rows[row][cell]["rowspan"])
-                        totheight = 0
+                        totalheight = 0
                         for arow in rows:
                             totalheight += rowsizes[arow]
                         if totalheight < self._rows[row][cell]["widget"].rect.h:
