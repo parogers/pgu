@@ -301,7 +301,7 @@ class _app(gui.Container):
         
             
     def event(self,e):
-        if e.type is KEYDOWN:
+        if e.type == KEYDOWN:
             for key,cmd,value in keys:
                 if e.key == key:
                     cmd(value)
@@ -346,7 +346,7 @@ class tpicker(gui.Widget):
         pygame.draw.rect(s,(255,255,255),(off[0],off[1],app.tile_w,app.tile_h),2)
         
     def event(self,e):
-        if (e.type is MOUSEBUTTONDOWN and e.button == 1) or (e.type is MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
+        if (e.type == MOUSEBUTTONDOWN and e.button == 1) or (e.type == MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
             w = app.tiles_w/app.tile_w
             x,y = e.pos[0]/app.tile_w,e.pos[1]/app.tile_h
             n = x+y*w
@@ -374,7 +374,7 @@ class cpicker(gui.Widget):
         pygame.draw.rect(s,(255,255,255),(off[0],off[1],app.tile_w,app.tile_h),2)
         
     def event(self,e):
-        if (e.type is MOUSEBUTTONDOWN and e.button == 1) or (e.type is MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
+        if (e.type == MOUSEBUTTONDOWN and e.button == 1) or (e.type == MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
             w = app.codes_w/app.tile_w
             x,y = e.pos[0]/app.tile_w,e.pos[1]/app.tile_h
             n = x+y*w
@@ -520,23 +520,23 @@ class vdraw(gui.Widget):
         #pygame.draw.rect(s,(255,255,255,128),Rect(r.x*self.rect.w/app.view_w,r.y*self.rect.h/app.view_h,r.w*self.rect.w/app.view_w,r.h*self.rect.h/app.view_h),4)
         
     def event(self,e):
-        if e.type is MOUSEMOTION:
+        if e.type == MOUSEMOTION:
             self.getpos(e)
-        if (e.type is MOUSEBUTTONDOWN and e.button == 3) or (e.type is MOUSEMOTION and e.buttons[2]==1 and self.container.myfocus == self):
+        if (e.type == MOUSEBUTTONDOWN and e.button == 3) or (e.type == MOUSEMOTION and e.buttons[2]==1 and self.container.myfocus == self):
             self.picker_down(e)
-        if e.type is MOUSEBUTTONDOWN and e.button == 1:
+        if e.type == MOUSEBUTTONDOWN and e.button == 1:
             self.getpos(e)
             a = '%s_down'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
-        if e.type is MOUSEMOTION and e.buttons[0] and self.container.myfocus == self:
+        if e.type == MOUSEMOTION and e.buttons[0] and self.container.myfocus == self:
             a = '%s_drag'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
-        if e.type is MOUSEBUTTONUP and e.button == 1:
+        if e.type == MOUSEBUTTONUP and e.button == 1:
             a = '%s_up'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
-        if e.type is MOUSEBUTTONDOWN and e.button == 2:
+        if e.type == MOUSEBUTTONDOWN and e.button == 2:
             self.move_down(e)
-        if e.type is MOUSEMOTION and e.buttons[1] and self.container.myfocus == self:
+        if e.type == MOUSEMOTION and e.buttons[1] and self.container.myfocus == self:
             self.move_drag(e)
     
     #move

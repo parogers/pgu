@@ -65,7 +65,7 @@ class _slider(widget.Widget):
                 else:
                     x,y,adj = e.pos[0],e.pos[1],1
                     
-        elif e.type is KEYDOWN:
+        elif e.type == KEYDOWN:
             if self.orient == _SLIDER_HORIZONTAL and e.key == K_LEFT:
                 self.value -= self.step
                 used = True

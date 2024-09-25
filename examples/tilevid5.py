@@ -208,11 +208,11 @@ def run(g):
     
     while not g.quit:
         for e in pygame.event.get():
-            if e.type is QUIT: g.quit = 1
-            if e.type is KEYDOWN and e.key == K_ESCAPE: g.quit = 1
+            if e.type == QUIT: g.quit = 1
+            if e.type == KEYDOWN and e.key == K_ESCAPE: g.quit = 1
             ##In run(), in the event loop, checking for F10 for full screen, RETURN for pause.
             ##::
-            if e.type is KEYDOWN and e.key == K_F10:
+            if e.type == KEYDOWN and e.key == K_F10:
                 #g.screen = pygame.display.set_mode((SW,SH),FULLSCREEN|HWSURFACE|DOUBLEBUF)
                 pygame.display.toggle_fullscreen()
                 
@@ -240,10 +240,11 @@ def run(g):
                 g.screen.set_at((x,y),(255,255,255))
 
             g.paint(g.screen)
-            img = g.font.render('%05d'%g.player.score,1,(0,0,0))
-            g.screen.blit(img,(0+1,SH-img.get_height()+1))
-            img = g.font.render('%05d'%g.player.score,1,(255,255,255))
-            g.screen.blit(img,(0,SH-img.get_height()))
+            if hasattr(g, "player"):
+                img = g.font.render('%05d'%g.player.score,1,(0,0,0))
+                g.screen.blit(img,(0+1,SH-img.get_height()+1))
+                img = g.font.render('%05d'%g.player.score,1,(255,255,255))
+                g.screen.blit(img,(0,SH-img.get_height()))
             pygame.display.flip()
             
             g.frame += 1

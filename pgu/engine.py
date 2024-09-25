@@ -125,7 +125,7 @@ class Game:
         state
 
         """
-        if e.type is QUIT: 
+        if e.type == QUIT:
             self.state = Quit(self)
             return 1
 

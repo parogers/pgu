@@ -7,6 +7,8 @@ from . import pguglobals
 from . import style
 from .errors import PguError
 
+from .. import logger
+
 class SignalCallback(object):
     # The function to call
     func = None
@@ -298,6 +300,10 @@ class Widget(object):
 
             nargs = code.co_argcount
             names = list(code.co_varnames)[:nargs]
+            logger.debug(f"in {self}, {func.__qualname__} with {names} getting {event}")
+
+
+            # TODO: use `inspect` module for this dependency injection
 
             # If the function is bound to an instance, remove the first argument name. Again
             # we keep compatibility with older versions of python.

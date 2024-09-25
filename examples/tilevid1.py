@@ -76,8 +76,8 @@ def run(g):
     
     while not g.quit:
         for e in pygame.event.get():
-            if e.type is QUIT: g.quit = 1
-            if e.type is KEYDOWN and e.key == K_ESCAPE: g.quit = 1
+            if e.type == QUIT: g.quit = 1
+            if e.type == KEYDOWN and e.key == K_ESCAPE: g.quit = 1
         
         g.loop()
         updates = g.update(g.screen)

@@ -17,14 +17,14 @@ class Red(engine.State):
         s.fill((255,0,0))
         pygame.display.flip()
     def event(self,e): 
-        if e.type is KEYDOWN: return Green(self.game)
+        if e.type == KEYDOWN: return Green(self.game)
         
 class Green(engine.State):
     def paint(self,s): 
         s.fill((0,255,0))
         pygame.display.flip()
     def event(self,e): 
-        if e.type is KEYDOWN: return Blue(self.game)
+        if e.type == KEYDOWN: return Blue(self.game)
 
 ##A state may subclass engine.State.
 ##::
@@ -51,7 +51,7 @@ class Blue(engine.State):
     ##returns a value, it will become the new state.
     ##::
     def event(self,e): 
-        if e.type is KEYDOWN: return Red(self.game)
+        if e.type == KEYDOWN: return Red(self.game)
     ##
     ##Loop is called once a frame.  It should contain all the
     ##logic.  If the loop method returns a value it will become the
