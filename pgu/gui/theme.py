@@ -77,7 +77,7 @@ class Theme(object):
         #if the package isn't installed and people are just
         #trying out the scripts or examples
         #dnames.append(os.path.join(os.path.dirname(__file__), "..", "..", "data", "themes", name))
-        dnames.append(Path(__file__).parent.parent.parent / "data/themes" / name))
+        dnames.append(Path(__file__).parent.parent.parent / "data/themes" / name)
 
         for dname in dnames:
             if dname.is_dir():
