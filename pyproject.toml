@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+packages = ["pgu", "pgu.scripts", "pgu.examples", "pgu.data"]
+
+[tool.setuptools.dynamic]
+version = {attr = "pgu.__version__"}
+
+[tool.setuptools.package-dir]
+"pgu" = "pgu"
+"pgu.scripts" = "scripts"
+"pgu.examples" = "examples"
+"pgu.data" = "data"
+
+[project]
+name = "pygame-pgu"
+dynamic = ["version"]
+description = "Phil's Pygame Utilities - a collection of handy modules and scripts for PyGame."
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">= 3.8"
+dependencies = [
+    "pygame-ce > 2.0"
+]
+authors = [{ name = "Joao S. O. Bueno" }, { name = "Peter Rogers" }, { name = "Phil Hassey" }]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+repository = "https://github.com/parogers/pgu"
+
+
+[project.optional-dependencies]
+dev = []
+
+[tool.pytest.ini_options]
+testpaths = "tests"
+python_files = "test_*.py"
+python_functions = "test_*"
+addopts = "-v --doctest-modules"
+
+[tool.mypy]
+mypy_path = "typecheck"
+implicit_reexport = true
