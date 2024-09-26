@@ -218,7 +218,11 @@ class tpicker(gui.Widget):
         while y < 0: y += self.rect.h
         while x >= self.rect.w: x -= self.rect.w
         while y >= self.rect.h: y -= self.rect.h
-        app.tile = app.tiles.subsurface((x,y,app.tile_w,app.tile_h))
+        try:
+            app.tile = app.tiles.subsurface((x,y,app.tile_w,app.tile_h))
+        except ValueError:
+            return False
+        return True
 
     def event(self,e):
         if (e.type == MOUSEBUTTONDOWN and e.button == 1) or (e.type == MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
@@ -516,7 +520,14 @@ def cmd_flip(value):
 def cmd_tpick(value):
     dx,dy = value
     off = app.tile.get_offset()
-    app.tpicker.pick((off[0]+dx*app.tile_w,off[1]+dy*app.tile_h))
+    tx = off[0] + dx * app.tile_w
+    ty = off[1] + dy * app.tile_h
+    result = app.tpicker.pick((tx, ty))
+    if not result:
+        tx = max(0, tx - tx % app.tile_w)
+        ty = max(0, ty - ty % app.tile_h)
+        app.tpicker.pick((tx, ty))
+
     
 def cmd_mode(value):
     mode = value
