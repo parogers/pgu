@@ -151,7 +151,7 @@ class _html(HTMLParser):
         return r
 
     def map_to_params(self, r):
-        anum = re.compile("\D")
+        anum = re.compile(r"\D")
 
         params = {'style':{}}
         style = params['style']
@@ -466,7 +466,7 @@ class _html(HTMLParser):
         tst = re.compile("[\t\r\n]+").sub("", txt)
         if tst == "": return
 
-        txt = re.compile("\s+").sub(" ", txt)
+        txt = re.compile(r"\s+").sub(" ", txt)
         if txt == "": return
 
         if txt == " ":

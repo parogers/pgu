@@ -6,6 +6,7 @@ import os, re
 import pygame
 
 from configparser import ConfigParser
+from pathlib import Path
 
 from .const import *
 from . import widget
@@ -21,6 +22,8 @@ class Theme(object):
     If you wish to create your own theme, create a class with this interface, and
     pass it to gui.App via gui.App(theme=MyTheme()).
 
+
+
     """
 
     # Image extensions automatically recognized by the theme class
@@ -34,6 +37,9 @@ class Theme(object):
                 absolute path to a theme, if pgu is not installed, or if you
                 created your own theme.  May include several dirs in a list if
                 data is spread across several themes.
+
+                Also, if the "PGU_THEMES" enviroment var is set, that
+                folder is searched first for the named themes
 
         Example:
             theme = gui.Theme("default")
@@ -58,33 +64,34 @@ class Theme(object):
         #theme_dir = themes[name]
 
         #try to load the local dir, or absolute path
-        dnames = [name]
+        dnames = [Path(name)]
+
+        # try themes from configured folder:
+        if themes_path:=os.environ.get("PGU_THEMES"):
+            for path in themes_path.split(os.pathsep):
+                dnames.append(Path(path))
+
+        #if the package is installed:
+        dnames.append(Path(__file__).parent.parent / "data/themes" / name) # pgu/data/themes...
 
         #if the package isn't installed and people are just
         #trying out the scripts or examples
-        dnames.append(os.path.join(os.path.dirname(__file__), "..", "..", "data", "themes", name))
+        #dnames.append(os.path.join(os.path.dirname(__file__), "..", "..", "data", "themes", name))
+        dnames.append(Path(__file__).parent.parent.parent / "data/themes" / name))
 
-        #if the package is installed, and the package is installed
-        #in /usr/lib/python2.3/site-packages/pgu/
-        #or c:\python23\lib\site-packages\pgu\
-        #the data is in ... lib/../share/ ...
-        dnames.append(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "share", "pgu", "themes", name))
-        dnames.append(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "..", "share", "pgu", "themes", name))
-        dnames.append(os.path.join(os.path.dirname(__file__), "..", "..", "share", "pgu", "themes", name))
         for dname in dnames:
-            if os.path.isdir(dname): break
-
-        if not os.path.isdir(dname):
+            if dname.is_dir():
+                break
+        else:
             raise Exception('could not find theme '+name)
 
         # Normalize the path to make it look nicer (gets rid of the ..'s)
-        dname = os.path.normpath(dname)
+        dname = dname.absolute()
 
         # Try parsing the theme in the custom txt file format
-        fname = os.path.join(dname, "config.txt")
-        if os.path.isfile(fname):
-            try:
-                f = open(fname)
+        fname = dname / "config.txt"
+        if fname.is_file():
+            with fname.open() as f:
                 for line in f.readlines():
                     args = line.strip().split()
 
@@ -97,8 +104,6 @@ class Theme(object):
                         (cls, pcls) = cls.split(":")
 
                     self.config[cls, pcls, attr] = (dname, vals)
-            finally:
-                f.close()
             return
 
         # Try parsing the theme data as an ini file
@@ -106,7 +111,7 @@ class Theme(object):
         if os.path.isfile(fname):
             cfg = ConfigParser()
             f = open(fname, 'r')
-            cfg.readfp(f)
+            cfg.read_file(f)
             for section in cfg.sections():
                 cls = section
                 pcls = ''
