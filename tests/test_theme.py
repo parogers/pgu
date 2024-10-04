@@ -1,4 +1,5 @@
 
+import tempfile
 import pytest
 import pygame
 import site
@@ -126,3 +127,9 @@ element:hover background sample.png
         theme = Theme(temp_dir)
         assert theme.getstyle('element.something', '', 'padding') == 1
         assert isinstance(theme.getstyle('element', 'hover', 'background'), pygame.Surface)
+
+
+def test_it_raises_error_if_empty_theme_directory():
+    with tempfile.TemporaryDirectory() as temp_dir:
+        with pytest.raises(IOError, match='Cannot load theme: missing style.ini or config.txt'):
+            Theme(temp_dir)
