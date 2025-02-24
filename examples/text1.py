@@ -33,5 +33,5 @@ pygame.display.flip()
 _quit = 0
 while not _quit:
     for e in pygame.event.get():
-        if e.type is QUIT: _quit = 1
+        if e.type == QUIT: _quit = 1
     pygame.time.wait(10)

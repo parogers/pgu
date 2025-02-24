@@ -7,22 +7,22 @@ from . import button, basic
 from . import pguglobals
 
 def action_open(value):
-    print(('gui.action_open',"Scheduled to be deprecated."))
+    print('gui.action_open',"Scheduled to be deprecated.")
     value.setdefault('x',None)
     value.setdefault('y',None)
     value['container'].open(value['window'],value['x'],value['y'])
 
 def action_setvalue(value):
-    print(('gui.action_setvalue',"Scheduled to be deprecated."))
+    print('gui.action_setvalue',"Scheduled to be deprecated.")
     a,b = value
     b.value = a.value
 
 def action_quit(value):
-    print(('gui.action_quit',"Scheduled to be deprecated."))
+    print('gui.action_quit',"Scheduled to be deprecated.")
     value.quit()
 
 def action_exec(value):
-    print(('gui.action_exec',"Scheduled to be deprecated."))
+    print('gui.action_exec',"Scheduled to be deprecated.")
     exec(value['script'],globals(),value['dict'])
 
 class Toolbox(table.Table):

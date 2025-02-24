@@ -128,8 +128,8 @@ def run(g):
     
     while not g.quit:
         for e in pygame.event.get():
-            if e.type is QUIT: g.quit = 1
-            if e.type is KEYDOWN and e.key == K_ESCAPE: g.quit = 1
+            if e.type == QUIT: g.quit = 1
+            if e.type == KEYDOWN and e.key == K_ESCAPE: g.quit = 1
             
         g.view.x += SPEED
         g.run_codes(cdata,(g.view.right/TW,0,1,17))

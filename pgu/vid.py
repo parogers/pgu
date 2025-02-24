@@ -350,7 +350,8 @@ class Vid(object):
         """Convert a groups to a list."""
         v = []
         for s, n in self.groups.items():
-            if (n&groups)!=0: v.append(s)
+            if (n & groups) != 0:
+                v.append(s)
         return v
 
     def hit(self, x, y, t, s):

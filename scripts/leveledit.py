@@ -115,6 +115,10 @@ class _app(gui.Container):
         #self.level_w, self.level_h = (self.level.get_width(), self.level.get_height())
         self.level_w, self.level_h = len(self.level.tlayer[0]),len(self.level.tlayer)
 
+
+        self.tiles_last_ctime = None
+        self.codes_last_ctime = None
+
         self.load_tiles_and_codes()
         
 
@@ -142,6 +146,15 @@ class _app(gui.Container):
 
         self.tiles_fname = cfg['tiles']
         if os.path.isfile(self.tiles_fname):
+
+            # we check to see if the ctime is the same.
+
+            newctime = os.stat(self.tiles_fname)[9]
+            if newctime <= self.tiles_last_ctime:
+                #nothing to do, so we return.
+                return
+
+            self.tiles_last_ctime = newctime
             self.tiles = pygame.image.load(self.tiles_fname)
         else:
             self.tiles = hex_image(self)
@@ -151,6 +164,11 @@ class _app(gui.Container):
 
         self.codes_fname = cfg['codes']
         if os.path.isfile(self.codes_fname):
+            newctime = os.stat(self.codes_fname)[9]
+            if newctime <= self.codes_last_ctime:
+                #nothing to do, so we return.
+                return
+            self.codes_last_ctime = newctime
             self.codes = pygame.image.load(self.codes_fname)
         else:
             self.codes = hex_image(self)
@@ -283,7 +301,7 @@ class _app(gui.Container):
         
             
     def event(self,e):
-        if e.type is KEYDOWN:
+        if e.type == KEYDOWN:
             for key,cmd,value in keys:
                 if e.key == key:
                     cmd(value)
@@ -296,7 +314,7 @@ def hex_image(self):
     if not hasattr(self,'tiles_h'): self.tiles_h = 256
     rimg = pygame.Surface((self.tiles_w,self.tiles_h)).convert_alpha()
     rimg.fill((0,0,0,0))
-    w,h = self.tiles_w / self.tile_w, self.tiles_h / self.tile_h
+    w,h = self.tiles_w // self.tile_w, self.tiles_h // self.tile_h
     n = 0
     fnt = pygame.font.SysFont("helvetica",self.tile_h-1)
     for y in range(0,h):
@@ -328,7 +346,7 @@ class tpicker(gui.Widget):
         pygame.draw.rect(s,(255,255,255),(off[0],off[1],app.tile_w,app.tile_h),2)
         
     def event(self,e):
-        if (e.type is MOUSEBUTTONDOWN and e.button == 1) or (e.type is MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
+        if (e.type == MOUSEBUTTONDOWN and e.button == 1) or (e.type == MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
             w = app.tiles_w//app.tile_w
             x,y = e.pos[0]//app.tile_w,e.pos[1]//app.tile_h
             n = x+y*w
@@ -356,7 +374,7 @@ class cpicker(gui.Widget):
         pygame.draw.rect(s,(255,255,255),(off[0],off[1],app.tile_w,app.tile_h),2)
         
     def event(self,e):
-        if (e.type is MOUSEBUTTONDOWN and e.button == 1) or (e.type is MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
+        if (e.type == MOUSEBUTTONDOWN and e.button == 1) or (e.type == MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
             w = app.codes_w//app.tile_w
             x,y = e.pos[0]//app.tile_w,e.pos[1]//app.tile_h
             n = x+y*w
@@ -502,23 +520,23 @@ class vdraw(gui.Widget):
         #pygame.draw.rect(s,(255,255,255,128),Rect(r.x*self.rect.w/app.view_w,r.y*self.rect.h/app.view_h,r.w*self.rect.w/app.view_w,r.h*self.rect.h/app.view_h),4)
         
     def event(self,e):
-        if e.type is MOUSEMOTION:
+        if e.type == MOUSEMOTION:
             self.getpos(e)
-        if (e.type is MOUSEBUTTONDOWN and e.button == 3) or (e.type is MOUSEMOTION and e.buttons[2]==1 and self.container.myfocus == self):
+        if (e.type == MOUSEBUTTONDOWN and e.button == 3) or (e.type == MOUSEMOTION and e.buttons[2]==1 and self.container.myfocus == self):
             self.picker_down(e)
-        if e.type is MOUSEBUTTONDOWN and e.button == 1:
+        if e.type == MOUSEBUTTONDOWN and e.button == 1:
             self.getpos(e)
             a = '%s_down'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
-        if e.type is MOUSEMOTION and e.buttons[0] and self.container.myfocus == self:
+        if e.type == MOUSEMOTION and e.buttons[0] and self.container.myfocus == self:
             a = '%s_drag'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
-        if e.type is MOUSEBUTTONUP and e.button == 1:
+        if e.type == MOUSEBUTTONUP and e.button == 1:
             a = '%s_up'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
-        if e.type is MOUSEBUTTONDOWN and e.button == 2:
+        if e.type == MOUSEBUTTONDOWN and e.button == 2:
             self.move_down(e)
-        if e.type is MOUSEMOTION and e.buttons[1] and self.container.myfocus == self:
+        if e.type == MOUSEMOTION and e.buttons[1] and self.container.myfocus == self:
             self.move_drag(e)
     
     #move
