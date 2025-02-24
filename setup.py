@@ -20,7 +20,7 @@ def main():
 
     #import pprint
     #pprint.pprint(installdatafiles)
-    
+
     # perform the setup action
     from pgu import __version__
     setup_args = {
@@ -68,7 +68,7 @@ def main():
             'Programming Language :: Python :: 3 :: Only',
         ],
         'data_files': installdatafiles,
-        'scripts': ['scripts/tileedit','scripts/leveledit','scripts/tganew','scripts/levelfancy'],
+        'scripts': ['scripts/tileedit.py','scripts/leveledit.py','scripts/tganew.py','scripts/levelfancy.py'],
     }
     setup(**setup_args)
 
