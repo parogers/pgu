@@ -115,6 +115,7 @@ class _app(gui.Container):
         #self.level_w, self.level_h = (self.level.get_width(), self.level.get_height())
         self.level_w, self.level_h = len(self.level.tlayer[0]),len(self.level.tlayer)
 
+
         self.tiles_last_ctime = None
         self.codes_last_ctime = None
 
@@ -145,6 +146,7 @@ class _app(gui.Container):
 
         self.tiles_fname = cfg['tiles']
         if os.path.isfile(self.tiles_fname):
+
             # we check to see if the ctime is the same.
 
             newctime = os.stat(self.tiles_fname)[9]
@@ -153,7 +155,6 @@ class _app(gui.Container):
                 return
 
             self.tiles_last_ctime = newctime
-
             self.tiles = pygame.image.load(self.tiles_fname)
         else:
             self.tiles = hex_image(self)
@@ -168,7 +169,6 @@ class _app(gui.Container):
                 #nothing to do, so we return.
                 return
             self.codes_last_ctime = newctime
-
             self.codes = pygame.image.load(self.codes_fname)
         else:
             self.codes = hex_image(self)
@@ -340,15 +340,15 @@ class tpicker(gui.Widget):
     def paint(self,s):
         s.fill((128,128,128))
         s.blit(app.tiles,(0,0))
-        w = app.tiles_w/app.tile_w
-        x,y = app.tile%w,app.tile/w
+        w = app.tiles_w//app.tile_w
+        x,y = app.tile%w,app.tile//w
         off = x*app.tile_w,y*app.tile_h
         pygame.draw.rect(s,(255,255,255),(off[0],off[1],app.tile_w,app.tile_h),2)
         
     def event(self,e):
         if (e.type == MOUSEBUTTONDOWN and e.button == 1) or (e.type == MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
-            w = app.tiles_w/app.tile_w
-            x,y = e.pos[0]/app.tile_w,e.pos[1]/app.tile_h
+            w = app.tiles_w//app.tile_w
+            x,y = e.pos[0]//app.tile_w,e.pos[1]//app.tile_h
             n = x+y*w
             self.set(n)
             if app.mode not in ('tile','bkgr'):
@@ -368,15 +368,15 @@ class cpicker(gui.Widget):
     def paint(self,s):
         s.fill((128,128,128))
         s.blit(app.codes,(0,0))
-        w = app.codes_w/app.tile_w
-        x,y = app.code%w,app.code/w
+        w = app.codes_w//app.tile_w
+        x,y = app.code%w,app.code//w
         off = x*app.tile_w,y*app.tile_h
         pygame.draw.rect(s,(255,255,255),(off[0],off[1],app.tile_w,app.tile_h),2)
         
     def event(self,e):
         if (e.type == MOUSEBUTTONDOWN and e.button == 1) or (e.type == MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
-            w = app.codes_w/app.tile_w
-            x,y = e.pos[0]/app.tile_w,e.pos[1]/app.tile_h
+            w = app.codes_w//app.tile_w
+            x,y = e.pos[0]//app.tile_w,e.pos[1]//app.tile_h
             n = x+y*w
             self.set(n)
             app.tools['code'].click()
@@ -855,8 +855,8 @@ def cmd_pick(value):
     
     
     if (mods&KMOD_SHIFT) != 0:
-        app.level.view.x += dx*app.vdraw.rect.w/8
-        app.level.view.y += dy*app.vdraw.rect.h/8
+        app.level.view.x += dx*app.vdraw.rect.w//8
+        app.level.view.y += dy*app.vdraw.rect.h//8
         app.vdraw.repaint()
         #x,y = app.view.get_offset()
         #x = x + 1*dx
@@ -878,7 +878,7 @@ def cmd_pick(value):
         
     
     else:
-        w = app.tiles_w/app.tile_w
+        w = app.tiles_w//app.tile_w
         if app.mode == 'code':
             n = app.code + dx + dy*w
             app.cpicker.set(n)

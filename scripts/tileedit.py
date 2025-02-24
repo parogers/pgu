@@ -527,7 +527,6 @@ def cmd_tpick(value):
         tx = max(0, tx - tx % app.tile_w)
         ty = max(0, ty - ty % app.tile_h)
         app.tpicker.pick((tx, ty))
-
     
 def cmd_mode(value):
     mode = value
@@ -1112,8 +1111,6 @@ class DirtyDialog(gui.Dialog):
 def run():
     #top.connect(gui.QUIT,top.quit,None)
     top.connect(gui.QUIT,cmd_quit,None)
-
-
     # top.connect(pygame.ACTIVEEVENT, cmd_active_save,None)
     top.init(app,app.screen)
     app.top = top
@@ -1132,7 +1129,7 @@ def main():
             init_app()
             run()
         except Restart:
-             restart = 1
+            restart = 1
         
 
         
