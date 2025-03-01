@@ -133,13 +133,13 @@ class Theme(object):
         dname = os.path.normpath(dname)
 
         try:
-            self.config = _read_theme_config_txt(dname)
+            self.config |= _read_theme_config_txt(dname)
             return
         except NotTheme:
             pass
 
         try:
-            self.config = _read_theme_style_ini(dname)
+            self.config |= _read_theme_style_ini(dname)
             return
         except NotTheme:
             pass
