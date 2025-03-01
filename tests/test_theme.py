@@ -133,3 +133,32 @@ def test_it_raises_error_if_empty_theme_directory():
     with tempfile.TemporaryDirectory() as temp_dir:
         with pytest.raises(IOError, match='Cannot load theme: missing style.ini or config.txt'):
             Theme(temp_dir)
+
+
+def test_it_unions_multiple_themes():
+    style1_ini = '''
+[some-element]
+label1 = first
+'''
+    style2_ini = '''
+[some-element]
+label2 = second
+'''
+    with temp_theme(style1_ini) as temp_dir1, temp_theme(style2_ini) as temp_dir2:
+        theme = Theme([temp_dir1, temp_dir2])
+        assert theme.getstyle('some-element', '', 'label1') == 'first'
+        assert theme.getstyle('some-element', '', 'label2') == 'second'
+
+
+def test_it_unions_theme_and_legacy_theme():
+    style_ini = '''
+[some-element]
+label1 = first
+'''
+    config_txt = '''
+some-element label2 second
+'''
+    with temp_theme(style_ini) as temp_dir1, temp_legacy_theme(config_txt) as temp_dir2:
+        theme = Theme([temp_dir1, temp_dir2])
+        assert theme.getstyle('some-element', '', 'label1') == 'first'
+        assert theme.getstyle('some-element', '', 'label2') == 'second'
