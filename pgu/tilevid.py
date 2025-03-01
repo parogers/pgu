@@ -171,7 +171,7 @@ class Tilevid(Vid):
         x,y = pos
         tiles = self.tiles
         tw,th = tiles[0].image.get_width(),tiles[0].image.get_height()
-        return x  / tw, y // th
+        return x  // tw, y // th
 
     def tile_to_view(self,pos):
         x,y = pos
