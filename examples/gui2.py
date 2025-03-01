@@ -20,5 +20,4 @@ app.connect(gui.QUIT,app.quit,None)
 e = gui.Button("This is a really long button.")
 
 app.run(e)
-
-
+pygame.quit()

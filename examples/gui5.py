@@ -96,4 +96,4 @@ c.tr()
 c.td(gui.TextArea(value="Cuzco the Goat", width=150, height=70), colspan=4)
 
 app.run(c)
-
+pygame.quit()

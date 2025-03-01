@@ -42,5 +42,6 @@ b.connect(gui.CLICK, open_file_browser, None)
 main.add(t, 20, 100)
 
 app.run(main)
+pygame.quit()
 #import profile
 #profile.run('app.run(main)')

@@ -117,5 +117,6 @@ if __name__ == '__main__':
     c.td(e)
     
     app.run(c)
+    pygame.quit()
     #import profile
     #profile.run('app.run(c)')
