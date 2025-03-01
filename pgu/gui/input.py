@@ -88,10 +88,7 @@ class Input(widget.Widget):
             elif e.key == K_TAB:
                 pass
             else:
-                if (type(e.unicode) == str):
-                    c = e.unicode
-                else:
-                    c = (e.unicode).encode('latin-1')
+                c = e.unicode
 
                 try:
                     if c:

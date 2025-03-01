@@ -149,7 +149,7 @@ class Painter(gui.Widget):
             if hasattr(self,app.mode.value+"_motion"):
                 action = getattr(self,app.mode.value+"_motion")
                 action(e)
-        if e.type is gui.MOUSEBUTTONUP:
+        if e.type == gui.MOUSEBUTTONUP:
             if hasattr(self,app.mode.value+"_up"):
                 action = getattr(self,app.mode.value+"_up")
                 action(e)

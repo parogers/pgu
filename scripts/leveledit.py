@@ -115,6 +115,7 @@ class _app(gui.Container):
         #self.level_w, self.level_h = (self.level.get_width(), self.level.get_height())
         self.level_w, self.level_h = len(self.level.tlayer[0]),len(self.level.tlayer)
 
+
         self.tiles_last_ctime = None
         self.codes_last_ctime = None
 
@@ -145,6 +146,7 @@ class _app(gui.Container):
 
         self.tiles_fname = cfg['tiles']
         if os.path.isfile(self.tiles_fname):
+
             # we check to see if the ctime is the same.
 
             newctime = os.stat(self.tiles_fname)[9]
@@ -153,7 +155,6 @@ class _app(gui.Container):
                 return
 
             self.tiles_last_ctime = newctime
-
             self.tiles = pygame.image.load(self.tiles_fname)
         else:
             self.tiles = hex_image(self)
@@ -168,7 +169,6 @@ class _app(gui.Container):
                 #nothing to do, so we return.
                 return
             self.codes_last_ctime = newctime
-
             self.codes = pygame.image.load(self.codes_fname)
         else:
             self.codes = hex_image(self)
@@ -301,7 +301,7 @@ class _app(gui.Container):
         
             
     def event(self,e):
-        if e.type is KEYDOWN:
+        if e.type == KEYDOWN:
             for key,cmd,value in keys:
                 if e.key == key:
                     cmd(value)
@@ -314,7 +314,7 @@ def hex_image(self):
     if not hasattr(self,'tiles_h'): self.tiles_h = 256
     rimg = pygame.Surface((self.tiles_w,self.tiles_h)).convert_alpha()
     rimg.fill((0,0,0,0))
-    w,h = self.tiles_w / self.tile_w, self.tiles_h / self.tile_h
+    w,h = self.tiles_w // self.tile_w, self.tiles_h // self.tile_h
     n = 0
     fnt = pygame.font.SysFont("helvetica",self.tile_h-1)
     for y in range(0,h):
@@ -340,15 +340,15 @@ class tpicker(gui.Widget):
     def paint(self,s):
         s.fill((128,128,128))
         s.blit(app.tiles,(0,0))
-        w = app.tiles_w/app.tile_w
-        x,y = app.tile%w,app.tile/w
+        w = app.tiles_w//app.tile_w
+        x,y = app.tile%w,app.tile//w
         off = x*app.tile_w,y*app.tile_h
         pygame.draw.rect(s,(255,255,255),(off[0],off[1],app.tile_w,app.tile_h),2)
         
     def event(self,e):
-        if (e.type is MOUSEBUTTONDOWN and e.button == 1) or (e.type is MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
-            w = app.tiles_w/app.tile_w
-            x,y = e.pos[0]/app.tile_w,e.pos[1]/app.tile_h
+        if (e.type == MOUSEBUTTONDOWN and e.button == 1) or (e.type == MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
+            w = app.tiles_w//app.tile_w
+            x,y = e.pos[0]//app.tile_w,e.pos[1]//app.tile_h
             n = x+y*w
             self.set(n)
             if app.mode not in ('tile','bkgr'):
@@ -368,15 +368,15 @@ class cpicker(gui.Widget):
     def paint(self,s):
         s.fill((128,128,128))
         s.blit(app.codes,(0,0))
-        w = app.codes_w/app.tile_w
-        x,y = app.code%w,app.code/w
+        w = app.codes_w//app.tile_w
+        x,y = app.code%w,app.code//w
         off = x*app.tile_w,y*app.tile_h
         pygame.draw.rect(s,(255,255,255),(off[0],off[1],app.tile_w,app.tile_h),2)
         
     def event(self,e):
-        if (e.type is MOUSEBUTTONDOWN and e.button == 1) or (e.type is MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
-            w = app.codes_w/app.tile_w
-            x,y = e.pos[0]/app.tile_w,e.pos[1]/app.tile_h
+        if (e.type == MOUSEBUTTONDOWN and e.button == 1) or (e.type == MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
+            w = app.codes_w//app.tile_w
+            x,y = e.pos[0]//app.tile_w,e.pos[1]//app.tile_h
             n = x+y*w
             self.set(n)
             app.tools['code'].click()
@@ -451,8 +451,8 @@ class vdraw(gui.Widget):
         s = pygame.Surface((self.rect.w,self.rect.h))
         clrs = [(148,148,148),(108,108,108)]
         inc = 7
-        for y in range(0,self.rect.w/inc):
-            for x in range(0,self.rect.h/inc):
+        for y in range(0,self.rect.w//inc):
+            for x in range(0,self.rect.h//inc):
                 s.fill(clrs[(x+y)%2],(x*inc,y*inc,inc,inc))
         self.bg = s
 
@@ -520,23 +520,23 @@ class vdraw(gui.Widget):
         #pygame.draw.rect(s,(255,255,255,128),Rect(r.x*self.rect.w/app.view_w,r.y*self.rect.h/app.view_h,r.w*self.rect.w/app.view_w,r.h*self.rect.h/app.view_h),4)
         
     def event(self,e):
-        if e.type is MOUSEMOTION:
+        if e.type == MOUSEMOTION:
             self.getpos(e)
-        if (e.type is MOUSEBUTTONDOWN and e.button == 3) or (e.type is MOUSEMOTION and e.buttons[2]==1 and self.container.myfocus == self):
+        if (e.type == MOUSEBUTTONDOWN and e.button == 3) or (e.type == MOUSEMOTION and e.buttons[2]==1 and self.container.myfocus == self):
             self.picker_down(e)
-        if e.type is MOUSEBUTTONDOWN and e.button == 1:
+        if e.type == MOUSEBUTTONDOWN and e.button == 1:
             self.getpos(e)
             a = '%s_down'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
-        if e.type is MOUSEMOTION and e.buttons[0] and self.container.myfocus == self:
+        if e.type == MOUSEMOTION and e.buttons[0] and self.container.myfocus == self:
             a = '%s_drag'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
-        if e.type is MOUSEBUTTONUP and e.button == 1:
+        if e.type == MOUSEBUTTONUP and e.button == 1:
             a = '%s_up'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
-        if e.type is MOUSEBUTTONDOWN and e.button == 2:
+        if e.type == MOUSEBUTTONDOWN and e.button == 2:
             self.move_down(e)
-        if e.type is MOUSEMOTION and e.buttons[1] and self.container.myfocus == self:
+        if e.type == MOUSEMOTION and e.buttons[1] and self.container.myfocus == self:
             self.move_drag(e)
     
     #move
@@ -855,8 +855,8 @@ def cmd_pick(value):
     
     
     if (mods&KMOD_SHIFT) != 0:
-        app.level.view.x += dx*app.vdraw.rect.w/8
-        app.level.view.y += dy*app.vdraw.rect.h/8
+        app.level.view.x += dx*app.vdraw.rect.w//8
+        app.level.view.y += dy*app.vdraw.rect.h//8
         app.vdraw.repaint()
         #x,y = app.view.get_offset()
         #x = x + 1*dx
@@ -878,7 +878,7 @@ def cmd_pick(value):
         
     
     else:
-        w = app.tiles_w/app.tile_w
+        w = app.tiles_w//app.tile_w
         if app.mode == 'code':
             n = app.code + dx + dy*w
             app.cpicker.set(n)

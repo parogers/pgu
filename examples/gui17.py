@@ -32,7 +32,7 @@ def lkey(_event):
         val = line.value
         line.value = ''
         line.focus()
-        print('>>> '+val)
+        print('>>> ' + val)
         try:
             code = compile(val,'<string>','single')
             eval(code,globals(),_locals)
@@ -40,7 +40,7 @@ def lkey(_event):
             e_type,e_value,e_traceback = sys.exc_info()
             print('Traceback (most recent call last):')
             traceback.print_tb(e_traceback,None,s)
-            print(e_type,e_value)
+            print(e_type, e_value)
 
         sys.stdout = _stdout
 

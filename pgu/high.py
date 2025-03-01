@@ -120,13 +120,11 @@ class Highs:
     
     def save(self):
         """Save the high scores."""
-        
-        f = open(self.fname,"w")
-        for key,high in self._dict.items():
-            for e in high:
-                f.write("%s\t%d\t%s\t%s\n"%(key,e.score,e.name,str(e.data)))
-        f.close()
-        
+        with open(self.fname,"w") as f:
+            for key,high in list(self._dict.items()):
+                for e in high:
+                    f.write(f"{key}\t{e.score}\t{e.name}\t{e.data}\n")
+
     def __getitem__(self,key):
         if key not in self._dict:
             self._dict[key] = _High(self,self.limit)

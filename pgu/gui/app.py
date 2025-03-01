@@ -9,6 +9,8 @@ from . import container
 from .theme import Theme
 from .const import *
 
+from .. import logger
+
 class App(container.Container):
     """The top-level widget for an application.
     
@@ -164,6 +166,7 @@ class App(container.Container):
             
             ev = pygame.event.Event(ev.type, args)
 
+        # logger.debug(f"in {self}, sending {ev}")
         #NOTE: might want to deal with ACTIVEEVENT in the future.
         self.send(ev.type, ev)
         container.Container.event(self, ev)
@@ -185,7 +188,9 @@ class App(container.Container):
             if not (e.type == QUIT and self.mywindow):
                 self.event(e)
         rects = self.update(self.screen)
-        pygame.display.update(rects)
+        # Hack - rect updates not working in pygame-ce 2.5.1 - 2024
+        pygame.display.flip()
+        #pygame.display.update(rects)
         
         
     def paint(self,screen=None):

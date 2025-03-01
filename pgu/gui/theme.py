@@ -15,6 +15,58 @@ from .basic import parse_color, is_color
 
 __file__ = os.path.abspath(__file__)
 
+
+class NotTheme(Exception):
+    pass
+
+
+def _read_theme_style_ini(dir_path):
+    '''Attempts to read the PGU theme from the given directory and returns the
+    config dict representing the theme data.'''
+
+    path = os.path.join(dir_path, "style.ini")
+    if not os.path.isfile(path):
+        raise NotTheme()
+
+    cfg = ConfigParser()
+    with open(path) as file:
+        cfg.read_file(file)
+        config = {}
+        for section in cfg.sections():
+            cls = section
+            pcls = ''
+            if cls.find(":")>=0:
+                cls, pcls = cls.split(":")
+            for attr in cfg.options(section):
+                vals = cfg.get(section, attr).strip().split()
+                config[cls, pcls, attr] = (dir_path, vals)
+        return config
+
+
+def _read_theme_config_txt(dir_path):
+    '''Attempts to read the theme at the given directory using the legacy
+    "config.txt" format.'''
+
+    path = os.path.join(dir_path, 'config.txt')
+    if not os.path.isfile(path):
+        raise NotTheme()
+    config = {}
+    with open(path) as file:
+        for line in file.readlines():
+            args = line.strip().split()
+
+            if len(args) < 3:
+                continue
+
+            pcls = ""
+            (cls, attr, vals) = (args[0], args[1], args[2:])
+            if (":" in cls):
+                (cls, pcls) = cls.split(":")
+
+            config[cls, pcls, attr] = (dir_path, vals)
+    return config
+
+
 class Theme(object):
     """Theme interface.
 
@@ -80,42 +132,17 @@ class Theme(object):
         # Normalize the path to make it look nicer (gets rid of the ..'s)
         dname = os.path.normpath(dname)
 
-        # Try parsing the theme in the custom txt file format
-        fname = os.path.join(dname, "config.txt")
-        if os.path.isfile(fname):
-            try:
-                f = open(fname)
-                for line in f.readlines():
-                    args = line.strip().split()
-
-                    if len(args) < 3:
-                        continue
-
-                    pcls = ""
-                    (cls, attr, vals) = (args[0], args[1], args[2:])
-                    if (":" in cls):
-                        (cls, pcls) = cls.split(":")
-
-                    self.config[cls, pcls, attr] = (dname, vals)
-            finally:
-                f.close()
+        try:
+            self.config |= _read_theme_config_txt(dname)
             return
+        except NotTheme:
+            pass
 
-        # Try parsing the theme data as an ini file
-        fname = os.path.join(dname, "style.ini")
-        if os.path.isfile(fname):
-            cfg = ConfigParser()
-            f = open(fname, 'r')
-            cfg.readfp(f)
-            for section in cfg.sections():
-                cls = section
-                pcls = ''
-                if cls.find(":")>=0:
-                    cls, pcls = cls.split(":")
-                for attr in cfg.options(section):
-                    vals = cfg.get(section, attr).strip().split()
-                    self.config[cls, pcls, attr] = (dname, vals)
+        try:
+            self.config |= _read_theme_style_ini(dname)
             return
+        except NotTheme:
+            pass
 
         # The folder probably doesn't contain a theme
         raise IOError("Cannot load theme: missing style.ini or config.txt")

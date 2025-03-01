@@ -179,7 +179,8 @@ class Container(widget.Widget):
                         # Focusable not considered, since that is only for tabs
                         if w.collidepoint(e.pos):
                             h = w
-                            if self.myfocus is not w: self.focus(w)
+                            if self.myfocus is not w:
+                                self.focus(w)
                 if not h and self.myfocus:
                     self.blur(self.myfocus)
             elif e.type == MOUSEMOTION:
@@ -229,11 +230,11 @@ class Container(widget.Widget):
             #elif e.type == CLICK: #a dead click
             #    sub = None
 
-            if (sub):
+            if sub:
                 used = w._event(sub)
 
-        if not used and e.type is KEYDOWN:
-            if e.key is K_TAB and self.myfocus:
+        if not used and e.type == KEYDOWN:
+            if e.key == K_TAB and self.myfocus:
                 if not (e.mod & KMOD_SHIFT):
                     next(self.myfocus)
                 else:

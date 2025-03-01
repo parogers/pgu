@@ -169,9 +169,9 @@ clock = pygame.time.Clock()
 done = False
 while not done:
     for e in pygame.event.get():
-        if e.type is QUIT: 
+        if e.type == QUIT:
             done = True
-        elif e.type is KEYDOWN and e.key == K_ESCAPE: 
+        elif e.type == KEYDOWN and e.key == K_ESCAPE:
             done = True
         else:
             app.event(e)

@@ -8,6 +8,7 @@ import sys
 from html.parser import HTMLParser
 
 import re
+
 import pygame
 from pygame.locals import *
 
@@ -444,7 +445,7 @@ class _html(HTMLParser):
             else:
                 self.item.add(w)
         except Exception:
-            print('handle_image: missing %s'%src)
+            print("handle_image: missing {src!r}", file=sys.stderr)
 
     def handle_data(self, txt):
         if self.type == 'table': return
@@ -479,37 +480,23 @@ class _html(HTMLParser):
             self.item.add(w)
             self.item.space(self.font.size(" "))
 
-if (sys.version_info[0] >= 3):
-    # These functions are for compatibility with python 3, where it seems that HTMLParser
-    # was rewritten to be more general. There is a problem though, since python pre 3
-    # defines these same functions with an extra argument. So we have to include them
-    # conditionally, depending on whether we're using python 2 or 3. Ugh.
-    def handle_starttag(this, tag, attrs):
-        func = getattr(this, "start_" + tag, None)
+    def handle_starttag(self, tag, attrs):
+        func = getattr(self, "start_" + tag, None)
         if (not func):
-            print("ERROR - unrecognized tag %s" % tag)
+            print(f"ERROR - unrecognized tag {tag!r}", file=sys.stderr)
             return
         func(attrs)
 
-    def handle_endtag(this, tag):
-        func = getattr(this, "end_" + tag, None)
+    def handle_endtag(self, tag):
+        func = getattr(self, "end_" + tag, None)
         if (func):
             func()
 
-    def start_img(this, attrs):
-#        src = ""
-#        align = ""
-#        for (key, value) in attrs:
-#            if (key == "src"): src = value
-#            elif (key == "align"): align = value
-        args = this.attrs_to_map(attrs)
+    def start_img(self, attrs):
+        args = self.attrs_to_map(attrs)
         src = args.get("src", "")
         align = args.get("align", "")
-        this.handle_image(src, "", "", align, "", "")
-
-    _html.handle_starttag = handle_starttag
-    _html.handle_endtag = handle_endtag
-    _html.start_img = start_img
+        self.handle_image(src, "", "", align, "", "")
 
 
 class HTML(gui.Document):

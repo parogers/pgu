@@ -74,26 +74,24 @@ class Select(Table):
         
         opts.rect.w, opts.rect.h = opts.resize()
         
-#        y = self.rect.y
-#        c = self.container
-#        while hasattr(c, 'container'):
-#            y += c.rect.y
-#            if (not c.container): 
-#                break
-#            c = c.container
-            
-#        if y + self.rect.h + opts.rect.h <= c.rect.h: #down
-#            dy = self.rect.y + self.rect.h
-#        else: #up
-#            dy = self.rect.y - self.rect.h
+        offsetx = 0
+        offsety = 0
+        c = self.container
+        while hasattr(c, 'container'):
+            if hasattr(c, 'offset'):
+                offsetx += c.offset[0]
+                offsety += c.offset[1]
 
-        opts.rect.w, opts.rect.h = opts.resize()
+            if (not c.container):
+                break
+            c = c.container
 
-        # TODO - make sure there is enough space to open down
-        # ...
-        yp = self.rect.bottom-1
+        y = self.rect.bottom-1 - offsety
+        x = self.rect.x - offsetx
+        if y + self.rect.h + opts.rect.h > self.container.rect.h: #up
+            y -= opts.rect.h + self.rect.h
 
-        self.container.open(opts, self.rect.x, yp)
+        self.container.open(opts, x, y)
         self.firstOption.focus()
 
         # TODO - this is a hack

@@ -75,7 +75,7 @@ from pygame.locals import *
 
 have_pil = False
 
-# the following line is not needed if pgl is installed
+# the following line is not needed if pgu is installed
 import sys; sys.path.insert(0, "..")
 import shutil
 
@@ -162,7 +162,7 @@ class _app(gui.Container):
             if hasattr(self,'tpicker'): self.tpicker.repaint()
             if hasattr(self,'tpreview'): self.tpreview.repaint()
     def event(self,e):
-        if e.type is KEYDOWN:
+        if e.type == KEYDOWN:
             for key,cmd,value in keys:
                 if e.key == key:
                     cmd(value)
@@ -193,7 +193,7 @@ class cpicker(gui.Widget):
         s.blit(pygame.transform.scale(self.palette,(self.rect.w,self.rect.h)),(0,0))
             
     def event(self,e):
-        if (e.type is MOUSEBUTTONDOWN) or (e.type is MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
+        if (e.type == MOUSEBUTTONDOWN) or (e.type == MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
             x,y = e.pos[0]*self.palette_w/self.rect.w,e.pos[1]*self.palette_h/self.rect.h
             x,y = max(0,x),max(0,y)
             x,y = min(self.palette_w-1,x),min(self.palette_h-1,y)
@@ -218,14 +218,18 @@ class tpicker(gui.Widget):
         while y < 0: y += self.rect.h
         while x >= self.rect.w: x -= self.rect.w
         while y >= self.rect.h: y -= self.rect.h
-        app.tile = app.tiles.subsurface((x,y,app.tile_w,app.tile_h))
+        try:
+            app.tile = app.tiles.subsurface((x,y,app.tile_w,app.tile_h))
+        except ValueError:
+            return False
+        return True
 
     def event(self,e):
-        if (e.type is MOUSEBUTTONDOWN and e.button == 1) or (e.type is MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
+        if (e.type == MOUSEBUTTONDOWN and e.button == 1) or (e.type == MOUSEMOTION and e.buttons[0] == 1 and self.container.myfocus == self):
             x,y = e.pos[0]/app.tile_w*app.tile_w,e.pos[1]/app.tile_h*app.tile_h
             self.pick((x,y))
             
-        if (e.type is MOUSEBUTTONDOWN and e.button == 3) or (e.type is MOUSEMOTION and e.buttons[2] == 1 and self.container.myfocus == self):
+        if (e.type == MOUSEBUTTONDOWN and e.button == 3) or (e.type == MOUSEMOTION and e.buttons[2] == 1 and self.container.myfocus == self):
             x,y = e.pos[0]-app.tile_w/2,e.pos[1]-app.tile_h/2
             x = min(self.rect.w-app.tile_w-1,max(0,x))
             y = min(self.rect.h-app.tile_h-1,max(0,y))
@@ -287,15 +291,15 @@ class tdraw(gui.Widget):
         pygame.draw.rect(s,(255,255,255,128),Rect(r.x*self.rect.w/app.tile_w,r.y*self.rect.h/app.tile_h,r.w*self.rect.w/app.tile_w,r.h*self.rect.h/app.tile_h),4)
         
     def event(self,e):
-        if (e.type is MOUSEBUTTONDOWN and e.button == 3) or (e.type is MOUSEMOTION and e.buttons[2]==1 and self.container.myfocus == self):
+        if (e.type == MOUSEBUTTONDOWN and e.button == 3) or (e.type == MOUSEMOTION and e.buttons[2]==1 and self.container.myfocus == self):
             self.picker_down(e)
-        if e.type is MOUSEBUTTONDOWN and e.button == 1:
+        if e.type == MOUSEBUTTONDOWN and e.button == 1:
             a = '%s_down'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
-        if e.type is MOUSEMOTION and e.buttons[0] and self.container.myfocus == self:
+        if e.type == MOUSEMOTION and e.buttons[0] and self.container.myfocus == self:
             a = '%s_drag'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
-        if e.type is MOUSEBUTTONUP and e.button == 1:
+        if e.type == MOUSEBUTTONUP and e.button == 1:
             a = '%s_up'%app.mode
             if hasattr(self,a): getattr(self,a)(e)
             
@@ -516,7 +520,13 @@ def cmd_flip(value):
 def cmd_tpick(value):
     dx,dy = value
     off = app.tile.get_offset()
-    app.tpicker.pick((off[0]+dx*app.tile_w,off[1]+dy*app.tile_h))
+    tx = off[0] + dx * app.tile_w
+    ty = off[1] + dy * app.tile_h
+    result = app.tpicker.pick((tx, ty))
+    if not result:
+        tx = max(0, tx - tx % app.tile_w)
+        ty = max(0, ty - ty % app.tile_h)
+        app.tpicker.pick((tx, ty))
     
 def cmd_mode(value):
     mode = value
@@ -727,7 +737,7 @@ def init_ini():
     ini.read([ini_fname])
 
 def ini_save():
-    f = open(ini_fname,"wb")
+    f = open(ini_fname,"wt")
     ini.write(f)
     f.close()
     
@@ -758,17 +768,17 @@ def init_opts():
     elif len(args) == 2:
         opts.fname = "None"
         try: 
-	    opts.tile_w,opts.tile_h = int(args[0]),int(args[1])
+             opts.tile_w,opts.tile_h = int(args[0]),int(args[1])
         except ValueError: 
-	    parser.error("tile width and height must be integers")
+             parser.error("tile width and height must be integers")
         if opts.tile_w < 1 or opts.tile_h < 1: parser.error("width and height must be greater than 0")
     else:
         try:
-	    opts.fname,opts.tile_w,opts.tile_h = args[0],int(args[1]),int(args[2])
+             opts.fname,opts.tile_w,opts.tile_h = args[0],int(args[1]),int(args[2])
         except ValueError:
-	    parser.error("tile width and height must be integers")
+             parser.error("tile width and height must be integers")
         if opts.tile_w < 1 or opts.tile_h < 1: 
-	    parser.error("width and height must be greater than 0")
+             parser.error("width and height must be greater than 0")
         
     fname = opts.fname
     
@@ -921,9 +931,12 @@ def init_app():
     #tdraw-calcs
     dw = app.screen_w - (toolbox_width+app.tiles.get_width()+ss*4)
     dh = app.screen_h - (menus_height+colors_height+ss*2)
-    if dw/float(app.tile_w) > dh/float(app.tile_h): dw = dh/float(app.tile_h)*app.tile_w
-    else: dh = dw/float(app.tile_w)*app.tile_h
-    e = app.tdraw = tdraw(dw,dh)
+    if dw/float(app.tile_w) > dh/float(app.tile_h):
+        dw = dh/float(app.tile_h)*app.tile_w
+    else:
+        dh = dw/float(app.tile_w)*app.tile_h
+    e = app.tdraw = tdraw(int(dw),int(dh))
+    e.dname = "xis"
     app.add(e,x,y)
     x,h = x+e.rect.w,max(h,e.rect.h)
     
@@ -1098,7 +1111,7 @@ class DirtyDialog(gui.Dialog):
 def run():
     #top.connect(gui.QUIT,top.quit,None)
     top.connect(gui.QUIT,cmd_quit,None)
-    top.connect(pygame.ACTIVEEVENT, cmd_active_save,None)
+    # top.connect(pygame.ACTIVEEVENT, cmd_active_save,None)
     top.init(app,app.screen)
     app.top = top
     top.run()
@@ -1116,7 +1129,7 @@ def main():
             init_app()
             run()
         except Restart:
-	    restart = 1
+            restart = 1
         
 
         
